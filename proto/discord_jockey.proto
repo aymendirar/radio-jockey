@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+option go_package = "server/src/proto";
+
+// service definition
+service DiscordJockeyService {
+  rpc Ping (PingRequest) returns (PingResponse) {}
+
+  rpc StopStream (StopStreamRequest) returns (StopStreamResponse) {}
+  rpc AddTrackToQueue (AddTrackToQueueRequest) returns (AddTrackToQueueResponse) {}
+  rpc PauseTrack (PauseTrackRequest) returns (PauseTrackResponse) {}
+  rpc ListQueue (ListQueueRequest) returns (ListQueueResponse) {}
+}
+
+message ListQueueRequest {
+  string session_id = 1;
+}
+message ListQueueResponse {
+  string message = 1;
+}
+
+message PauseTrackRequest {
+  int32 session_id = 1;
+}
+message PauseTrackResponse {
+  string message = 1;
+}
+
+message AddTrackToQueueRequest {
+  string session_id = 1;
+  string track_url = 2;
+}
+message AddTrackToQueueResponse {
+  string message = 1;
+}
+
+message StopStreamRequest { }
+message StopStreamResponse {
+  string message = 1;
+}
+
+message PingRequest { }
+message PingResponse {
+  string message = 1;
+}

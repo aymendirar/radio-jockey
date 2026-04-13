@@ -1,0 +1,11 @@
+**/.DS_Store
+.env
+tmp/
+**/tmp
+
+server/data
+server/music
+discord-jockey/vendor
+discord-jockey/.bundle
+discord-jockey/sorbet
+todo.md

@@ -1,0 +1,61 @@
+services:
+  web:
+    build: ./web
+    env_file: ./web/.env
+
+  discord-jockey:
+    build: ./discord-jockey
+    env_file: ./discord-jockey/.env
+    depends_on:
+      server:
+        condition: service_healthy
+    develop:
+      watch:
+        - action: rebuild
+          path: ./discord-jockey/src
+        - action: sync+restart
+          path: ./discord-jockey/.env
+          target: /discord-jockey/.env
+        - action: rebuild
+          path: ./discord-jockey/Gemfile
+
+  server:
+    build: ./server
+    env_file: ./server/.env
+    ports:
+      - 12625:12625
+    healthcheck:
+      test: ["CMD", "grpcurl", "-plaintext", "localhost:12625", "list"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./server/data:/server/data
+      - ./server/music:/server/music
+    develop:
+      watch:
+        - action: rebuild
+          path: ./server/src
+        - action: sync+restart
+          path: ./server/.env
+          target: /server/.env
+        - action: rebuild
+          path: ./server/go.mod
+  icecast:
+    image: pltnk/icecast2
+    container_name: icecast2
+    restart: always
+    ports:
+      - 8000:8000
+    volumes:
+      - /icecast/icecast.yml:/etc/icecast2/icecast.xml
+
+  codegen:
+    build: ./codegen
+    platform: linux/amd64
+    volumes:
+      - ./proto:/codegen/proto
+      - ./server/src/proto:/codegen/server/src/proto
+      - ./discord-jockey/src/proto:/codegen/discord-jockey/src/proto
+      - ./scripts:/codegen/scripts
+    command: sh /codegen/scripts/update_protos.sh
