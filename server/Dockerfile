@@ -8,7 +8,6 @@ RUN go mod download
 COPY . ./
 
 RUN go build -o ./main ./src
-RUN go build -o ./cli ./src/cmd
 RUN go install github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
 
 FROM alpine

@@ -1,55 +1,78 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"log/slog"
 	"os"
 	"os/signal"
+	"server/src/connect"
 	"server/src/db"
-	"server/src/grpc"
+	"server/src/icecast"
 	"server/src/music"
 	"server/src/session"
 	"server/src/util"
 	"syscall"
+	"time"
 )
 
 func main() {
+	if err := run(); err != nil {
+		slog.Error("fatal error", "err", err)
+		os.Exit(1)
+	}
+}
+
+func run() error {
 	slog.SetDefault(util.NewLogger())
 
-	env, err := util.Load()
+	env, err := util.LoadEnv()
 	if err != nil {
-		slog.Error("failed to load config", "err", err)
-		os.Exit(1)
+		return fmt.Errorf("failed to load config: %v", err)
 	}
 
 	db, err := db.Open(env.DB_PATH)
 	if err != nil {
-		slog.Error("db failed to open", "err", err)
-		os.Exit(1)
+		return fmt.Errorf("db failed to open: %v", err)
 	}
 	defer db.Close()
 
+	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer cancel()
+
+	server, err := connect.CreateServer(env.HOST, env.PORT, db)
+	if err != nil {
+		return fmt.Errorf("failed to create server: %v", err)
+	}
+
 	slog.Info("server started", "env", env, "db", db)
 
-	server, err := grpc.CreateGRPCServer(env.HOST, env.PORT, db)
-	if err != nil {
-		slog.Error("failed to create gRPC server", "err", err)
-		os.Exit(1)
-	}
-	defer server.Stop()
-
-	y, err := music.CreateYouTubeClient(env.MUSIC_PATH)
-	if err != nil {
-		slog.Error("error creating youtube client", "err", err)
-	}
+	y := music.NewYouTube(env.MUSIC_PATH, db)
 	y.DownloadTrackFromURL("https://youtu.be/Tib06q6wC1U?si=3XwICZzaLGGUj9Z2")
 	y.DownloadTrackFromURL("https://www.youtube.com/watch?v=aMSXP0YV2vs")
 	y.DownloadTrackFromURL("https://www.youtube.com/watch?v=utHw7pBtJM8&list=OLAK5uy_nVrWy7jixt-tF6ADSVJFCAuMh7pyqG5RY")
 
 	sessionManager := session.CreateSessionManager()
-	sessionManager.CreateSession("bruh")
 
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-	<-quit
+	icecast, err := icecast.CreateIcecastClient(
+		sessionManager,
+		env.ICECAST_SERVER_HOST,
+		env.ICECAST_SERVER_PORT,
+		env.ICECAST_SERVER_PASSWORD,
+		env.SILENCE_TRACK_PATH)
+
+	if err != nil {
+		return fmt.Errorf("unable to create icecast client: %v", err)
+	}
+
+	icecast.StreamSessions(ctx)
+
+	sessionManager.CreateSession(ctx, "bruh")
+
+	<-ctx.Done()
 	slog.Info("shutting down")
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	server.Shutdown(shutdownCtx)
+	return nil
 }

@@ -6,14 +6,16 @@ import (
 )
 
 type Environment struct {
-	HOST               string `env:"HOST"`
-	PORT               int    `env:"PORT"`
-	DB_PATH            string `env:"DB_PATH"`
-	MUSIC_PATH         string `env:"MUSIC_PATH"`
-	SPOTIFY_CLIENT_ID  string `env:"SPOTIFY_CLIENT_ID"`
-	SPOTIFY_CLIENT_SECRET string `env:"SPOTIFY_CLIENT_SECRET"`
+	HOST         string `env:"HOST"`
+	PORT         int    `env:"PORT"`
+	DB_PATH      string `env:"DB_PATH"`
+	MUSIC_PATH   string `env:"MUSIC_PATH"`
+	ICECAST_SERVER_HOST string `env:"ICECAST_SERVER_HOST"`
+	ICECAST_SERVER_PORT string `env:"ICECAST_SERVER_PORT"`
+	ICECAST_SERVER_PASSWORD string `env:"ICECAST_SERVER_PASSWORD"`
+	SILENCE_TRACK_PATH string `env:"SILENCE_TRACK_PATH"`
 }
 
-func Load() (Environment, error) {
+func LoadEnv() (Environment, error) {
 	return e.ParseAs[Environment]()
 }

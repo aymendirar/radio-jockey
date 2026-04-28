@@ -3,13 +3,13 @@ syntax = "proto3";
 option go_package = "server/src/proto";
 
 // service definition
-service DiscordJockeyService {
+service RadioService {
   rpc Ping (PingRequest) returns (PingResponse) {}
 
-  rpc StopStream (StopStreamRequest) returns (StopStreamResponse) {}
-  rpc AddTrackToQueue (AddTrackToQueueRequest) returns (AddTrackToQueueResponse) {}
-  rpc PauseTrack (PauseTrackRequest) returns (PauseTrackResponse) {}
-  rpc ListQueue (ListQueueRequest) returns (ListQueueResponse) {}
+  // rpc StopStream (StopStreamRequest) returns (StopStreamResponse) {}
+  // rpc AddTrackToQueue (AddTrackToQueueRequest) returns (AddTrackToQueueResponse) {}
+  // rpc PauseTrack (PauseTrackRequest) returns (PauseTrackResponse) {}
+  // rpc ListQueue (ListQueueRequest) returns (ListQueueResponse) {}
 }
 
 message ListQueueRequest {

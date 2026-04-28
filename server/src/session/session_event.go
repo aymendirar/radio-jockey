@@ -9,5 +9,5 @@ const (
 
 type SessionEvent struct {
 	Type      EventType
-	SessionID string
+	SessionID SessionID
 }
