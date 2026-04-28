@@ -1,0 +1,19 @@
+{
+  "name": "discord-jockey",
+  "module": "src/index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@loglayer/transport-pretty-terminal": "^6.0.0",
+    "@loglayer/transport-simple-pretty-terminal": "^3.0.2",
+    "discord.js": "^14.26.3",
+    "dotenv": "^17.4.2",
+    "loglayer": "^9.1.0",
+    "serialize-error": "^13.0.1"
+  }
+}
