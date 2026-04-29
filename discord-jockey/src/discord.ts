@@ -1,50 +1,56 @@
 import { Client, Events, GatewayIntentBits, REST, Routes } from "discord.js";
 import { logger } from "./util/logger";
 import { registerPingCommand } from "./discord/command/ping";
+import { registerPlayCommand } from "./discord/command/play";
 
 export async function startDiscordBot(apiKey: string) {
-  const client = new Client({ intents: [GatewayIntentBits.Guilds] });
-  setupEventHandlers(client);
-  await client.login(apiKey);
+  const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates] });
+  setupEventHandlers(bot);
+  await bot.login(apiKey);
 
-  return client;
+  return bot;
 }
 
-function setupEventHandlers(client: Client) {
-  handleLogin(client);
-  handleSlashCommands(client);
+function setupEventHandlers(bot: Client) {
+  handleLogin(bot);
+  handleSlashCommands(bot);
 }
 
-function handleLogin(client: Client) {
-  client.on(Events.ClientReady, (readyClient) => {
+function handleLogin(bot: Client) {
+  bot.on(Events.ClientReady, (readyClient) => {
     logger
-      .withMetadata({ ready: client.isReady() })
+      .withMetadata({ ready: bot.isReady() })
       .withMetadata({ userTag: readyClient.user.tag })
       .info("discord jockey spinning...");
   });
 }
 
-async function handleSlashCommands(client: Client) {
-  client.on(Events.InteractionCreate, async (interaction) => {
+async function handleSlashCommands(bot: Client) {
+  bot.on(Events.InteractionCreate, async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
 
     await registerPingCommand(interaction);
+    await registerPlayCommand(interaction);
   });
 }
 
-export async function registerCommands(apiKey: string, clientId: string) {
+export async function registerCommands(apiKey: string, botId: string) {
   const rest = new REST({ version: "10" }).setToken(apiKey);
   const commands = [
     {
       name: "ping",
       description: "Replies with Pong!",
     },
+    {
+      name: "play",
+      description: "Join voice channel and play queue!",
+    },
   ];
 
   try {
     logger.info("Started refreshing application (/) commands.");
 
-    await rest.put(Routes.applicationCommands(clientId), {
+    await rest.put(Routes.applicationCommands(botId), {
       body: commands,
     });
 

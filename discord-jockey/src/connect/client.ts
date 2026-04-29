@@ -8,4 +8,4 @@ const transport = createConnectTransport({
   baseUrl: `http://${SERVER_HOST}:${SERVER_PORT}`,
 });
 
-export const client = createClient(RadioService, transport);
+export const radioClient = createClient(RadioService, transport);

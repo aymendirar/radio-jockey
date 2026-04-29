@@ -90,9 +90,6 @@ func (i *IcecastClient) streamSession(ctx context.Context, queue *session.Sessio
 		return true
 	}
 
-	sessionEndTimer := time.NewTimer(SESSION_TIMEOUT_MINUTES * time.Minute)
-	defer sessionEndTimer.Stop()
-
 	for {
 		for {
 			track, err := queue.Dequeue()
@@ -104,12 +101,11 @@ func (i *IcecastClient) streamSession(ctx context.Context, queue *session.Sessio
 				return
 			}
 
-			sessionEndTimer.Reset(SESSION_TIMEOUT_MINUTES * time.Minute)
 			slog.Info("playing track", "title", track.Title, "artist", track.Artist, "mountpoint", mountpoint)
 
-			var offset int64
+			var elapsedTrackTime int64
 			for {
-				offset, err = i.streamTrack(ctx, track, conn, offset)
+				elapsedTrackTime, err = i.streamTrack(ctx, track, conn, elapsedTrackTime)
 				if err == nil {
 					break
 				}
@@ -124,12 +120,8 @@ func (i *IcecastClient) streamSession(ctx context.Context, queue *session.Sessio
 		}
 
 		slog.Info("queue empty, streaming silence", "mountpoint", mountpoint)
-		silenceCtx, cancelSilence := context.WithCancel(ctx)
-		silenceDone := make(chan struct{})
-		go func() {
-			defer close(silenceDone)
-			i.streamSilenceLoop(silenceCtx, conn)
-		}()
+		sessionEndTimer := time.NewTimer(SESSION_TIMEOUT_MINUTES * time.Minute)
+		cancelSilence, silenceDone := i.startSilence(ctx, conn)
 
 		select {
 		case <-ctx.Done():
@@ -144,10 +136,29 @@ func (i *IcecastClient) streamSession(ctx context.Context, queue *session.Sessio
 			cancelSilence()
 			<-silenceDone
 			slog.Info("session timed out", "mountpoint", mountpoint)
-			i.sessionManager.DeleteSession(ctx, sessionID)
+			if err := i.sessionManager.DeleteSession(ctx, sessionID); err != nil {
+				slog.Error("failed to delete timed out session", "mountpoint", mountpoint, "err", err)
+			}
 			return
 		}
+
+		if !sessionEndTimer.Stop() {
+			select {
+			case <-sessionEndTimer.C:
+			default:
+			}
+		}
 	}
+}
+
+func (i *IcecastClient) startSilence(ctx context.Context, conn io.Writer) (context.CancelFunc, <-chan struct{}) {
+	silenceCtx, cancelSilence := context.WithCancel(ctx)
+	silenceDone := make(chan struct{})
+	go func() {
+		defer close(silenceDone)
+		i.streamSilenceLoop(silenceCtx, conn)
+	}()
+	return cancelSilence, silenceDone
 }
 
 func (i *IcecastClient) streamSilenceLoop(ctx context.Context, conn io.Writer) {
@@ -167,33 +178,40 @@ func (i *IcecastClient) streamSilenceLoop(ctx context.Context, conn io.Writer) {
 	}
 }
 
-func (i *IcecastClient) streamTrack(ctx context.Context, track *db.Track, conn io.Writer, _ int64) (int64, error) {
-	cmd := exec.CommandContext(ctx, "ffmpeg",
-		"-loglevel", "error",
-		"-re",
-		"-i", track.FilePath,
-		"-c:a", "copy",
-		"-f", "ogg",
-		"pipe:1",
-	)
+func (i *IcecastClient) streamTrack(ctx context.Context, track *db.Track, conn io.Writer, elapsedTrackTime int64) (int64, error) {
+	start := time.Now()
+
+	args := []string{"-loglevel", "error", "-re"}
+	if elapsedTrackTime > 0 {
+		args = append(args, "-ss", fmt.Sprintf("%d", elapsedTrackTime))
+	}
+	args = append(args, "-i", track.FilePath, "-c:a", "copy", "-f", "ogg", "pipe:1")
+
+	cmd := exec.CommandContext(ctx, "ffmpeg", args...)
 	cmd.Stdout = conn
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
+		newElapsed := elapsedTrackTime + int64(time.Since(start).Seconds())
 		if ctx.Err() != nil {
-			return 0, ctx.Err()
+			return newElapsed, ctx.Err()
 		}
-		return 0, err
+		return newElapsed, err
 	}
 	return 0, nil
 }
 
 func (i *IcecastClient) connectWithRetry(ctx context.Context, mountpoint Mountpoint) (io.WriteCloser, error) {
 	var conn io.WriteCloser
-	err := util.RetryWithBackoff(ctx, func() error {
-		var err error
-		conn, err = i.icecastConnection(ctx, mountpoint)
-		return err
-	})
+	err := util.RetryWithBackoff(
+		ctx,
+		func() error {
+			var err error
+			conn, err = i.icecastConnection(ctx, mountpoint)
+			return err
+		},
+		func(n uint, err error) {
+			slog.Warn("failed to connect to icecast server", "mountpoint", mountpoint)
+		})
 	return conn, err
 }
 
@@ -215,11 +233,14 @@ func (i *IcecastClient) icecastConnection(ctx context.Context, mountpoint Mountp
 	}
 
 	buf := make([]byte, 512)
+	conn.SetReadDeadline(time.Now().Add(10 * time.Second))
 	n, err := conn.Read(buf)
+	conn.SetReadDeadline(time.Time{})
 	if err != nil {
 		conn.Close()
 		return nil, err
 	}
+
 	resp := string(buf[:n])
 	if !strings.Contains(resp, "200") {
 		conn.Close()

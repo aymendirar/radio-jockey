@@ -13,6 +13,7 @@ FROM node:alpine
 WORKDIR /web
 
 COPY --from=builder /web/build ./build
+COPY --from=builder /web/node_modules ./node_modules
 COPY --from=builder /web/package.json ./package.json
 
 ENV NODE_ENV=production

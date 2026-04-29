@@ -41,11 +41,16 @@ func (y *YouTube) DownloadTrackFromURL(ctx context.Context, url string) (*db.Tra
 	slog.Info("starting youtube download", "url", url, "path", y.musicDirectoryPath)
 
 	var result ytdlpResult
-	err := util.RetryWithBackoff(ctx, func() error {
-		var err error
-		result, err = y.ytdlp(url)
-		return err
-	})
+	err := util.RetryWithBackoff(
+		ctx,
+		func() error {
+			var err error
+			result, err = y.ytdlp(url)
+			return err
+		},
+		func(n uint, err error) {
+			slog.Warn("failed to download youtube track", "url", url)
+		})
 	if err != nil {
 		return nil, fmt.Errorf("yt-dlp failed for %s: %w", url, err)
 	}

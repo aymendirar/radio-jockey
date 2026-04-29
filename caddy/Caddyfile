@@ -1,0 +1,10 @@
+localhost:3000 {
+	tls internal
+	reverse_proxy /RadioService/* server:12625
+	handle_path /stream/* {
+		reverse_proxy icecast:9999 {
+			flush_interval -1
+		}
+	}
+	reverse_proxy web:3000
+}

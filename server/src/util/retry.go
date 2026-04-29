@@ -8,7 +8,7 @@ import (
 	"github.com/avast/retry-go"
 )
 
-func RetryWithBackoff(ctx context.Context, fn func() error) error {
+func RetryWithBackoff(ctx context.Context, fn retry.RetryableFunc, onRetry retry.OnRetryFunc) error {
 	return retry.Do(
 		fn,
 		retry.Context(ctx),
@@ -17,7 +17,8 @@ func RetryWithBackoff(ctx context.Context, fn func() error) error {
 		retry.MaxDelay(32*time.Second),
 		retry.DelayType(retry.BackOffDelay),
 		retry.OnRetry(func(n uint, err error) {
-			slog.Warn("retrying", "attempt", n+1, "err", err)
+			onRetry(n, err)
+			slog.Warn("retrying...", "attempt", n+1, "err", err)
 		}),
 	)
 }

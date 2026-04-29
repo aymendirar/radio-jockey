@@ -39,9 +39,8 @@
  */
 declare module '$env/static/private' {
 	export const MANPATH: string;
-	export const NoDefaultCurrentDirectoryInExePath: string;
+	export const CODEX_SANDBOX_NETWORK_DISABLED: string;
 	export const GHOSTTY_RESOURCES_DIR: string;
-	export const CLAUDE_CODE_ENTRYPOINT: string;
 	export const TERM_PROGRAM: string;
 	export const NODE: string;
 	export const INIT_CWD: string;
@@ -49,59 +48,74 @@ declare module '$env/static/private' {
 	export const SHELL: string;
 	export const TMPDIR: string;
 	export const HOMEBREW_REPOSITORY: string;
+	export const npm_config_global_prefix: string;
 	export const TERM_PROGRAM_VERSION: string;
 	export const FPATH: string;
+	export const COLOR: string;
+	export const NO_COLOR: string;
+	export const npm_config_noproxy: string;
 	export const npm_config_local_prefix: string;
 	export const ZSH: string;
-	export const GIT_EDITOR: string;
-	export const AI_AGENT: string;
+	export const LC_ALL: string;
 	export const USER: string;
 	export const NVM_DIR: string;
 	export const LS_COLORS: string;
 	export const COMMAND_MODE: string;
+	export const npm_config_globalconfig: string;
 	export const SSH_AUTH_SOCK: string;
 	export const __CF_USER_TEXT_ENCODING: string;
 	export const npm_execpath: string;
-	export const BUN_WHICH_IGNORE_CWD: string;
 	export const PAGER: string;
 	export const TMUX: string;
 	export const LSCOLORS: string;
 	export const PATH: string;
+	export const CODEX_SANDBOX: string;
 	export const npm_package_json: string;
+	export const npm_config_engine_strict: string;
 	export const _: string;
 	export const LaunchInstanceID: string;
 	export const GHOSTTY_SHELL_FEATURES: string;
+	export const npm_config_userconfig: string;
+	export const npm_config_init_module: string;
 	export const __CFBundleIdentifier: string;
+	export const CODEX_THREAD_ID: string;
+	export const npm_command: string;
 	export const PWD: string;
 	export const JAVA_HOME: string;
-	export const OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: string;
+	export const npm_lifecycle_event: string;
 	export const EDITOR: string;
 	export const npm_package_name: string;
 	export const LANG: string;
+	export const npm_config_npm_version: string;
 	export const XPC_FLAGS: string;
 	export const TMUX_PANE: string;
+	export const CODEX_CI: string;
+	export const npm_config_node_gyp: string;
 	export const RBENV_SHELL: string;
 	export const npm_package_version: string;
 	export const XPC_SERVICE_NAME: string;
 	export const SHLVL: string;
 	export const HOME: string;
 	export const TERMINFO: string;
-	export const CLAUDE_CODE_EXECPATH: string;
 	export const HOMEBREW_PREFIX: string;
+	export const GH_PAGER: string;
+	export const npm_config_cache: string;
 	export const LOGNAME: string;
 	export const LESS: string;
+	export const npm_lifecycle_script: string;
 	export const XDG_DATA_DIRS: string;
+	export const LC_CTYPE: string;
 	export const CARAPACE_BRIDGES: string;
-	export const COREPACK_ENABLE_AUTO_PIN: string;
 	export const TMUX_PLUGIN_MANAGER_PATH: string;
 	export const GHOSTTY_BIN_DIR: string;
 	export const npm_config_user_agent: string;
 	export const INFOPATH: string;
 	export const HOMEBREW_CELLAR: string;
-	export const CLAUDECODE: string;
+	export const GIT_PAGER: string;
 	export const is_vim: string;
 	export const SECURITYSESSIONID: string;
 	export const npm_node_execpath: string;
+	export const npm_config_prefix: string;
 	export const COLORTERM: string;
 }
 
@@ -139,7 +153,8 @@ declare module '$env/static/private' {
  * The above values will be the same _even if_ different values for `ENVIRONMENT` or `PUBLIC_BASE_URL` are set at runtime, as they are statically replaced in your code with their build time values.
  */
 declare module '$env/static/public' {
-	
+	export const PUBLIC_SERVER_HOST: string;
+	export const PUBLIC_SERVER_PORT: string;
 }
 
 /**
@@ -190,9 +205,8 @@ declare module '$env/static/public' {
 declare module '$env/dynamic/private' {
 	export const env: {
 		MANPATH: string;
-		NoDefaultCurrentDirectoryInExePath: string;
+		CODEX_SANDBOX_NETWORK_DISABLED: string;
 		GHOSTTY_RESOURCES_DIR: string;
-		CLAUDE_CODE_ENTRYPOINT: string;
 		TERM_PROGRAM: string;
 		NODE: string;
 		INIT_CWD: string;
@@ -200,59 +214,74 @@ declare module '$env/dynamic/private' {
 		SHELL: string;
 		TMPDIR: string;
 		HOMEBREW_REPOSITORY: string;
+		npm_config_global_prefix: string;
 		TERM_PROGRAM_VERSION: string;
 		FPATH: string;
+		COLOR: string;
+		NO_COLOR: string;
+		npm_config_noproxy: string;
 		npm_config_local_prefix: string;
 		ZSH: string;
-		GIT_EDITOR: string;
-		AI_AGENT: string;
+		LC_ALL: string;
 		USER: string;
 		NVM_DIR: string;
 		LS_COLORS: string;
 		COMMAND_MODE: string;
+		npm_config_globalconfig: string;
 		SSH_AUTH_SOCK: string;
 		__CF_USER_TEXT_ENCODING: string;
 		npm_execpath: string;
-		BUN_WHICH_IGNORE_CWD: string;
 		PAGER: string;
 		TMUX: string;
 		LSCOLORS: string;
 		PATH: string;
+		CODEX_SANDBOX: string;
 		npm_package_json: string;
+		npm_config_engine_strict: string;
 		_: string;
 		LaunchInstanceID: string;
 		GHOSTTY_SHELL_FEATURES: string;
+		npm_config_userconfig: string;
+		npm_config_init_module: string;
 		__CFBundleIdentifier: string;
+		CODEX_THREAD_ID: string;
+		npm_command: string;
 		PWD: string;
 		JAVA_HOME: string;
-		OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: string;
+		npm_lifecycle_event: string;
 		EDITOR: string;
 		npm_package_name: string;
 		LANG: string;
+		npm_config_npm_version: string;
 		XPC_FLAGS: string;
 		TMUX_PANE: string;
+		CODEX_CI: string;
+		npm_config_node_gyp: string;
 		RBENV_SHELL: string;
 		npm_package_version: string;
 		XPC_SERVICE_NAME: string;
 		SHLVL: string;
 		HOME: string;
 		TERMINFO: string;
-		CLAUDE_CODE_EXECPATH: string;
 		HOMEBREW_PREFIX: string;
+		GH_PAGER: string;
+		npm_config_cache: string;
 		LOGNAME: string;
 		LESS: string;
+		npm_lifecycle_script: string;
 		XDG_DATA_DIRS: string;
+		LC_CTYPE: string;
 		CARAPACE_BRIDGES: string;
-		COREPACK_ENABLE_AUTO_PIN: string;
 		TMUX_PLUGIN_MANAGER_PATH: string;
 		GHOSTTY_BIN_DIR: string;
 		npm_config_user_agent: string;
 		INFOPATH: string;
 		HOMEBREW_CELLAR: string;
-		CLAUDECODE: string;
+		GIT_PAGER: string;
 		is_vim: string;
 		SECURITYSESSIONID: string;
 		npm_node_execpath: string;
+		npm_config_prefix: string;
 		COLORTERM: string;
 		[key: `PUBLIC_${string}`]: undefined;
 		[key: `${string}`]: string | undefined;
@@ -309,6 +338,8 @@ declare module '$env/dynamic/private' {
  */
 declare module '$env/dynamic/public' {
 	export const env: {
+		PUBLIC_SERVER_HOST: string;
+		PUBLIC_SERVER_PORT: string;
 		[key: `PUBLIC_${string}`]: string | undefined;
 	}
 }
