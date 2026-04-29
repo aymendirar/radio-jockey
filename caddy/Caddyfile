@@ -8,3 +8,10 @@ localhost:3000 {
 	}
 	reverse_proxy web:3000
 }
+
+localhost:9999 {
+	tls internal
+	reverse_proxy icecast:9999 {
+		flush_interval -1
+	}
+}

@@ -4,6 +4,7 @@ services:
     image: caddy:2-alpine
     ports:
       - 3000:3000
+      - 9999:9999
     volumes:
       - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
       - ./caddy/data:/data
