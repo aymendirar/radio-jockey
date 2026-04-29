@@ -8,11 +8,10 @@ RUN go mod download
 COPY . ./
 
 RUN go build -o ./main ./src
-RUN go install github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
 
 FROM alpine
 
-RUN apk add --no-cache sqlite python3 py3-pip ffmpeg && \
+RUN apk add --no-cache curl python3 py3-pip ffmpeg && \
     pip install yt-dlp --break-system-packages
 
 WORKDIR /server
@@ -20,6 +19,5 @@ WORKDIR /server
 RUN mkdir -p /server/data /server/music
 
 COPY --from=builder /server/main ./main
-COPY --from=builder /go/bin/grpcurl /usr/local/bin/grpcurl
 
 CMD ["./main"]

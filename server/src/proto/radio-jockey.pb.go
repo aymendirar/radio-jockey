@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.11
 // 	protoc        v3.21.12
-// source: radio.proto
+// source: radio-jockey.proto
 
 package proto
 
@@ -30,7 +30,7 @@ type ListQueueRequest struct {
 
 func (x *ListQueueRequest) Reset() {
 	*x = ListQueueRequest{}
-	mi := &file_radio_proto_msgTypes[0]
+	mi := &file_radio_jockey_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -42,7 +42,7 @@ func (x *ListQueueRequest) String() string {
 func (*ListQueueRequest) ProtoMessage() {}
 
 func (x *ListQueueRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_proto_msgTypes[0]
+	mi := &file_radio_jockey_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -55,7 +55,7 @@ func (x *ListQueueRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListQueueRequest.ProtoReflect.Descriptor instead.
 func (*ListQueueRequest) Descriptor() ([]byte, []int) {
-	return file_radio_proto_rawDescGZIP(), []int{0}
+	return file_radio_jockey_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *ListQueueRequest) GetSessionId() string {
@@ -74,7 +74,7 @@ type ListQueueResponse struct {
 
 func (x *ListQueueResponse) Reset() {
 	*x = ListQueueResponse{}
-	mi := &file_radio_proto_msgTypes[1]
+	mi := &file_radio_jockey_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -86,7 +86,7 @@ func (x *ListQueueResponse) String() string {
 func (*ListQueueResponse) ProtoMessage() {}
 
 func (x *ListQueueResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_proto_msgTypes[1]
+	mi := &file_radio_jockey_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -99,7 +99,7 @@ func (x *ListQueueResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListQueueResponse.ProtoReflect.Descriptor instead.
 func (*ListQueueResponse) Descriptor() ([]byte, []int) {
-	return file_radio_proto_rawDescGZIP(), []int{1}
+	return file_radio_jockey_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *ListQueueResponse) GetMessage() string {
@@ -118,7 +118,7 @@ type PauseTrackRequest struct {
 
 func (x *PauseTrackRequest) Reset() {
 	*x = PauseTrackRequest{}
-	mi := &file_radio_proto_msgTypes[2]
+	mi := &file_radio_jockey_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -130,7 +130,7 @@ func (x *PauseTrackRequest) String() string {
 func (*PauseTrackRequest) ProtoMessage() {}
 
 func (x *PauseTrackRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_proto_msgTypes[2]
+	mi := &file_radio_jockey_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -143,7 +143,7 @@ func (x *PauseTrackRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PauseTrackRequest.ProtoReflect.Descriptor instead.
 func (*PauseTrackRequest) Descriptor() ([]byte, []int) {
-	return file_radio_proto_rawDescGZIP(), []int{2}
+	return file_radio_jockey_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *PauseTrackRequest) GetSessionId() int32 {
@@ -162,7 +162,7 @@ type PauseTrackResponse struct {
 
 func (x *PauseTrackResponse) Reset() {
 	*x = PauseTrackResponse{}
-	mi := &file_radio_proto_msgTypes[3]
+	mi := &file_radio_jockey_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -174,7 +174,7 @@ func (x *PauseTrackResponse) String() string {
 func (*PauseTrackResponse) ProtoMessage() {}
 
 func (x *PauseTrackResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_proto_msgTypes[3]
+	mi := &file_radio_jockey_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -187,7 +187,7 @@ func (x *PauseTrackResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PauseTrackResponse.ProtoReflect.Descriptor instead.
 func (*PauseTrackResponse) Descriptor() ([]byte, []int) {
-	return file_radio_proto_rawDescGZIP(), []int{3}
+	return file_radio_jockey_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *PauseTrackResponse) GetMessage() string {
@@ -207,7 +207,7 @@ type AddTrackToQueueRequest struct {
 
 func (x *AddTrackToQueueRequest) Reset() {
 	*x = AddTrackToQueueRequest{}
-	mi := &file_radio_proto_msgTypes[4]
+	mi := &file_radio_jockey_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -219,7 +219,7 @@ func (x *AddTrackToQueueRequest) String() string {
 func (*AddTrackToQueueRequest) ProtoMessage() {}
 
 func (x *AddTrackToQueueRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_proto_msgTypes[4]
+	mi := &file_radio_jockey_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -232,7 +232,7 @@ func (x *AddTrackToQueueRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddTrackToQueueRequest.ProtoReflect.Descriptor instead.
 func (*AddTrackToQueueRequest) Descriptor() ([]byte, []int) {
-	return file_radio_proto_rawDescGZIP(), []int{4}
+	return file_radio_jockey_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *AddTrackToQueueRequest) GetSessionId() string {
@@ -258,7 +258,7 @@ type AddTrackToQueueResponse struct {
 
 func (x *AddTrackToQueueResponse) Reset() {
 	*x = AddTrackToQueueResponse{}
-	mi := &file_radio_proto_msgTypes[5]
+	mi := &file_radio_jockey_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -270,7 +270,7 @@ func (x *AddTrackToQueueResponse) String() string {
 func (*AddTrackToQueueResponse) ProtoMessage() {}
 
 func (x *AddTrackToQueueResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_proto_msgTypes[5]
+	mi := &file_radio_jockey_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -283,7 +283,7 @@ func (x *AddTrackToQueueResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddTrackToQueueResponse.ProtoReflect.Descriptor instead.
 func (*AddTrackToQueueResponse) Descriptor() ([]byte, []int) {
-	return file_radio_proto_rawDescGZIP(), []int{5}
+	return file_radio_jockey_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *AddTrackToQueueResponse) GetMessage() string {
@@ -301,7 +301,7 @@ type StopStreamRequest struct {
 
 func (x *StopStreamRequest) Reset() {
 	*x = StopStreamRequest{}
-	mi := &file_radio_proto_msgTypes[6]
+	mi := &file_radio_jockey_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -313,7 +313,7 @@ func (x *StopStreamRequest) String() string {
 func (*StopStreamRequest) ProtoMessage() {}
 
 func (x *StopStreamRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_proto_msgTypes[6]
+	mi := &file_radio_jockey_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -326,7 +326,7 @@ func (x *StopStreamRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StopStreamRequest.ProtoReflect.Descriptor instead.
 func (*StopStreamRequest) Descriptor() ([]byte, []int) {
-	return file_radio_proto_rawDescGZIP(), []int{6}
+	return file_radio_jockey_proto_rawDescGZIP(), []int{6}
 }
 
 type StopStreamResponse struct {
@@ -338,7 +338,7 @@ type StopStreamResponse struct {
 
 func (x *StopStreamResponse) Reset() {
 	*x = StopStreamResponse{}
-	mi := &file_radio_proto_msgTypes[7]
+	mi := &file_radio_jockey_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -350,7 +350,7 @@ func (x *StopStreamResponse) String() string {
 func (*StopStreamResponse) ProtoMessage() {}
 
 func (x *StopStreamResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_proto_msgTypes[7]
+	mi := &file_radio_jockey_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -363,7 +363,7 @@ func (x *StopStreamResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StopStreamResponse.ProtoReflect.Descriptor instead.
 func (*StopStreamResponse) Descriptor() ([]byte, []int) {
-	return file_radio_proto_rawDescGZIP(), []int{7}
+	return file_radio_jockey_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *StopStreamResponse) GetMessage() string {
@@ -381,7 +381,7 @@ type PingRequest struct {
 
 func (x *PingRequest) Reset() {
 	*x = PingRequest{}
-	mi := &file_radio_proto_msgTypes[8]
+	mi := &file_radio_jockey_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -393,7 +393,7 @@ func (x *PingRequest) String() string {
 func (*PingRequest) ProtoMessage() {}
 
 func (x *PingRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_proto_msgTypes[8]
+	mi := &file_radio_jockey_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -406,7 +406,7 @@ func (x *PingRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PingRequest.ProtoReflect.Descriptor instead.
 func (*PingRequest) Descriptor() ([]byte, []int) {
-	return file_radio_proto_rawDescGZIP(), []int{8}
+	return file_radio_jockey_proto_rawDescGZIP(), []int{8}
 }
 
 type PingResponse struct {
@@ -418,7 +418,7 @@ type PingResponse struct {
 
 func (x *PingResponse) Reset() {
 	*x = PingResponse{}
-	mi := &file_radio_proto_msgTypes[9]
+	mi := &file_radio_jockey_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -430,7 +430,7 @@ func (x *PingResponse) String() string {
 func (*PingResponse) ProtoMessage() {}
 
 func (x *PingResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_proto_msgTypes[9]
+	mi := &file_radio_jockey_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -443,7 +443,7 @@ func (x *PingResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PingResponse.ProtoReflect.Descriptor instead.
 func (*PingResponse) Descriptor() ([]byte, []int) {
-	return file_radio_proto_rawDescGZIP(), []int{9}
+	return file_radio_jockey_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *PingResponse) GetMessage() string {
@@ -453,11 +453,11 @@ func (x *PingResponse) GetMessage() string {
 	return ""
 }
 
-var File_radio_proto protoreflect.FileDescriptor
+var File_radio_jockey_proto protoreflect.FileDescriptor
 
-const file_radio_proto_rawDesc = "" +
+const file_radio_jockey_proto_rawDesc = "" +
 	"\n" +
-	"\vradio.proto\"1\n" +
+	"\x12radio-jockey.proto\"1\n" +
 	"\x10ListQueueRequest\x12\x1d\n" +
 	"\n" +
 	"session_id\x18\x01 \x01(\tR\tsessionId\"-\n" +
@@ -484,19 +484,19 @@ const file_radio_proto_rawDesc = "" +
 	"\x04Ping\x12\f.PingRequest\x1a\r.PingResponse\"\x00B\x12Z\x10server/src/protob\x06proto3"
 
 var (
-	file_radio_proto_rawDescOnce sync.Once
-	file_radio_proto_rawDescData []byte
+	file_radio_jockey_proto_rawDescOnce sync.Once
+	file_radio_jockey_proto_rawDescData []byte
 )
 
-func file_radio_proto_rawDescGZIP() []byte {
-	file_radio_proto_rawDescOnce.Do(func() {
-		file_radio_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_radio_proto_rawDesc), len(file_radio_proto_rawDesc)))
+func file_radio_jockey_proto_rawDescGZIP() []byte {
+	file_radio_jockey_proto_rawDescOnce.Do(func() {
+		file_radio_jockey_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_radio_jockey_proto_rawDesc), len(file_radio_jockey_proto_rawDesc)))
 	})
-	return file_radio_proto_rawDescData
+	return file_radio_jockey_proto_rawDescData
 }
 
-var file_radio_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
-var file_radio_proto_goTypes = []any{
+var file_radio_jockey_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_radio_jockey_proto_goTypes = []any{
 	(*ListQueueRequest)(nil),        // 0: ListQueueRequest
 	(*ListQueueResponse)(nil),       // 1: ListQueueResponse
 	(*PauseTrackRequest)(nil),       // 2: PauseTrackRequest
@@ -508,7 +508,7 @@ var file_radio_proto_goTypes = []any{
 	(*PingRequest)(nil),             // 8: PingRequest
 	(*PingResponse)(nil),            // 9: PingResponse
 }
-var file_radio_proto_depIdxs = []int32{
+var file_radio_jockey_proto_depIdxs = []int32{
 	8, // 0: RadioService.Ping:input_type -> PingRequest
 	9, // 1: RadioService.Ping:output_type -> PingResponse
 	1, // [1:2] is the sub-list for method output_type
@@ -518,26 +518,26 @@ var file_radio_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_radio_proto_init() }
-func file_radio_proto_init() {
-	if File_radio_proto != nil {
+func init() { file_radio_jockey_proto_init() }
+func file_radio_jockey_proto_init() {
+	if File_radio_jockey_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_radio_proto_rawDesc), len(file_radio_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_radio_jockey_proto_rawDesc), len(file_radio_jockey_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_radio_proto_goTypes,
-		DependencyIndexes: file_radio_proto_depIdxs,
-		MessageInfos:      file_radio_proto_msgTypes,
+		GoTypes:           file_radio_jockey_proto_goTypes,
+		DependencyIndexes: file_radio_jockey_proto_depIdxs,
+		MessageInfos:      file_radio_jockey_proto_msgTypes,
 	}.Build()
-	File_radio_proto = out.File
-	file_radio_proto_goTypes = nil
-	file_radio_proto_depIdxs = nil
+	File_radio_jockey_proto = out.File
+	file_radio_jockey_proto_goTypes = nil
+	file_radio_jockey_proto_depIdxs = nil
 }

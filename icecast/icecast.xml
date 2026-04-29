@@ -19,7 +19,7 @@
     <hostname>${ICECAST_HOSTNAME}</hostname>
 
     <listen-socket>
-        <port>9999</port>
+      <port>${ICECAST_SERVER_PORT}</port>
     </listen-socket>
 
     <paths>

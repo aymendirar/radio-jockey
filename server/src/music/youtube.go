@@ -11,7 +11,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/avast/retry-go"
+	"server/src/util"
+
 	"github.com/dhowden/tag"
 )
 
@@ -31,48 +32,48 @@ func NewYouTube(musicDirectoryPath string, db *db.DB) *YouTube {
 }
 
 type ytdlpResult struct {
-	id       string
+	sourceId string
 	duration int64
 	filePath string
 }
 
-func (y *YouTube) DownloadTrackFromURL(ctx context.Context, url string) error {
+func (y *YouTube) DownloadTrackFromURL(ctx context.Context, url string) (*db.Track, error) {
 	slog.Info("starting youtube download", "url", url, "path", y.musicDirectoryPath)
 
 	var result ytdlpResult
-	err := retry.Do(
-		func() error {
-			var err error
-			result, err = y.ytdlp(url)
-			return err
-		},
-		retry.DelayType(retry.BackOffDelay),
-		retry.Attempts(10),
-		retry.OnRetry(func(n uint, err error) {
-			slog.Warn("retrying yt-dlp download", "url", url, "attempt", n, "err", err)
-		}),
-	)
+	err := util.RetryWithBackoff(ctx, func() error {
+		var err error
+		result, err = y.ytdlp(url)
+		return err
+	})
 	if err != nil {
-		return fmt.Errorf("yt-dlp failed for %s: %w", url, err)
+		return nil, fmt.Errorf("yt-dlp failed for %s: %w", url, err)
 	}
 
 	metadata, err := y.extractTagMetadata(result.filePath)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	slog.Info("download complete", "url", url, "title", metadata.Title(), "path", result.filePath)
 
-	_, err = y.db.CreateTrack(
+	if track, err := y.db.GetTrack(ctx, result.sourceId); err == nil {
+		slog.Info("found track in database, not creating record...", "title", track.Title, "artist", track.Artist)
+		return track, nil
+	}
+
+	track, err := y.db.CreateTrack(
 		ctx,
 		SOURCE,
-		result.id,
+		result.sourceId,
 		metadata.Title(),
 		metadata.Artist(),
 		result.filePath,
 		result.duration)
 
-	return err
+	slog.Info("created new track record", "title", track.Title, "artist", track.Artist)
+
+	return track, err
 }
 
 func (y *YouTube) ytdlp(url string) (ytdlpResult, error) {
@@ -109,7 +110,7 @@ func (y *YouTube) ytdlp(url string) (ytdlpResult, error) {
 	duration := int64(d)
 
 	return ytdlpResult{
-		id:       strings.TrimSpace(lines[0]),
+		sourceId: strings.TrimSpace(lines[0]),
 		duration: duration,
 		filePath: strings.TrimSpace(lines[2]),
 	}, nil

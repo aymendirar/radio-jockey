@@ -24,11 +24,11 @@ function handleLogin(client: Client) {
   });
 }
 
-function handleSlashCommands(client: Client) {
+async function handleSlashCommands(client: Client) {
   client.on(Events.InteractionCreate, async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
 
-    registerPingCommand(interaction);
+    await registerPingCommand(interaction);
   });
 }
 

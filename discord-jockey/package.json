@@ -14,6 +14,11 @@
     "discord.js": "^14.26.3",
     "dotenv": "^17.4.2",
     "loglayer": "^9.1.0",
-    "serialize-error": "^13.0.1"
+    "serialize-error": "^13.0.1",
+    "@bufbuild/buf": "^1.68.4",
+    "@bufbuild/protobuf": "^2.12.0",
+    "@bufbuild/protoc-gen-es": "^2.12.0",
+    "@connectrpc/connect": "^2.1.1",
+    "@connectrpc/connect-web": "^2.1.1"
   }
 }

@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.6.1
 // - protoc             v3.21.12
-// source: radio.proto
+// source: radio-jockey.proto
 
 package proto
 
@@ -121,5 +121,5 @@ var RadioService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "radio.proto",
+	Metadata: "radio-jockey.proto",
 }

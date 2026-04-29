@@ -8,7 +8,7 @@ import (
 
 type SessionQueue struct {
 	mu        sync.RWMutex
-	tracks    []db.Track
+	tracks    []*db.Track
 	sessionId SessionID
 	notify    chan struct{}
 }
@@ -21,13 +21,13 @@ var (
 func NewQueue(sessionId SessionID) *SessionQueue {
 	return &SessionQueue{
 		mu:        sync.RWMutex{},
-		tracks:    []db.Track{},
+		tracks:    []*db.Track{},
 		sessionId: sessionId,
 		notify:    make(chan struct{}, 1),
 	}
 }
 
-func (q *SessionQueue) Enqueue(t db.Track) {
+func (q *SessionQueue) Enqueue(t *db.Track) {
 	q.mu.Lock()
 	q.tracks = append(q.tracks, t)
 	q.mu.Unlock()
@@ -38,12 +38,12 @@ func (q *SessionQueue) Enqueue(t db.Track) {
 	}
 }
 
-func (q *SessionQueue) Dequeue() (db.Track, error) {
+func (q *SessionQueue) Dequeue() (*db.Track, error) {
 	q.mu.Lock()
 	defer q.mu.Unlock()
 
 	if len(q.tracks) == 0 {
-		return db.Track{}, EmptyQueueError
+		return nil, EmptyQueueError
 	}
 
 	t := q.tracks[0]
@@ -55,7 +55,7 @@ func (q *SessionQueue) Notify() <-chan struct{} {
 	return q.notify
 }
 
-func (q *SessionQueue) ListQueue() ([]db.Track, error) {
+func (q *SessionQueue) ListQueue() ([]*db.Track, error) {
 	q.mu.RLock()
 	defer q.mu.RUnlock()
 	return q.tracks, nil

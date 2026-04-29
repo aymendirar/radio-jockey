@@ -1,21 +1,16 @@
-FROM ruby:4.0.2-alpine AS builder
-
-RUN apk add --no-cache build-base libsodium-dev opus-dev git
+FROM oven/bun:latest AS builder
 
 WORKDIR /client
 
-COPY Gemfile Gemfile.lock ./
-RUN bundle config set --local without 'development test' && bundle install
+COPY package.json bun.lockb ./
+RUN bun install --frozen-lockfile
 
 COPY . ./
 
-FROM ruby:4.0.2-alpine
-
-RUN apk add --no-cache libsodium-dev opus-dev
+FROM oven/bun:latest
 
 WORKDIR /client
 
-COPY --from=builder /usr/local/bundle /usr/local/bundle
 COPY --from=builder /client ./
 
-CMD ["bundle", "exec", "ruby", "-I", "src/proto", "src/main.rb"]
+CMD ["bun", "run", "src/index.ts"]

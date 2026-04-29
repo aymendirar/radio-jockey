@@ -1,9 +1,11 @@
 import { ChatInputCommandInteraction, type CacheType } from "discord.js";
+import { client } from "../../connect/client";
 
 export async function registerPingCommand(
   interaction: ChatInputCommandInteraction<CacheType>,
 ) {
   if (interaction.commandName === "ping") {
-    await interaction.reply("Pong!");
+    const response = await client.ping({});
+    await interaction.reply(response.message);
   }
 }
