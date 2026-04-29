@@ -56,6 +56,7 @@ services:
         - action: rebuild
           path: ./server/go.mod
 
+  # it's a little complicated to get this service to be "watch"-ed, so just docker compose restart icecast
   icecast:
     image: pltnk/icecast2
     platform: linux/amd64

@@ -48,30 +48,28 @@ func run() error {
 	slog.Info("server started", "env", env, "db", db)
 
 	y := music.NewYouTube(env.MUSIC_PATH, db)
-	t1, err := y.DownloadTrackFromURL(ctx, "https://www.youtube.com/watch?v=aMSXP0YV2vs")
-	t2, err := y.DownloadTrackFromURL(ctx, "https://youtu.be/Tib06q6wC1U?si=3XwICZzaLGGUj9Z2")
+	_, err = y.DownloadTrackFromURL(ctx, "https://www.youtube.com/watch?v=aMSXP0YV2vs")
+	_, err = y.DownloadTrackFromURL(ctx, "https://youtu.be/Tib06q6wC1U?si=3XwICZzaLGGUj9Z2")
 	_, err = y.DownloadTrackFromURL(ctx, "https://www.youtube.com/watch?v=utHw7pBtJM8&list=OLAK5uy_nVrWy7jixt-tF6ADSVJFCAuMh7pyqG5RY")
 	t4, err := y.DownloadTrackFromURL(ctx, "https://www.youtube.com/watch?v=9No5xI-O4Es")
 
+
 	sessionManager := session.CreateSessionManager()
-	icecast, err := icecast.CreateIcecastClient(
+	icecast := icecast.CreateIcecastClient(
 		sessionManager,
 		env.ICECAST_SERVER_HOST,
 		env.ICECAST_SERVER_PORT,
 		env.ICECAST_SERVER_PASSWORD,
-		env.SILENCE_TRACK_PATH)
-
-	if err != nil {
-		return fmt.Errorf("unable to create icecast client: %v", err)
-	}
+	)
 
 	go icecast.StreamSessions(ctx)
 
 	sessionManager.CreateSession(ctx, "bruh")
 	q := sessionManager.GetQueue("bruh")
+	time.Sleep(30 * time.Second)
 	q.Enqueue(t4)
-	q.Enqueue(t1)
-	q.Enqueue(t2)
+	// q.Enqueue(t1)
+	// q.Enqueue(t2)
 
 	<-ctx.Done()
 	slog.Info("shutting down")
