@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { AddTrackRequest, AddTrackResponse, CreateSessionRequest, CreateSessionResponse, ListQueueRequest, ListQueueResponse, PingRequest, PingResponse, RemoveTrackRequest, RemoveTrackResponse, SkipTrackRequest, SkipTrackResponse } from "./radio-jockey_pb.js";
+import { AddTrackRequest, AddTrackResponse, CreateSessionRequest, CreateSessionResponse, GetSessionRequest, GetSessionResponse, ListQueueRequest, ListQueueResponse, PingRequest, PingResponse, RemoveTrackRequest, RemoveTrackResponse, SkipTrackRequest, SkipTrackResponse } from "./radio-jockey_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -28,6 +28,15 @@ export const RadioService = {
       name: "CreateSession",
       I: CreateSessionRequest,
       O: CreateSessionResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc RadioService.GetSession
+     */
+    getSession: {
+      name: "GetSession",
+      I: GetSessionRequest,
+      O: GetSessionResponse,
       kind: MethodKind.Unary,
     },
     /**

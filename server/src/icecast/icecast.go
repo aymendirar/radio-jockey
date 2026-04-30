@@ -12,6 +12,7 @@ import (
 	"os/exec"
 	"server/src/db"
 	"server/src/session"
+	"path"
 	"strings"
 	"time"
 
@@ -21,6 +22,7 @@ import (
 const (
 	SESSION_TIMEOUT_MINUTES = 10
 	SILENCE_BITRATE         = "128k"
+	STREAM_PATH_PREFIX      = "stream"
 )
 
 var (
@@ -54,7 +56,7 @@ func CreateIcecastClient(
 }
 
 func (i *IcecastClient) StreamURL(sessionID session.SessionID) string {
-	return fmt.Sprintf("%s/stream/%s", i.streamBaseURL, sessionID)
+	return i.streamBaseURL + "/" + path.Join(STREAM_PATH_PREFIX, string(sessionID))
 }
 
 func (i *IcecastClient) StreamSessions(ctx context.Context) {
@@ -79,7 +81,15 @@ func (i *IcecastClient) StreamSessions(ctx context.Context) {
 }
 
 func (i *IcecastClient) streamSession(ctx context.Context, queue *session.SessionQueue, sessionID session.SessionID) {
-	mountpoint := Mountpoint(sessionID)
+	mountpoint := Mountpoint(STREAM_PATH_PREFIX + "/" + string(sessionID))
+
+	defer func() {
+		deleteCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		if err := i.sessionManager.DeleteSession(deleteCtx, sessionID); err != nil {
+			slog.Error("failed to delete session", "mountpoint", mountpoint, "err", err)
+		}
+	}()
 
 	conn, err := i.connectWithRetry(ctx, mountpoint)
 	if err != nil {
@@ -139,9 +149,6 @@ func (i *IcecastClient) streamSession(ctx context.Context, queue *session.Sessio
 			return
 		case silenceTimedOut:
 			slog.Info("session timed out", "mountpoint", mountpoint)
-			if err := i.sessionManager.DeleteSession(ctx, sessionID); err != nil {
-				slog.Error("failed to delete timed out session", "mountpoint", mountpoint, "err", err)
-			}
 			return
 		case silenceNewTrack:
 			slog.Info("playing next track...", "mountpoint", mountpoint)

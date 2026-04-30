@@ -1,13 +1,15 @@
-FROM oven/bun:latest AS builder
+FROM node:latest AS builder
 
 WORKDIR /discord-jockey
 
-COPY package.json bun.lockb ./
-RUN bun install --frozen-lockfile
+COPY package.json package-lock.json ./
+RUN rm package-lock.json && npm install
 
-COPY . ./
+COPY src ./src
+COPY tsconfig.json ./
+RUN npm run build
 
-FROM oven/bun:latest
+FROM node:current-slim
 
 RUN apt-get update && apt-get install -y ffmpeg && rm -rf /var/lib/apt/lists/*
 
@@ -15,4 +17,4 @@ WORKDIR /discord-jockey
 
 COPY --from=builder /discord-jockey ./
 
-CMD ["bun", "run", "src/index.ts"]
+CMD ["node", "dist/index.js"]

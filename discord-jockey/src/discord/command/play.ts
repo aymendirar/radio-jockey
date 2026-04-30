@@ -3,28 +3,19 @@ import {
   AudioPlayerStatus,
   createAudioResource,
   entersState,
-  AudioPlayer,
   StreamType,
   joinVoiceChannel,
   VoiceConnectionStatus,
 } from "@discordjs/voice";
 import {
   ChatInputCommandInteraction,
+  GuildMember,
   type CacheType,
   type VoiceBasedChannel,
 } from "discord.js";
-
-const player = createAudioPlayer();
-
-async function playSong(player: AudioPlayer, songUrl: string) {
-  const resource = createAudioResource(songUrl, {
-    inputType: StreamType.Arbitrary,
-  });
-
-  player.play(resource);
-
-  return entersState(player, AudioPlayerStatus.Playing, 5_000);
-}
+import { Code, ConnectError } from "@connectrpc/connect";
+import { radioClient } from "../../connect/client.js";
+import { logger } from "../../util/logger.js";
 
 async function connectToChannel(channel: VoiceBasedChannel) {
   const connection = joinVoiceChannel({
@@ -32,7 +23,6 @@ async function connectToChannel(channel: VoiceBasedChannel) {
     guildId: channel.guild.id,
     adapterCreator: channel.guild.voiceAdapterCreator,
   });
-
   try {
     await entersState(connection, VoiceConnectionStatus.Ready, 30_000);
     return connection;
@@ -42,35 +32,111 @@ async function connectToChannel(channel: VoiceBasedChannel) {
   }
 }
 
+async function getOrCreateSession(sessionId: string): Promise<string> {
+  try {
+    const res = await radioClient.createSession({ sessionId });
+    logger
+      .withMetadata({ sessionId, streamUrl: res.streamUrl })
+      .info("session created");
+    return res.streamUrl;
+  } catch (err) {
+    console.log(err);
+    if (err instanceof ConnectError && err.code === Code.AlreadyExists) {
+      console.log("ALREADY EXISTS");
+      const res = await radioClient.getSession({ sessionId });
+      logger
+        .withMetadata({ sessionId, streamUrl: res.streamUrl })
+        .info("session already exists");
+      return res.streamUrl;
+    }
+    throw err;
+  }
+}
+
 export async function registerPlayCommand(
   interaction: ChatInputCommandInteraction<CacheType>,
 ) {
-  if (interaction.commandName === "play") {
-    if (!interaction.inGuild()) {
-      await interaction.reply("This command can only be used in a server!");
-      return;
-    }
-    const guild = interaction.guild;
-    if (!guild) {
-      await interaction.reply("Could not access server data, try again!");
-      return;
-    }
-    const member = await guild.members.fetch(interaction.user.id);
-    const voiceChannel = member.voice.channel;
-    if (!voiceChannel) {
-      await interaction.reply("Join a voice channel then try again!");
-      return;
-    }
+  if (interaction.commandName !== "play") return;
+  const player = createAudioPlayer();
+
+  if (!interaction.inGuild()) {
+    await interaction.reply("This command can only be used in a server!");
+    return;
+  }
+
+  const member = interaction.member as GuildMember;
+  if (!member.voice.channel) {
+    await interaction.reply("Join a voice channel then try again!");
+    return;
+  }
+  const voiceChannel = member.voice.channel;
+
+  const trackUrl = interaction.options.getString("url");
+  const sessionId = interaction.guildId!;
+  logger.withMetadata({ sessionId, trackUrl }).info("play command received");
+
+  let streamUrl: string;
+  try {
+    streamUrl = await getOrCreateSession(sessionId);
+  } catch (err) {
+    logger
+      .withMetadata({ sessionId, err })
+      .error("failed to get or create session");
+    await interaction.reply("Failed to start a session. Please try again.");
+    return;
+  }
+
+  if (trackUrl) {
+    await interaction.reply(`Adding **${trackUrl}** to the queue...`);
     try {
-      await interaction.reply("Playing now!");
-      const connection = await connectToChannel(voiceChannel);
-      connection.subscribe(player);
-      await playSong(
-        player,
-        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+      const { track } = await radioClient.addTrack({ sessionId, trackUrl });
+      logger
+        .withMetadata({ sessionId, title: track!.title, artist: track!.artist })
+        .info("track added");
+      await interaction.followUp(
+        `Added **${track!.title}** by **${track!.artist}** to the queue.`,
       );
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      if (err instanceof ConnectError) {
+        if (err.code === Code.InvalidArgument) {
+          logger
+            .withMetadata({ sessionId, trackUrl })
+            .info("add track failed: invalid url");
+          await interaction.followUp("That doesn't look like a valid URL.");
+        } else if (err.code === Code.NotFound) {
+          logger
+            .withMetadata({ sessionId, trackUrl })
+            .info("add track failed: video unavailable");
+          await interaction.followUp("That video is unavailable.");
+        } else if (err.code === Code.ResourceExhausted) {
+          logger
+            .withMetadata({ sessionId })
+            .info("add track failed: queue full");
+          await interaction.followUp("The queue is full!");
+        } else {
+          logger.withMetadata({ sessionId, err }).error("add track failed");
+          await interaction.followUp("Something went wrong adding that track.");
+        }
+      }
+      return;
     }
+  } else {
+    await interaction.reply("Starting playback!");
+  }
+
+  logger
+    .withMetadata({ sessionId, streamUrl })
+    .info("connecting to voice channel");
+  try {
+    const connection = await connectToChannel(voiceChannel);
+    connection.subscribe(player);
+    const resource = createAudioResource(streamUrl, {
+      inputType: StreamType.OggOpus,
+    });
+    player.play(resource);
+    await entersState(player, AudioPlayerStatus.Playing, 5_000);
+    logger.withMetadata({ sessionId, streamUrl }).info("playback started");
+  } catch (err) {
+    logger.withMetadata({ sessionId, err }).error("failed to connect or play");
   }
 }

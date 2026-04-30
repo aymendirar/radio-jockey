@@ -32,10 +32,11 @@ func (m *SessionManager) CreateSession(ctx context.Context, sessionId SessionID)
 	_, ok := m.sessions[sessionId]
 	if !ok {
 		m.sessions[sessionId] = NewQueue(sessionId)
+		m.mu.Unlock()
 	} else {
+		m.mu.Unlock()
 		return SessionID(""), AlreadyExistsError
 	}
-	m.mu.Unlock()
 
 	slog.Info("session created", "session", sessionId)
 	select {

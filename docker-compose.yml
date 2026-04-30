@@ -33,6 +33,7 @@ services:
 
   discord-jockey:
     build: ./discord-jockey
+    platform: linux/amd64
     env_file: ./discord-jockey/.env
     depends_on:
       server:

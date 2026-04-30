@@ -38,6 +38,8 @@ const (
 	// RadioServiceCreateSessionProcedure is the fully-qualified name of the RadioService's
 	// CreateSession RPC.
 	RadioServiceCreateSessionProcedure = "/RadioService/CreateSession"
+	// RadioServiceGetSessionProcedure is the fully-qualified name of the RadioService's GetSession RPC.
+	RadioServiceGetSessionProcedure = "/RadioService/GetSession"
 	// RadioServiceAddTrackProcedure is the fully-qualified name of the RadioService's AddTrack RPC.
 	RadioServiceAddTrackProcedure = "/RadioService/AddTrack"
 	// RadioServiceRemoveTrackProcedure is the fully-qualified name of the RadioService's RemoveTrack
@@ -53,6 +55,7 @@ const (
 type RadioServiceClient interface {
 	Ping(context.Context, *connect.Request[proto.PingRequest]) (*connect.Response[proto.PingResponse], error)
 	CreateSession(context.Context, *connect.Request[proto.CreateSessionRequest]) (*connect.Response[proto.CreateSessionResponse], error)
+	GetSession(context.Context, *connect.Request[proto.GetSessionRequest]) (*connect.Response[proto.GetSessionResponse], error)
 	AddTrack(context.Context, *connect.Request[proto.AddTrackRequest]) (*connect.Response[proto.AddTrackResponse], error)
 	RemoveTrack(context.Context, *connect.Request[proto.RemoveTrackRequest]) (*connect.Response[proto.RemoveTrackResponse], error)
 	SkipTrack(context.Context, *connect.Request[proto.SkipTrackRequest]) (*connect.Response[proto.SkipTrackResponse], error)
@@ -80,6 +83,12 @@ func NewRadioServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 			httpClient,
 			baseURL+RadioServiceCreateSessionProcedure,
 			connect.WithSchema(radioServiceMethods.ByName("CreateSession")),
+			connect.WithClientOptions(opts...),
+		),
+		getSession: connect.NewClient[proto.GetSessionRequest, proto.GetSessionResponse](
+			httpClient,
+			baseURL+RadioServiceGetSessionProcedure,
+			connect.WithSchema(radioServiceMethods.ByName("GetSession")),
 			connect.WithClientOptions(opts...),
 		),
 		addTrack: connect.NewClient[proto.AddTrackRequest, proto.AddTrackResponse](
@@ -113,6 +122,7 @@ func NewRadioServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 type radioServiceClient struct {
 	ping          *connect.Client[proto.PingRequest, proto.PingResponse]
 	createSession *connect.Client[proto.CreateSessionRequest, proto.CreateSessionResponse]
+	getSession    *connect.Client[proto.GetSessionRequest, proto.GetSessionResponse]
 	addTrack      *connect.Client[proto.AddTrackRequest, proto.AddTrackResponse]
 	removeTrack   *connect.Client[proto.RemoveTrackRequest, proto.RemoveTrackResponse]
 	skipTrack     *connect.Client[proto.SkipTrackRequest, proto.SkipTrackResponse]
@@ -127,6 +137,11 @@ func (c *radioServiceClient) Ping(ctx context.Context, req *connect.Request[prot
 // CreateSession calls RadioService.CreateSession.
 func (c *radioServiceClient) CreateSession(ctx context.Context, req *connect.Request[proto.CreateSessionRequest]) (*connect.Response[proto.CreateSessionResponse], error) {
 	return c.createSession.CallUnary(ctx, req)
+}
+
+// GetSession calls RadioService.GetSession.
+func (c *radioServiceClient) GetSession(ctx context.Context, req *connect.Request[proto.GetSessionRequest]) (*connect.Response[proto.GetSessionResponse], error) {
+	return c.getSession.CallUnary(ctx, req)
 }
 
 // AddTrack calls RadioService.AddTrack.
@@ -153,6 +168,7 @@ func (c *radioServiceClient) ListQueue(ctx context.Context, req *connect.Request
 type RadioServiceHandler interface {
 	Ping(context.Context, *connect.Request[proto.PingRequest]) (*connect.Response[proto.PingResponse], error)
 	CreateSession(context.Context, *connect.Request[proto.CreateSessionRequest]) (*connect.Response[proto.CreateSessionResponse], error)
+	GetSession(context.Context, *connect.Request[proto.GetSessionRequest]) (*connect.Response[proto.GetSessionResponse], error)
 	AddTrack(context.Context, *connect.Request[proto.AddTrackRequest]) (*connect.Response[proto.AddTrackResponse], error)
 	RemoveTrack(context.Context, *connect.Request[proto.RemoveTrackRequest]) (*connect.Response[proto.RemoveTrackResponse], error)
 	SkipTrack(context.Context, *connect.Request[proto.SkipTrackRequest]) (*connect.Response[proto.SkipTrackResponse], error)
@@ -176,6 +192,12 @@ func NewRadioServiceHandler(svc RadioServiceHandler, opts ...connect.HandlerOpti
 		RadioServiceCreateSessionProcedure,
 		svc.CreateSession,
 		connect.WithSchema(radioServiceMethods.ByName("CreateSession")),
+		connect.WithHandlerOptions(opts...),
+	)
+	radioServiceGetSessionHandler := connect.NewUnaryHandler(
+		RadioServiceGetSessionProcedure,
+		svc.GetSession,
+		connect.WithSchema(radioServiceMethods.ByName("GetSession")),
 		connect.WithHandlerOptions(opts...),
 	)
 	radioServiceAddTrackHandler := connect.NewUnaryHandler(
@@ -208,6 +230,8 @@ func NewRadioServiceHandler(svc RadioServiceHandler, opts ...connect.HandlerOpti
 			radioServicePingHandler.ServeHTTP(w, r)
 		case RadioServiceCreateSessionProcedure:
 			radioServiceCreateSessionHandler.ServeHTTP(w, r)
+		case RadioServiceGetSessionProcedure:
+			radioServiceGetSessionHandler.ServeHTTP(w, r)
 		case RadioServiceAddTrackProcedure:
 			radioServiceAddTrackHandler.ServeHTTP(w, r)
 		case RadioServiceRemoveTrackProcedure:
@@ -231,6 +255,10 @@ func (UnimplementedRadioServiceHandler) Ping(context.Context, *connect.Request[p
 
 func (UnimplementedRadioServiceHandler) CreateSession(context.Context, *connect.Request[proto.CreateSessionRequest]) (*connect.Response[proto.CreateSessionResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("RadioService.CreateSession is not implemented"))
+}
+
+func (UnimplementedRadioServiceHandler) GetSession(context.Context, *connect.Request[proto.GetSessionRequest]) (*connect.Response[proto.GetSessionResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("RadioService.GetSession is not implemented"))
 }
 
 func (UnimplementedRadioServiceHandler) AddTrack(context.Context, *connect.Request[proto.AddTrackRequest]) (*connect.Response[proto.AddTrackResponse], error) {

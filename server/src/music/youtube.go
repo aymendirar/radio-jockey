@@ -28,6 +28,7 @@ const (
 
 var (
 	ErrInvalidURL            = errors.New("invalid url")
+	ErrVideoUnavailable      = errors.New("video unavailable")
 	ErrUnexpectedYtdlpOutput = errors.New("unexpected yt-dlp output")
 )
 
@@ -52,7 +53,7 @@ func (y *YouTube) DownloadTrackFromURL(ctx context.Context, url string) (*db.Tra
 		func() error {
 			var err error
 			result, err = y.ytdlp(url)
-			if errors.Is(err, ErrInvalidURL) {
+			if errors.Is(err, ErrInvalidURL) || errors.Is(err, ErrVideoUnavailable) {
 				return util.Unrecoverable(err)
 			}
 			return err
@@ -111,6 +112,9 @@ func (y *YouTube) ytdlp(url string) (ytdlpResult, error) {
 			stderr := string(exitErr.Stderr)
 			if strings.Contains(stderr, "Unsupported URL") || strings.Contains(stderr, "is not a valid URL") {
 				return ytdlpResult{}, fmt.Errorf("%w: %s", ErrInvalidURL, stderr)
+			}
+			if strings.Contains(stderr, "Video unavailable") {
+				return ytdlpResult{}, fmt.Errorf("%w: %s", ErrVideoUnavailable, stderr)
 			}
 			return ytdlpResult{}, fmt.Errorf("%w: %s", err, stderr)
 		}

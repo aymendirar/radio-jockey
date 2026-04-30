@@ -1,13 +1,21 @@
-import { Client, Events, GatewayIntentBits, REST, Routes } from "discord.js";
-import { logger } from "./util/logger";
-import { registerPingCommand } from "./discord/command/ping";
-import { registerPlayCommand } from "./discord/command/play";
+import { Client, Events, IntentsBitField, REST, Routes } from "discord.js";
+import { logger } from "./util/logger.js";
+import { registerPingCommand } from "./discord/command/ping.js";
+import { registerPlayCommand } from "./discord/command/play.js";
+import { registerSkipCommand } from "./discord/command/skip.js";
+import { registerQueueCommand } from "./discord/command/queue.js";
+import { registerRemoveCommand } from "./discord/command/remove.js";
+import { registerNowPlayingCommand } from "./discord/command/now_playing.js";
 
 export async function startDiscordBot(apiKey: string) {
-  const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates] });
+  const bot = new Client({
+    intents: [
+      IntentsBitField.Flags.Guilds,
+      IntentsBitField.Flags.GuildVoiceStates,
+    ],
+  });
   setupEventHandlers(bot);
   await bot.login(apiKey);
-
   return bot;
 }
 
@@ -29,8 +37,17 @@ async function handleSlashCommands(bot: Client) {
   bot.on(Events.InteractionCreate, async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
 
-    await registerPingCommand(interaction);
-    await registerPlayCommand(interaction);
+    console.log("received interaction:", interaction.commandName);
+    try {
+      await registerPingCommand(interaction);
+      await registerPlayCommand(interaction);
+      await registerSkipCommand(interaction);
+      await registerQueueCommand(interaction);
+      await registerRemoveCommand(interaction);
+      await registerNowPlayingCommand(interaction);
+    } catch (err) {
+      logger.withMetadata({ command: interaction.commandName, err }).error("unhandled error in interaction handler");
+    }
   });
 }
 
@@ -43,17 +60,45 @@ export async function registerCommands(apiKey: string, botId: string) {
     },
     {
       name: "play",
-      description: "Join voice channel and play queue!",
+      description: "Add a track to the queue and start playing.",
+      options: [
+        {
+          name: "url",
+          description: "YouTube URL of the track to add",
+          type: 3, // STRING
+          required: false,
+        },
+      ],
+    },
+    {
+      name: "skip",
+      description: "Skip the current track.",
+    },
+    {
+      name: "queue",
+      description: "Show the current queue.",
+    },
+    {
+      name: "remove",
+      description: "Remove a track from the queue by position.",
+      options: [
+        {
+          name: "position",
+          description: "Position in the queue (1-based)",
+          type: 4, // INTEGER
+          required: true,
+        },
+      ],
+    },
+    {
+      name: "now_playing",
+      description: "Show what's currently playing.",
     },
   ];
 
   try {
     logger.info("Started refreshing application (/) commands.");
-
-    await rest.put(Routes.applicationCommands(botId), {
-      body: commands,
-    });
-
+    await rest.put(Routes.applicationCommands(botId), { body: commands });
     logger.info("Successfully reloaded application (/) commands.");
   } catch (error) {
     logger.error(`${error}`);
