@@ -3,12 +3,10 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { PingRequest, PingResponse } from "./radio-jockey_pb.js";
+import { AddTrackRequest, AddTrackResponse, CreateSessionRequest, CreateSessionResponse, ListQueueRequest, ListQueueResponse, PingRequest, PingResponse, RemoveTrackRequest, RemoveTrackResponse, SkipTrackRequest, SkipTrackResponse } from "./radio-jockey_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
- * service definition
- *
  * @generated from service RadioService
  */
 export const RadioService = {
@@ -21,6 +19,51 @@ export const RadioService = {
       name: "Ping",
       I: PingRequest,
       O: PingResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc RadioService.CreateSession
+     */
+    createSession: {
+      name: "CreateSession",
+      I: CreateSessionRequest,
+      O: CreateSessionResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc RadioService.AddTrack
+     */
+    addTrack: {
+      name: "AddTrack",
+      I: AddTrackRequest,
+      O: AddTrackResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc RadioService.RemoveTrack
+     */
+    removeTrack: {
+      name: "RemoveTrack",
+      I: RemoveTrackRequest,
+      O: RemoveTrackResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc RadioService.SkipTrack
+     */
+    skipTrack: {
+      name: "SkipTrack",
+      I: SkipTrackRequest,
+      O: SkipTrackResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc RadioService.ListQueue
+     */
+    listQueue: {
+      name: "ListQueue",
+      I: ListQueueRequest,
+      O: ListQueueResponse,
       kind: MethodKind.Unary,
     },
   }

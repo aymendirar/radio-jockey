@@ -2,6 +2,7 @@ package music
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
 	"os"
@@ -25,6 +26,11 @@ const (
 	SOURCE = "youtube"
 )
 
+var (
+	ErrInvalidURL            = errors.New("invalid url")
+	ErrUnexpectedYtdlpOutput = errors.New("unexpected yt-dlp output")
+)
+
 func NewYouTube(musicDirectoryPath string, db *db.DB) *YouTube {
 	return &YouTube{
 		musicDirectoryPath: musicDirectoryPath,
@@ -46,6 +52,9 @@ func (y *YouTube) DownloadTrackFromURL(ctx context.Context, url string) (*db.Tra
 		func() error {
 			var err error
 			result, err = y.ytdlp(url)
+			if errors.Is(err, ErrInvalidURL) {
+				return util.Unrecoverable(err)
+			}
 			return err
 		},
 		func(n uint, err error) {
@@ -95,17 +104,22 @@ func (y *YouTube) ytdlp(url string) (ytdlpResult, error) {
 		url,
 	)
 
-	var stderr strings.Builder
-	cmd.Stderr = &stderr
-
 	out, err := cmd.Output()
 	if err != nil {
-		return ytdlpResult{}, fmt.Errorf("%w: %s", err, stderr.String())
+		var exitErr *exec.ExitError
+		if errors.As(err, &exitErr) {
+			stderr := string(exitErr.Stderr)
+			if strings.Contains(stderr, "Unsupported URL") || strings.Contains(stderr, "is not a valid URL") {
+				return ytdlpResult{}, fmt.Errorf("%w: %s", ErrInvalidURL, stderr)
+			}
+			return ytdlpResult{}, fmt.Errorf("%w: %s", err, stderr)
+		}
+		return ytdlpResult{}, err
 	}
 
 	lines := strings.Split(strings.TrimSpace(string(out)), "\n")
 	if len(lines) != 3 {
-		return ytdlpResult{}, fmt.Errorf("unexpected yt-dlp output: %q", string(out))
+		return ytdlpResult{}, fmt.Errorf("%w: %q", ErrUnexpectedYtdlpOutput, string(out))
 	}
 
 	d, err := strconv.ParseFloat(strings.TrimSpace(lines[1]), 64)

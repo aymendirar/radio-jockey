@@ -19,16 +19,24 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	RadioService_Ping_FullMethodName = "/RadioService/Ping"
+	RadioService_Ping_FullMethodName          = "/RadioService/Ping"
+	RadioService_CreateSession_FullMethodName = "/RadioService/CreateSession"
+	RadioService_AddTrack_FullMethodName      = "/RadioService/AddTrack"
+	RadioService_RemoveTrack_FullMethodName   = "/RadioService/RemoveTrack"
+	RadioService_SkipTrack_FullMethodName     = "/RadioService/SkipTrack"
+	RadioService_ListQueue_FullMethodName     = "/RadioService/ListQueue"
 )
 
 // RadioServiceClient is the client API for RadioService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-//
-// service definition
 type RadioServiceClient interface {
 	Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error)
+	CreateSession(ctx context.Context, in *CreateSessionRequest, opts ...grpc.CallOption) (*CreateSessionResponse, error)
+	AddTrack(ctx context.Context, in *AddTrackRequest, opts ...grpc.CallOption) (*AddTrackResponse, error)
+	RemoveTrack(ctx context.Context, in *RemoveTrackRequest, opts ...grpc.CallOption) (*RemoveTrackResponse, error)
+	SkipTrack(ctx context.Context, in *SkipTrackRequest, opts ...grpc.CallOption) (*SkipTrackResponse, error)
+	ListQueue(ctx context.Context, in *ListQueueRequest, opts ...grpc.CallOption) (*ListQueueResponse, error)
 }
 
 type radioServiceClient struct {
@@ -49,13 +57,66 @@ func (c *radioServiceClient) Ping(ctx context.Context, in *PingRequest, opts ...
 	return out, nil
 }
 
+func (c *radioServiceClient) CreateSession(ctx context.Context, in *CreateSessionRequest, opts ...grpc.CallOption) (*CreateSessionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateSessionResponse)
+	err := c.cc.Invoke(ctx, RadioService_CreateSession_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *radioServiceClient) AddTrack(ctx context.Context, in *AddTrackRequest, opts ...grpc.CallOption) (*AddTrackResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AddTrackResponse)
+	err := c.cc.Invoke(ctx, RadioService_AddTrack_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *radioServiceClient) RemoveTrack(ctx context.Context, in *RemoveTrackRequest, opts ...grpc.CallOption) (*RemoveTrackResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RemoveTrackResponse)
+	err := c.cc.Invoke(ctx, RadioService_RemoveTrack_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *radioServiceClient) SkipTrack(ctx context.Context, in *SkipTrackRequest, opts ...grpc.CallOption) (*SkipTrackResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SkipTrackResponse)
+	err := c.cc.Invoke(ctx, RadioService_SkipTrack_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *radioServiceClient) ListQueue(ctx context.Context, in *ListQueueRequest, opts ...grpc.CallOption) (*ListQueueResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListQueueResponse)
+	err := c.cc.Invoke(ctx, RadioService_ListQueue_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RadioServiceServer is the server API for RadioService service.
 // All implementations must embed UnimplementedRadioServiceServer
 // for forward compatibility.
-//
-// service definition
 type RadioServiceServer interface {
 	Ping(context.Context, *PingRequest) (*PingResponse, error)
+	CreateSession(context.Context, *CreateSessionRequest) (*CreateSessionResponse, error)
+	AddTrack(context.Context, *AddTrackRequest) (*AddTrackResponse, error)
+	RemoveTrack(context.Context, *RemoveTrackRequest) (*RemoveTrackResponse, error)
+	SkipTrack(context.Context, *SkipTrackRequest) (*SkipTrackResponse, error)
+	ListQueue(context.Context, *ListQueueRequest) (*ListQueueResponse, error)
 	mustEmbedUnimplementedRadioServiceServer()
 }
 
@@ -68,6 +129,21 @@ type UnimplementedRadioServiceServer struct{}
 
 func (UnimplementedRadioServiceServer) Ping(context.Context, *PingRequest) (*PingResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Ping not implemented")
+}
+func (UnimplementedRadioServiceServer) CreateSession(context.Context, *CreateSessionRequest) (*CreateSessionResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateSession not implemented")
+}
+func (UnimplementedRadioServiceServer) AddTrack(context.Context, *AddTrackRequest) (*AddTrackResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method AddTrack not implemented")
+}
+func (UnimplementedRadioServiceServer) RemoveTrack(context.Context, *RemoveTrackRequest) (*RemoveTrackResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method RemoveTrack not implemented")
+}
+func (UnimplementedRadioServiceServer) SkipTrack(context.Context, *SkipTrackRequest) (*SkipTrackResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SkipTrack not implemented")
+}
+func (UnimplementedRadioServiceServer) ListQueue(context.Context, *ListQueueRequest) (*ListQueueResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListQueue not implemented")
 }
 func (UnimplementedRadioServiceServer) mustEmbedUnimplementedRadioServiceServer() {}
 func (UnimplementedRadioServiceServer) testEmbeddedByValue()                      {}
@@ -108,6 +184,96 @@ func _RadioService_Ping_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RadioService_CreateSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateSessionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RadioServiceServer).CreateSession(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RadioService_CreateSession_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RadioServiceServer).CreateSession(ctx, req.(*CreateSessionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RadioService_AddTrack_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddTrackRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RadioServiceServer).AddTrack(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RadioService_AddTrack_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RadioServiceServer).AddTrack(ctx, req.(*AddTrackRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RadioService_RemoveTrack_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RemoveTrackRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RadioServiceServer).RemoveTrack(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RadioService_RemoveTrack_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RadioServiceServer).RemoveTrack(ctx, req.(*RemoveTrackRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RadioService_SkipTrack_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SkipTrackRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RadioServiceServer).SkipTrack(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RadioService_SkipTrack_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RadioServiceServer).SkipTrack(ctx, req.(*SkipTrackRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RadioService_ListQueue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListQueueRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RadioServiceServer).ListQueue(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RadioService_ListQueue_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RadioServiceServer).ListQueue(ctx, req.(*ListQueueRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // RadioService_ServiceDesc is the grpc.ServiceDesc for RadioService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -118,6 +284,26 @@ var RadioService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Ping",
 			Handler:    _RadioService_Ping_Handler,
+		},
+		{
+			MethodName: "CreateSession",
+			Handler:    _RadioService_CreateSession_Handler,
+		},
+		{
+			MethodName: "AddTrack",
+			Handler:    _RadioService_AddTrack_Handler,
+		},
+		{
+			MethodName: "RemoveTrack",
+			Handler:    _RadioService_RemoveTrack_Handler,
+		},
+		{
+			MethodName: "SkipTrack",
+			Handler:    _RadioService_SkipTrack_Handler,
+		},
+		{
+			MethodName: "ListQueue",
+			Handler:    _RadioService_ListQueue_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

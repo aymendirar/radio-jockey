@@ -21,358 +21,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type ListQueueRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	SessionId     string                 `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ListQueueRequest) Reset() {
-	*x = ListQueueRequest{}
-	mi := &file_radio_jockey_proto_msgTypes[0]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ListQueueRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ListQueueRequest) ProtoMessage() {}
-
-func (x *ListQueueRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_jockey_proto_msgTypes[0]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ListQueueRequest.ProtoReflect.Descriptor instead.
-func (*ListQueueRequest) Descriptor() ([]byte, []int) {
-	return file_radio_jockey_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *ListQueueRequest) GetSessionId() string {
-	if x != nil {
-		return x.SessionId
-	}
-	return ""
-}
-
-type ListQueueResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ListQueueResponse) Reset() {
-	*x = ListQueueResponse{}
-	mi := &file_radio_jockey_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ListQueueResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ListQueueResponse) ProtoMessage() {}
-
-func (x *ListQueueResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_jockey_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ListQueueResponse.ProtoReflect.Descriptor instead.
-func (*ListQueueResponse) Descriptor() ([]byte, []int) {
-	return file_radio_jockey_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *ListQueueResponse) GetMessage() string {
-	if x != nil {
-		return x.Message
-	}
-	return ""
-}
-
-type PauseTrackRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	SessionId     int32                  `protobuf:"varint,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *PauseTrackRequest) Reset() {
-	*x = PauseTrackRequest{}
-	mi := &file_radio_jockey_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *PauseTrackRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*PauseTrackRequest) ProtoMessage() {}
-
-func (x *PauseTrackRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_jockey_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use PauseTrackRequest.ProtoReflect.Descriptor instead.
-func (*PauseTrackRequest) Descriptor() ([]byte, []int) {
-	return file_radio_jockey_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *PauseTrackRequest) GetSessionId() int32 {
-	if x != nil {
-		return x.SessionId
-	}
-	return 0
-}
-
-type PauseTrackResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *PauseTrackResponse) Reset() {
-	*x = PauseTrackResponse{}
-	mi := &file_radio_jockey_proto_msgTypes[3]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *PauseTrackResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*PauseTrackResponse) ProtoMessage() {}
-
-func (x *PauseTrackResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_jockey_proto_msgTypes[3]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use PauseTrackResponse.ProtoReflect.Descriptor instead.
-func (*PauseTrackResponse) Descriptor() ([]byte, []int) {
-	return file_radio_jockey_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *PauseTrackResponse) GetMessage() string {
-	if x != nil {
-		return x.Message
-	}
-	return ""
-}
-
-type AddTrackToQueueRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	SessionId     string                 `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
-	TrackUrl      string                 `protobuf:"bytes,2,opt,name=track_url,json=trackUrl,proto3" json:"track_url,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *AddTrackToQueueRequest) Reset() {
-	*x = AddTrackToQueueRequest{}
-	mi := &file_radio_jockey_proto_msgTypes[4]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *AddTrackToQueueRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*AddTrackToQueueRequest) ProtoMessage() {}
-
-func (x *AddTrackToQueueRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_jockey_proto_msgTypes[4]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use AddTrackToQueueRequest.ProtoReflect.Descriptor instead.
-func (*AddTrackToQueueRequest) Descriptor() ([]byte, []int) {
-	return file_radio_jockey_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *AddTrackToQueueRequest) GetSessionId() string {
-	if x != nil {
-		return x.SessionId
-	}
-	return ""
-}
-
-func (x *AddTrackToQueueRequest) GetTrackUrl() string {
-	if x != nil {
-		return x.TrackUrl
-	}
-	return ""
-}
-
-type AddTrackToQueueResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *AddTrackToQueueResponse) Reset() {
-	*x = AddTrackToQueueResponse{}
-	mi := &file_radio_jockey_proto_msgTypes[5]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *AddTrackToQueueResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*AddTrackToQueueResponse) ProtoMessage() {}
-
-func (x *AddTrackToQueueResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_jockey_proto_msgTypes[5]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use AddTrackToQueueResponse.ProtoReflect.Descriptor instead.
-func (*AddTrackToQueueResponse) Descriptor() ([]byte, []int) {
-	return file_radio_jockey_proto_rawDescGZIP(), []int{5}
-}
-
-func (x *AddTrackToQueueResponse) GetMessage() string {
-	if x != nil {
-		return x.Message
-	}
-	return ""
-}
-
-type StopStreamRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *StopStreamRequest) Reset() {
-	*x = StopStreamRequest{}
-	mi := &file_radio_jockey_proto_msgTypes[6]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *StopStreamRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*StopStreamRequest) ProtoMessage() {}
-
-func (x *StopStreamRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_jockey_proto_msgTypes[6]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use StopStreamRequest.ProtoReflect.Descriptor instead.
-func (*StopStreamRequest) Descriptor() ([]byte, []int) {
-	return file_radio_jockey_proto_rawDescGZIP(), []int{6}
-}
-
-type StopStreamResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *StopStreamResponse) Reset() {
-	*x = StopStreamResponse{}
-	mi := &file_radio_jockey_proto_msgTypes[7]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *StopStreamResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*StopStreamResponse) ProtoMessage() {}
-
-func (x *StopStreamResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_jockey_proto_msgTypes[7]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use StopStreamResponse.ProtoReflect.Descriptor instead.
-func (*StopStreamResponse) Descriptor() ([]byte, []int) {
-	return file_radio_jockey_proto_rawDescGZIP(), []int{7}
-}
-
-func (x *StopStreamResponse) GetMessage() string {
-	if x != nil {
-		return x.Message
-	}
-	return ""
-}
-
 type PingRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
@@ -381,7 +29,7 @@ type PingRequest struct {
 
 func (x *PingRequest) Reset() {
 	*x = PingRequest{}
-	mi := &file_radio_jockey_proto_msgTypes[8]
+	mi := &file_radio_jockey_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -393,7 +41,7 @@ func (x *PingRequest) String() string {
 func (*PingRequest) ProtoMessage() {}
 
 func (x *PingRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_jockey_proto_msgTypes[8]
+	mi := &file_radio_jockey_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -406,7 +54,7 @@ func (x *PingRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PingRequest.ProtoReflect.Descriptor instead.
 func (*PingRequest) Descriptor() ([]byte, []int) {
-	return file_radio_jockey_proto_rawDescGZIP(), []int{8}
+	return file_radio_jockey_proto_rawDescGZIP(), []int{0}
 }
 
 type PingResponse struct {
@@ -418,7 +66,7 @@ type PingResponse struct {
 
 func (x *PingResponse) Reset() {
 	*x = PingResponse{}
-	mi := &file_radio_jockey_proto_msgTypes[9]
+	mi := &file_radio_jockey_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -430,7 +78,7 @@ func (x *PingResponse) String() string {
 func (*PingResponse) ProtoMessage() {}
 
 func (x *PingResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_jockey_proto_msgTypes[9]
+	mi := &file_radio_jockey_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -443,7 +91,7 @@ func (x *PingResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PingResponse.ProtoReflect.Descriptor instead.
 func (*PingResponse) Descriptor() ([]byte, []int) {
-	return file_radio_jockey_proto_rawDescGZIP(), []int{9}
+	return file_radio_jockey_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *PingResponse) GetMessage() string {
@@ -453,35 +101,578 @@ func (x *PingResponse) GetMessage() string {
 	return ""
 }
 
+type CreateSessionRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SessionId     string                 `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateSessionRequest) Reset() {
+	*x = CreateSessionRequest{}
+	mi := &file_radio_jockey_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateSessionRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateSessionRequest) ProtoMessage() {}
+
+func (x *CreateSessionRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_radio_jockey_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateSessionRequest.ProtoReflect.Descriptor instead.
+func (*CreateSessionRequest) Descriptor() ([]byte, []int) {
+	return file_radio_jockey_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *CreateSessionRequest) GetSessionId() string {
+	if x != nil {
+		return x.SessionId
+	}
+	return ""
+}
+
+type CreateSessionResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	StreamUrl     string                 `protobuf:"bytes,1,opt,name=stream_url,json=streamUrl,proto3" json:"stream_url,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateSessionResponse) Reset() {
+	*x = CreateSessionResponse{}
+	mi := &file_radio_jockey_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateSessionResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateSessionResponse) ProtoMessage() {}
+
+func (x *CreateSessionResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_radio_jockey_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateSessionResponse.ProtoReflect.Descriptor instead.
+func (*CreateSessionResponse) Descriptor() ([]byte, []int) {
+	return file_radio_jockey_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *CreateSessionResponse) GetStreamUrl() string {
+	if x != nil {
+		return x.StreamUrl
+	}
+	return ""
+}
+
+type AddTrackRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SessionId     string                 `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
+	TrackUrl      string                 `protobuf:"bytes,2,opt,name=track_url,json=trackUrl,proto3" json:"track_url,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddTrackRequest) Reset() {
+	*x = AddTrackRequest{}
+	mi := &file_radio_jockey_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddTrackRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddTrackRequest) ProtoMessage() {}
+
+func (x *AddTrackRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_radio_jockey_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddTrackRequest.ProtoReflect.Descriptor instead.
+func (*AddTrackRequest) Descriptor() ([]byte, []int) {
+	return file_radio_jockey_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *AddTrackRequest) GetSessionId() string {
+	if x != nil {
+		return x.SessionId
+	}
+	return ""
+}
+
+func (x *AddTrackRequest) GetTrackUrl() string {
+	if x != nil {
+		return x.TrackUrl
+	}
+	return ""
+}
+
+type AddTrackResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Track         *Track                 `protobuf:"bytes,1,opt,name=track,proto3" json:"track,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddTrackResponse) Reset() {
+	*x = AddTrackResponse{}
+	mi := &file_radio_jockey_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddTrackResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddTrackResponse) ProtoMessage() {}
+
+func (x *AddTrackResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_radio_jockey_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddTrackResponse.ProtoReflect.Descriptor instead.
+func (*AddTrackResponse) Descriptor() ([]byte, []int) {
+	return file_radio_jockey_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *AddTrackResponse) GetTrack() *Track {
+	if x != nil {
+		return x.Track
+	}
+	return nil
+}
+
+type RemoveTrackRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SessionId     string                 `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
+	Index         uint32                 `protobuf:"varint,2,opt,name=index,proto3" json:"index,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RemoveTrackRequest) Reset() {
+	*x = RemoveTrackRequest{}
+	mi := &file_radio_jockey_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RemoveTrackRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoveTrackRequest) ProtoMessage() {}
+
+func (x *RemoveTrackRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_radio_jockey_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoveTrackRequest.ProtoReflect.Descriptor instead.
+func (*RemoveTrackRequest) Descriptor() ([]byte, []int) {
+	return file_radio_jockey_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *RemoveTrackRequest) GetSessionId() string {
+	if x != nil {
+		return x.SessionId
+	}
+	return ""
+}
+
+func (x *RemoveTrackRequest) GetIndex() uint32 {
+	if x != nil {
+		return x.Index
+	}
+	return 0
+}
+
+type RemoveTrackResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RemoveTrackResponse) Reset() {
+	*x = RemoveTrackResponse{}
+	mi := &file_radio_jockey_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RemoveTrackResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoveTrackResponse) ProtoMessage() {}
+
+func (x *RemoveTrackResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_radio_jockey_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoveTrackResponse.ProtoReflect.Descriptor instead.
+func (*RemoveTrackResponse) Descriptor() ([]byte, []int) {
+	return file_radio_jockey_proto_rawDescGZIP(), []int{7}
+}
+
+type SkipTrackRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SessionId     string                 `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SkipTrackRequest) Reset() {
+	*x = SkipTrackRequest{}
+	mi := &file_radio_jockey_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SkipTrackRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SkipTrackRequest) ProtoMessage() {}
+
+func (x *SkipTrackRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_radio_jockey_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SkipTrackRequest.ProtoReflect.Descriptor instead.
+func (*SkipTrackRequest) Descriptor() ([]byte, []int) {
+	return file_radio_jockey_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *SkipTrackRequest) GetSessionId() string {
+	if x != nil {
+		return x.SessionId
+	}
+	return ""
+}
+
+type SkipTrackResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SkipTrackResponse) Reset() {
+	*x = SkipTrackResponse{}
+	mi := &file_radio_jockey_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SkipTrackResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SkipTrackResponse) ProtoMessage() {}
+
+func (x *SkipTrackResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_radio_jockey_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SkipTrackResponse.ProtoReflect.Descriptor instead.
+func (*SkipTrackResponse) Descriptor() ([]byte, []int) {
+	return file_radio_jockey_proto_rawDescGZIP(), []int{9}
+}
+
+type ListQueueRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SessionId     string                 `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListQueueRequest) Reset() {
+	*x = ListQueueRequest{}
+	mi := &file_radio_jockey_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListQueueRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListQueueRequest) ProtoMessage() {}
+
+func (x *ListQueueRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_radio_jockey_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListQueueRequest.ProtoReflect.Descriptor instead.
+func (*ListQueueRequest) Descriptor() ([]byte, []int) {
+	return file_radio_jockey_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *ListQueueRequest) GetSessionId() string {
+	if x != nil {
+		return x.SessionId
+	}
+	return ""
+}
+
+type ListQueueResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Tracks        []*Track               `protobuf:"bytes,1,rep,name=tracks,proto3" json:"tracks,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListQueueResponse) Reset() {
+	*x = ListQueueResponse{}
+	mi := &file_radio_jockey_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListQueueResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListQueueResponse) ProtoMessage() {}
+
+func (x *ListQueueResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_radio_jockey_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListQueueResponse.ProtoReflect.Descriptor instead.
+func (*ListQueueResponse) Descriptor() ([]byte, []int) {
+	return file_radio_jockey_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *ListQueueResponse) GetTracks() []*Track {
+	if x != nil {
+		return x.Tracks
+	}
+	return nil
+}
+
+type Track struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Source        string                 `protobuf:"bytes,2,opt,name=source,proto3" json:"source,omitempty"`
+	SourceId      string                 `protobuf:"bytes,3,opt,name=source_id,json=sourceId,proto3" json:"source_id,omitempty"`
+	Title         string                 `protobuf:"bytes,4,opt,name=title,proto3" json:"title,omitempty"`
+	Artist        string                 `protobuf:"bytes,5,opt,name=artist,proto3" json:"artist,omitempty"`
+	Duration      int64                  `protobuf:"varint,6,opt,name=duration,proto3" json:"duration,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Track) Reset() {
+	*x = Track{}
+	mi := &file_radio_jockey_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Track) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Track) ProtoMessage() {}
+
+func (x *Track) ProtoReflect() protoreflect.Message {
+	mi := &file_radio_jockey_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Track.ProtoReflect.Descriptor instead.
+func (*Track) Descriptor() ([]byte, []int) {
+	return file_radio_jockey_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *Track) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *Track) GetSource() string {
+	if x != nil {
+		return x.Source
+	}
+	return ""
+}
+
+func (x *Track) GetSourceId() string {
+	if x != nil {
+		return x.SourceId
+	}
+	return ""
+}
+
+func (x *Track) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *Track) GetArtist() string {
+	if x != nil {
+		return x.Artist
+	}
+	return ""
+}
+
+func (x *Track) GetDuration() int64 {
+	if x != nil {
+		return x.Duration
+	}
+	return 0
+}
+
 var File_radio_jockey_proto protoreflect.FileDescriptor
 
 const file_radio_jockey_proto_rawDesc = "" +
 	"\n" +
-	"\x12radio-jockey.proto\"1\n" +
-	"\x10ListQueueRequest\x12\x1d\n" +
-	"\n" +
-	"session_id\x18\x01 \x01(\tR\tsessionId\"-\n" +
-	"\x11ListQueueResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage\"2\n" +
-	"\x11PauseTrackRequest\x12\x1d\n" +
-	"\n" +
-	"session_id\x18\x01 \x01(\x05R\tsessionId\".\n" +
-	"\x12PauseTrackResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage\"T\n" +
-	"\x16AddTrackToQueueRequest\x12\x1d\n" +
-	"\n" +
-	"session_id\x18\x01 \x01(\tR\tsessionId\x12\x1b\n" +
-	"\ttrack_url\x18\x02 \x01(\tR\btrackUrl\"3\n" +
-	"\x17AddTrackToQueueResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage\"\x13\n" +
-	"\x11StopStreamRequest\".\n" +
-	"\x12StopStreamResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage\"\r\n" +
+	"\x12radio-jockey.proto\"\r\n" +
 	"\vPingRequest\"(\n" +
 	"\fPingResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage25\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"5\n" +
+	"\x14CreateSessionRequest\x12\x1d\n" +
+	"\n" +
+	"session_id\x18\x01 \x01(\tR\tsessionId\"6\n" +
+	"\x15CreateSessionResponse\x12\x1d\n" +
+	"\n" +
+	"stream_url\x18\x01 \x01(\tR\tstreamUrl\"M\n" +
+	"\x0fAddTrackRequest\x12\x1d\n" +
+	"\n" +
+	"session_id\x18\x01 \x01(\tR\tsessionId\x12\x1b\n" +
+	"\ttrack_url\x18\x02 \x01(\tR\btrackUrl\"0\n" +
+	"\x10AddTrackResponse\x12\x1c\n" +
+	"\x05track\x18\x01 \x01(\v2\x06.TrackR\x05track\"I\n" +
+	"\x12RemoveTrackRequest\x12\x1d\n" +
+	"\n" +
+	"session_id\x18\x01 \x01(\tR\tsessionId\x12\x14\n" +
+	"\x05index\x18\x02 \x01(\rR\x05index\"\x15\n" +
+	"\x13RemoveTrackResponse\"1\n" +
+	"\x10SkipTrackRequest\x12\x1d\n" +
+	"\n" +
+	"session_id\x18\x01 \x01(\tR\tsessionId\"\x13\n" +
+	"\x11SkipTrackResponse\"1\n" +
+	"\x10ListQueueRequest\x12\x1d\n" +
+	"\n" +
+	"session_id\x18\x01 \x01(\tR\tsessionId\"3\n" +
+	"\x11ListQueueResponse\x12\x1e\n" +
+	"\x06tracks\x18\x01 \x03(\v2\x06.TrackR\x06tracks\"\x96\x01\n" +
+	"\x05Track\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x16\n" +
+	"\x06source\x18\x02 \x01(\tR\x06source\x12\x1b\n" +
+	"\tsource_id\x18\x03 \x01(\tR\bsourceId\x12\x14\n" +
+	"\x05title\x18\x04 \x01(\tR\x05title\x12\x16\n" +
+	"\x06artist\x18\x05 \x01(\tR\x06artist\x12\x1a\n" +
+	"\bduration\x18\x06 \x01(\x03R\bduration2\xd2\x02\n" +
 	"\fRadioService\x12%\n" +
-	"\x04Ping\x12\f.PingRequest\x1a\r.PingResponse\"\x00B\x12Z\x10server/src/protob\x06proto3"
+	"\x04Ping\x12\f.PingRequest\x1a\r.PingResponse\"\x00\x12@\n" +
+	"\rCreateSession\x12\x15.CreateSessionRequest\x1a\x16.CreateSessionResponse\"\x00\x121\n" +
+	"\bAddTrack\x12\x10.AddTrackRequest\x1a\x11.AddTrackResponse\"\x00\x12:\n" +
+	"\vRemoveTrack\x12\x13.RemoveTrackRequest\x1a\x14.RemoveTrackResponse\"\x00\x124\n" +
+	"\tSkipTrack\x12\x11.SkipTrackRequest\x1a\x12.SkipTrackResponse\"\x00\x124\n" +
+	"\tListQueue\x12\x11.ListQueueRequest\x1a\x12.ListQueueResponse\"\x00B\x12Z\x10server/src/protob\x06proto3"
 
 var (
 	file_radio_jockey_proto_rawDescOnce sync.Once
@@ -495,27 +686,42 @@ func file_radio_jockey_proto_rawDescGZIP() []byte {
 	return file_radio_jockey_proto_rawDescData
 }
 
-var file_radio_jockey_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_radio_jockey_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_radio_jockey_proto_goTypes = []any{
-	(*ListQueueRequest)(nil),        // 0: ListQueueRequest
-	(*ListQueueResponse)(nil),       // 1: ListQueueResponse
-	(*PauseTrackRequest)(nil),       // 2: PauseTrackRequest
-	(*PauseTrackResponse)(nil),      // 3: PauseTrackResponse
-	(*AddTrackToQueueRequest)(nil),  // 4: AddTrackToQueueRequest
-	(*AddTrackToQueueResponse)(nil), // 5: AddTrackToQueueResponse
-	(*StopStreamRequest)(nil),       // 6: StopStreamRequest
-	(*StopStreamResponse)(nil),      // 7: StopStreamResponse
-	(*PingRequest)(nil),             // 8: PingRequest
-	(*PingResponse)(nil),            // 9: PingResponse
+	(*PingRequest)(nil),           // 0: PingRequest
+	(*PingResponse)(nil),          // 1: PingResponse
+	(*CreateSessionRequest)(nil),  // 2: CreateSessionRequest
+	(*CreateSessionResponse)(nil), // 3: CreateSessionResponse
+	(*AddTrackRequest)(nil),       // 4: AddTrackRequest
+	(*AddTrackResponse)(nil),      // 5: AddTrackResponse
+	(*RemoveTrackRequest)(nil),    // 6: RemoveTrackRequest
+	(*RemoveTrackResponse)(nil),   // 7: RemoveTrackResponse
+	(*SkipTrackRequest)(nil),      // 8: SkipTrackRequest
+	(*SkipTrackResponse)(nil),     // 9: SkipTrackResponse
+	(*ListQueueRequest)(nil),      // 10: ListQueueRequest
+	(*ListQueueResponse)(nil),     // 11: ListQueueResponse
+	(*Track)(nil),                 // 12: Track
 }
 var file_radio_jockey_proto_depIdxs = []int32{
-	8, // 0: RadioService.Ping:input_type -> PingRequest
-	9, // 1: RadioService.Ping:output_type -> PingResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	12, // 0: AddTrackResponse.track:type_name -> Track
+	12, // 1: ListQueueResponse.tracks:type_name -> Track
+	0,  // 2: RadioService.Ping:input_type -> PingRequest
+	2,  // 3: RadioService.CreateSession:input_type -> CreateSessionRequest
+	4,  // 4: RadioService.AddTrack:input_type -> AddTrackRequest
+	6,  // 5: RadioService.RemoveTrack:input_type -> RemoveTrackRequest
+	8,  // 6: RadioService.SkipTrack:input_type -> SkipTrackRequest
+	10, // 7: RadioService.ListQueue:input_type -> ListQueueRequest
+	1,  // 8: RadioService.Ping:output_type -> PingResponse
+	3,  // 9: RadioService.CreateSession:output_type -> CreateSessionResponse
+	5,  // 10: RadioService.AddTrack:output_type -> AddTrackResponse
+	7,  // 11: RadioService.RemoveTrack:output_type -> RemoveTrackResponse
+	9,  // 12: RadioService.SkipTrack:output_type -> SkipTrackResponse
+	11, // 13: RadioService.ListQueue:output_type -> ListQueueResponse
+	8,  // [8:14] is the sub-list for method output_type
+	2,  // [2:8] is the sub-list for method input_type
+	2,  // [2:2] is the sub-list for extension type_name
+	2,  // [2:2] is the sub-list for extension extendee
+	0,  // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_radio_jockey_proto_init() }
@@ -529,7 +735,7 @@ func file_radio_jockey_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_radio_jockey_proto_rawDesc), len(file_radio_jockey_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   10,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

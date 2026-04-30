@@ -13,6 +13,7 @@ type Environment struct {
 	ICECAST_SERVER_HOST     string `env:"ICECAST_SERVER_HOST"`
 	ICECAST_SERVER_PORT     string `env:"ICECAST_SERVER_PORT"`
 	ICECAST_SERVER_PASSWORD string `env:"ICECAST_SERVER_PASSWORD"`
+	STREAM_BASE_URL         string `env:"STREAM_BASE_URL"`
 }
 
 func LoadEnv() (Environment, error) {

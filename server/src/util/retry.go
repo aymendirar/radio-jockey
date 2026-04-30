@@ -8,6 +8,8 @@ import (
 	"github.com/avast/retry-go"
 )
 
+var Unrecoverable = retry.Unrecoverable
+
 func RetryWithBackoff(ctx context.Context, fn retry.RetryableFunc, onRetry retry.OnRetryFunc) error {
 	return retry.Do(
 		fn,

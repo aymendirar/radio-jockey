@@ -2,44 +2,59 @@ syntax = "proto3";
 
 option go_package = "server/src/proto";
 
-// service definition
 service RadioService {
   rpc Ping (PingRequest) returns (PingResponse) {}
 
-  // rpc StopStream (StopStreamRequest) returns (StopStreamResponse) {}
-  // rpc AddTrackToQueue (AddTrackToQueueRequest) returns (AddTrackToQueueResponse) {}
-  // rpc PauseTrack (PauseTrackRequest) returns (PauseTrackResponse) {}
-  // rpc ListQueue (ListQueueRequest) returns (ListQueueResponse) {}
+  rpc CreateSession (CreateSessionRequest) returns (CreateSessionResponse) {}
+  rpc AddTrack (AddTrackRequest) returns (AddTrackResponse) {}
+  rpc RemoveTrack (RemoveTrackRequest) returns (RemoveTrackResponse) {}
+  rpc SkipTrack (SkipTrackRequest) returns (SkipTrackResponse) {}
+  rpc ListQueue (ListQueueRequest) returns (ListQueueResponse) {}
 }
+
+message PingRequest {}
+message PingResponse {
+  string message = 1;
+}
+
+message CreateSessionRequest {
+  string session_id = 1;
+}
+message CreateSessionResponse {
+  string stream_url = 1;
+}
+
+message AddTrackRequest {
+  string session_id = 1;
+  string track_url = 2;
+}
+message AddTrackResponse {
+  Track track = 1;
+}
+
+message RemoveTrackRequest {
+  string session_id = 1;
+  uint32 index = 2;
+}
+message RemoveTrackResponse {}
+
+message SkipTrackRequest {
+  string session_id = 1;
+}
+message SkipTrackResponse {}
 
 message ListQueueRequest {
   string session_id = 1;
 }
 message ListQueueResponse {
-  string message = 1;
+  repeated Track tracks = 1;
 }
 
-message PauseTrackRequest {
-  int32 session_id = 1;
-}
-message PauseTrackResponse {
-  string message = 1;
-}
-
-message AddTrackToQueueRequest {
-  string session_id = 1;
-  string track_url = 2;
-}
-message AddTrackToQueueResponse {
-  string message = 1;
-}
-
-message StopStreamRequest { }
-message StopStreamResponse {
-  string message = 1;
-}
-
-message PingRequest { }
-message PingResponse {
-  string message = 1;
+message Track {
+  int64 id = 1;
+  string source = 2;
+  string source_id = 3;
+  string title = 4;
+  string artist = 5;
+  int64 duration = 6;
 }

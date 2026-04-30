@@ -23,6 +23,10 @@ const (
 	SILENCE_BITRATE         = "128k"
 )
 
+var (
+	ErrIcecastRejected = errors.New("icecast rejected connection")
+)
+
 type Mountpoint string
 
 type IcecastClient struct {
@@ -30,6 +34,7 @@ type IcecastClient struct {
 	icecastHost     string
 	icecastPort     string
 	icecastPassword string
+	streamBaseURL   string
 }
 
 func CreateIcecastClient(
@@ -37,14 +42,19 @@ func CreateIcecastClient(
 	icecastHost string,
 	icecastPort string,
 	icecastPassword string,
+	streamBaseURL string,
 ) *IcecastClient {
-	slog.Info("created icecast client")
 	return &IcecastClient{
 		sessionManager:  sessionManager,
 		icecastHost:     icecastHost,
 		icecastPort:     icecastPort,
 		icecastPassword: icecastPassword,
+		streamBaseURL:   streamBaseURL,
 	}
+}
+
+func (i *IcecastClient) StreamURL(sessionID session.SessionID) string {
+	return fmt.Sprintf("%s/stream/%s", i.streamBaseURL, sessionID)
 }
 
 func (i *IcecastClient) StreamSessions(ctx context.Context) {
@@ -105,8 +115,11 @@ func (i *IcecastClient) streamSession(ctx context.Context, queue *session.Sessio
 
 			var elapsedTrackTime int64
 			for {
-				elapsedTrackTime, err = i.streamTrack(ctx, track, conn, elapsedTrackTime)
-				if err == nil {
+				trackCtx, stopSkipWatch := watchForSkip(ctx, queue)
+				elapsedTrackTime, err = i.streamTrack(trackCtx, track, conn, elapsedTrackTime)
+				skipped := stopSkipWatch()
+
+				if err == nil || skipped {
 					break
 				}
 				if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
@@ -120,34 +133,74 @@ func (i *IcecastClient) streamSession(ctx context.Context, queue *session.Sessio
 		}
 
 		slog.Info("queue empty, streaming silence", "mountpoint", mountpoint)
-		sessionEndTimer := time.NewTimer(SESSION_TIMEOUT_MINUTES * time.Minute)
-		cancelSilence, silenceDone := i.startSilence(ctx, conn)
-
-		select {
-		case <-ctx.Done():
-			cancelSilence()
-			<-silenceDone
+		switch i.streamSilence(ctx, conn, queue) {
+		case silenceCancelled:
 			slog.Info("stream cancelled", "mountpoint", mountpoint)
 			return
-		case <-queue.Notify():
-			cancelSilence()
-			<-silenceDone
-		case <-sessionEndTimer.C:
-			cancelSilence()
-			<-silenceDone
+		case silenceTimedOut:
 			slog.Info("session timed out", "mountpoint", mountpoint)
 			if err := i.sessionManager.DeleteSession(ctx, sessionID); err != nil {
 				slog.Error("failed to delete timed out session", "mountpoint", mountpoint, "err", err)
 			}
 			return
+		case silenceNewTrack:
+			slog.Info("playing next track...", "mountpoint", mountpoint)
 		}
+	}
+}
 
-		if !sessionEndTimer.Stop() {
+type silenceResult int
+
+const (
+	silenceNewTrack  silenceResult = iota
+	silenceTimedOut  silenceResult = iota
+	silenceCancelled silenceResult = iota
+)
+
+func (i *IcecastClient) streamSilence(ctx context.Context, conn io.Writer, queue *session.SessionQueue) silenceResult {
+	sessionEndTimer := time.NewTimer(SESSION_TIMEOUT_MINUTES * time.Minute)
+	defer sessionEndTimer.Stop()
+	cancelSilence, silenceDone := i.startSilence(ctx, conn)
+
+	var result silenceResult
+	select {
+	case <-ctx.Done():
+		result = silenceCancelled
+	case <-queue.Notify():
+		result = silenceNewTrack
+	case <-sessionEndTimer.C:
+		result = silenceTimedOut
+	}
+	cancelSilence()
+	<-silenceDone
+	return result
+}
+
+func watchForSkip(ctx context.Context, queue *session.SessionQueue) (context.Context, func() bool) {
+	trackCtx, cancel := context.WithCancel(ctx)
+	skipped := false
+	done := make(chan struct{})
+	go func() {
+		defer close(done)
+		select {
+		case event := <-queue.Events:
+			if event.Type == session.SkipTrack {
+				skipped = true
+				cancel()
+			}
+		case <-trackCtx.Done():
+		}
+	}()
+	return trackCtx, func() bool {
+		cancel()
+		<-done
+		if !skipped {
 			select {
-			case <-sessionEndTimer.C:
+			case <-queue.Events:
 			default:
 			}
 		}
+		return skipped
 	}
 }
 
@@ -244,7 +297,7 @@ func (i *IcecastClient) icecastConnection(ctx context.Context, mountpoint Mountp
 	resp := string(buf[:n])
 	if !strings.Contains(resp, "200") {
 		conn.Close()
-		return nil, fmt.Errorf("icecast rejected connection: %s", strings.TrimSpace(resp))
+		return nil, fmt.Errorf("%w: %s", ErrIcecastRejected, strings.TrimSpace(resp))
 	}
 
 	return conn, nil

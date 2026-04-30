@@ -35,11 +35,28 @@ const (
 const (
 	// RadioServicePingProcedure is the fully-qualified name of the RadioService's Ping RPC.
 	RadioServicePingProcedure = "/RadioService/Ping"
+	// RadioServiceCreateSessionProcedure is the fully-qualified name of the RadioService's
+	// CreateSession RPC.
+	RadioServiceCreateSessionProcedure = "/RadioService/CreateSession"
+	// RadioServiceAddTrackProcedure is the fully-qualified name of the RadioService's AddTrack RPC.
+	RadioServiceAddTrackProcedure = "/RadioService/AddTrack"
+	// RadioServiceRemoveTrackProcedure is the fully-qualified name of the RadioService's RemoveTrack
+	// RPC.
+	RadioServiceRemoveTrackProcedure = "/RadioService/RemoveTrack"
+	// RadioServiceSkipTrackProcedure is the fully-qualified name of the RadioService's SkipTrack RPC.
+	RadioServiceSkipTrackProcedure = "/RadioService/SkipTrack"
+	// RadioServiceListQueueProcedure is the fully-qualified name of the RadioService's ListQueue RPC.
+	RadioServiceListQueueProcedure = "/RadioService/ListQueue"
 )
 
 // RadioServiceClient is a client for the RadioService service.
 type RadioServiceClient interface {
 	Ping(context.Context, *connect.Request[proto.PingRequest]) (*connect.Response[proto.PingResponse], error)
+	CreateSession(context.Context, *connect.Request[proto.CreateSessionRequest]) (*connect.Response[proto.CreateSessionResponse], error)
+	AddTrack(context.Context, *connect.Request[proto.AddTrackRequest]) (*connect.Response[proto.AddTrackResponse], error)
+	RemoveTrack(context.Context, *connect.Request[proto.RemoveTrackRequest]) (*connect.Response[proto.RemoveTrackResponse], error)
+	SkipTrack(context.Context, *connect.Request[proto.SkipTrackRequest]) (*connect.Response[proto.SkipTrackResponse], error)
+	ListQueue(context.Context, *connect.Request[proto.ListQueueRequest]) (*connect.Response[proto.ListQueueResponse], error)
 }
 
 // NewRadioServiceClient constructs a client for the RadioService service. By default, it uses the
@@ -59,12 +76,47 @@ func NewRadioServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 			connect.WithSchema(radioServiceMethods.ByName("Ping")),
 			connect.WithClientOptions(opts...),
 		),
+		createSession: connect.NewClient[proto.CreateSessionRequest, proto.CreateSessionResponse](
+			httpClient,
+			baseURL+RadioServiceCreateSessionProcedure,
+			connect.WithSchema(radioServiceMethods.ByName("CreateSession")),
+			connect.WithClientOptions(opts...),
+		),
+		addTrack: connect.NewClient[proto.AddTrackRequest, proto.AddTrackResponse](
+			httpClient,
+			baseURL+RadioServiceAddTrackProcedure,
+			connect.WithSchema(radioServiceMethods.ByName("AddTrack")),
+			connect.WithClientOptions(opts...),
+		),
+		removeTrack: connect.NewClient[proto.RemoveTrackRequest, proto.RemoveTrackResponse](
+			httpClient,
+			baseURL+RadioServiceRemoveTrackProcedure,
+			connect.WithSchema(radioServiceMethods.ByName("RemoveTrack")),
+			connect.WithClientOptions(opts...),
+		),
+		skipTrack: connect.NewClient[proto.SkipTrackRequest, proto.SkipTrackResponse](
+			httpClient,
+			baseURL+RadioServiceSkipTrackProcedure,
+			connect.WithSchema(radioServiceMethods.ByName("SkipTrack")),
+			connect.WithClientOptions(opts...),
+		),
+		listQueue: connect.NewClient[proto.ListQueueRequest, proto.ListQueueResponse](
+			httpClient,
+			baseURL+RadioServiceListQueueProcedure,
+			connect.WithSchema(radioServiceMethods.ByName("ListQueue")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // radioServiceClient implements RadioServiceClient.
 type radioServiceClient struct {
-	ping *connect.Client[proto.PingRequest, proto.PingResponse]
+	ping          *connect.Client[proto.PingRequest, proto.PingResponse]
+	createSession *connect.Client[proto.CreateSessionRequest, proto.CreateSessionResponse]
+	addTrack      *connect.Client[proto.AddTrackRequest, proto.AddTrackResponse]
+	removeTrack   *connect.Client[proto.RemoveTrackRequest, proto.RemoveTrackResponse]
+	skipTrack     *connect.Client[proto.SkipTrackRequest, proto.SkipTrackResponse]
+	listQueue     *connect.Client[proto.ListQueueRequest, proto.ListQueueResponse]
 }
 
 // Ping calls RadioService.Ping.
@@ -72,9 +124,39 @@ func (c *radioServiceClient) Ping(ctx context.Context, req *connect.Request[prot
 	return c.ping.CallUnary(ctx, req)
 }
 
+// CreateSession calls RadioService.CreateSession.
+func (c *radioServiceClient) CreateSession(ctx context.Context, req *connect.Request[proto.CreateSessionRequest]) (*connect.Response[proto.CreateSessionResponse], error) {
+	return c.createSession.CallUnary(ctx, req)
+}
+
+// AddTrack calls RadioService.AddTrack.
+func (c *radioServiceClient) AddTrack(ctx context.Context, req *connect.Request[proto.AddTrackRequest]) (*connect.Response[proto.AddTrackResponse], error) {
+	return c.addTrack.CallUnary(ctx, req)
+}
+
+// RemoveTrack calls RadioService.RemoveTrack.
+func (c *radioServiceClient) RemoveTrack(ctx context.Context, req *connect.Request[proto.RemoveTrackRequest]) (*connect.Response[proto.RemoveTrackResponse], error) {
+	return c.removeTrack.CallUnary(ctx, req)
+}
+
+// SkipTrack calls RadioService.SkipTrack.
+func (c *radioServiceClient) SkipTrack(ctx context.Context, req *connect.Request[proto.SkipTrackRequest]) (*connect.Response[proto.SkipTrackResponse], error) {
+	return c.skipTrack.CallUnary(ctx, req)
+}
+
+// ListQueue calls RadioService.ListQueue.
+func (c *radioServiceClient) ListQueue(ctx context.Context, req *connect.Request[proto.ListQueueRequest]) (*connect.Response[proto.ListQueueResponse], error) {
+	return c.listQueue.CallUnary(ctx, req)
+}
+
 // RadioServiceHandler is an implementation of the RadioService service.
 type RadioServiceHandler interface {
 	Ping(context.Context, *connect.Request[proto.PingRequest]) (*connect.Response[proto.PingResponse], error)
+	CreateSession(context.Context, *connect.Request[proto.CreateSessionRequest]) (*connect.Response[proto.CreateSessionResponse], error)
+	AddTrack(context.Context, *connect.Request[proto.AddTrackRequest]) (*connect.Response[proto.AddTrackResponse], error)
+	RemoveTrack(context.Context, *connect.Request[proto.RemoveTrackRequest]) (*connect.Response[proto.RemoveTrackResponse], error)
+	SkipTrack(context.Context, *connect.Request[proto.SkipTrackRequest]) (*connect.Response[proto.SkipTrackResponse], error)
+	ListQueue(context.Context, *connect.Request[proto.ListQueueRequest]) (*connect.Response[proto.ListQueueResponse], error)
 }
 
 // NewRadioServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -90,10 +172,50 @@ func NewRadioServiceHandler(svc RadioServiceHandler, opts ...connect.HandlerOpti
 		connect.WithSchema(radioServiceMethods.ByName("Ping")),
 		connect.WithHandlerOptions(opts...),
 	)
+	radioServiceCreateSessionHandler := connect.NewUnaryHandler(
+		RadioServiceCreateSessionProcedure,
+		svc.CreateSession,
+		connect.WithSchema(radioServiceMethods.ByName("CreateSession")),
+		connect.WithHandlerOptions(opts...),
+	)
+	radioServiceAddTrackHandler := connect.NewUnaryHandler(
+		RadioServiceAddTrackProcedure,
+		svc.AddTrack,
+		connect.WithSchema(radioServiceMethods.ByName("AddTrack")),
+		connect.WithHandlerOptions(opts...),
+	)
+	radioServiceRemoveTrackHandler := connect.NewUnaryHandler(
+		RadioServiceRemoveTrackProcedure,
+		svc.RemoveTrack,
+		connect.WithSchema(radioServiceMethods.ByName("RemoveTrack")),
+		connect.WithHandlerOptions(opts...),
+	)
+	radioServiceSkipTrackHandler := connect.NewUnaryHandler(
+		RadioServiceSkipTrackProcedure,
+		svc.SkipTrack,
+		connect.WithSchema(radioServiceMethods.ByName("SkipTrack")),
+		connect.WithHandlerOptions(opts...),
+	)
+	radioServiceListQueueHandler := connect.NewUnaryHandler(
+		RadioServiceListQueueProcedure,
+		svc.ListQueue,
+		connect.WithSchema(radioServiceMethods.ByName("ListQueue")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/RadioService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case RadioServicePingProcedure:
 			radioServicePingHandler.ServeHTTP(w, r)
+		case RadioServiceCreateSessionProcedure:
+			radioServiceCreateSessionHandler.ServeHTTP(w, r)
+		case RadioServiceAddTrackProcedure:
+			radioServiceAddTrackHandler.ServeHTTP(w, r)
+		case RadioServiceRemoveTrackProcedure:
+			radioServiceRemoveTrackHandler.ServeHTTP(w, r)
+		case RadioServiceSkipTrackProcedure:
+			radioServiceSkipTrackHandler.ServeHTTP(w, r)
+		case RadioServiceListQueueProcedure:
+			radioServiceListQueueHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -105,4 +227,24 @@ type UnimplementedRadioServiceHandler struct{}
 
 func (UnimplementedRadioServiceHandler) Ping(context.Context, *connect.Request[proto.PingRequest]) (*connect.Response[proto.PingResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("RadioService.Ping is not implemented"))
+}
+
+func (UnimplementedRadioServiceHandler) CreateSession(context.Context, *connect.Request[proto.CreateSessionRequest]) (*connect.Response[proto.CreateSessionResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("RadioService.CreateSession is not implemented"))
+}
+
+func (UnimplementedRadioServiceHandler) AddTrack(context.Context, *connect.Request[proto.AddTrackRequest]) (*connect.Response[proto.AddTrackResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("RadioService.AddTrack is not implemented"))
+}
+
+func (UnimplementedRadioServiceHandler) RemoveTrack(context.Context, *connect.Request[proto.RemoveTrackRequest]) (*connect.Response[proto.RemoveTrackResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("RadioService.RemoveTrack is not implemented"))
+}
+
+func (UnimplementedRadioServiceHandler) SkipTrack(context.Context, *connect.Request[proto.SkipTrackRequest]) (*connect.Response[proto.SkipTrackResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("RadioService.SkipTrack is not implemented"))
+}
+
+func (UnimplementedRadioServiceHandler) ListQueue(context.Context, *connect.Request[proto.ListQueueRequest]) (*connect.Response[proto.ListQueueResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("RadioService.ListQueue is not implemented"))
 }

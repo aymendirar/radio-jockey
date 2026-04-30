@@ -1,14 +1,14 @@
 package connect
 
 import (
-	"context"
 	"fmt"
 	"log/slog"
 	"net/http"
 
-	"server/src/db"
-	"server/src/proto"
+	"server/src/icecast"
+	"server/src/music"
 	"server/src/proto/protoconnect"
+	"server/src/session"
 
 	"connectrpc.com/connect"
 	"connectrpc.com/validate"
@@ -16,16 +16,22 @@ import (
 
 type Server struct {
 	protoconnect.UnimplementedRadioServiceHandler
-	db *db.DB
+	sessionManager *session.SessionManager
+	youtube        *music.YouTube
+	icecast        *icecast.IcecastClient
 }
 
-func (s *Server) Ping(_ context.Context, req *connect.Request[proto.PingRequest]) (*connect.Response[proto.PingResponse], error) {
-	slog.Info("received ping request")
-	return connect.NewResponse(&proto.PingResponse{Message: "Pong!"}), nil
-}
-
-func CreateServer(host string, port int, db *db.DB) (*http.Server, error) {
-	server := &Server{db: db}
+func CreateServer(
+	host string,
+	port int,
+	sessionManager *session.SessionManager,
+	youtube *music.YouTube,
+	icecast *icecast.IcecastClient) (*http.Server, error) {
+	server := &Server{
+		sessionManager: sessionManager,
+		youtube:        youtube,
+		icecast:        icecast,
+	}
 	mux := http.NewServeMux()
 	path, handler := protoconnect.NewRadioServiceHandler(
 		server,

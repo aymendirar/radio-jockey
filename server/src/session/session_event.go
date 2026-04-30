@@ -1,13 +1,23 @@
 package session
 
-type EventType string
+type SessionManagerEventType string
 
 const (
-	SessionCreated EventType = "created"
-	SessionDeleted EventType = "deleted"
+	SessionCreated SessionManagerEventType = "created"
+	SessionDeleted SessionManagerEventType = "deleted"
 )
 
-type SessionEvent struct {
-	Type      EventType
+type SessionManagerEvent struct {
+	Type      SessionManagerEventType
 	SessionID SessionID
+}
+
+type SessionQueueEventType string
+
+const (
+	SkipTrack SessionQueueEventType = "skip"
+)
+
+type SessionQueueEvent struct {
+	Type SessionQueueEventType
 }

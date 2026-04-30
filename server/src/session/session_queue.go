@@ -11,24 +11,48 @@ type SessionQueue struct {
 	tracks    []*db.Track
 	sessionId SessionID
 	notify    chan struct{}
+	Events    chan SessionQueueEvent
 }
+
+const MaxQueueSize = 16
 
 var (
 	EmptyQueueError = errors.New("queue is empty")
 	BadIndexError   = errors.New("bad queue index")
+	FullQueueError  = errors.New("queue is full")
 )
 
 func NewQueue(sessionId SessionID) *SessionQueue {
 	return &SessionQueue{
 		mu:        sync.RWMutex{},
-		tracks:    []*db.Track{},
+		tracks:    make([]*db.Track, 0, MaxQueueSize),
 		sessionId: sessionId,
 		notify:    make(chan struct{}, 1),
+		Events:    make(chan SessionQueueEvent, 1),
 	}
 }
 
-func (q *SessionQueue) Enqueue(t *db.Track) {
+func (q *SessionQueue) Skip() error {
 	q.mu.Lock()
+	defer q.mu.Unlock()
+
+	if len(q.tracks) == 0 {
+		return EmptyQueueError
+	}
+
+	select {
+	case q.Events <- SessionQueueEvent{Type: SkipTrack}:
+	default:
+	}
+	return nil
+}
+
+func (q *SessionQueue) Enqueue(t *db.Track) error {
+	q.mu.Lock()
+	if len(q.tracks) >= MaxQueueSize {
+		q.mu.Unlock()
+		return FullQueueError
+	}
 	q.tracks = append(q.tracks, t)
 	q.mu.Unlock()
 
@@ -36,6 +60,7 @@ func (q *SessionQueue) Enqueue(t *db.Track) {
 	case q.notify <- struct{}{}:
 	default:
 	}
+	return nil
 }
 
 func (q *SessionQueue) Dequeue() (*db.Track, error) {

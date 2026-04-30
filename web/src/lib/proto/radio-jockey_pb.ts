@@ -10,144 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file radio-jockey.proto.
  */
 export const file_radio_jockey: GenFile = /*@__PURE__*/
-  fileDesc("ChJyYWRpby1qb2NrZXkucHJvdG8iJgoQTGlzdFF1ZXVlUmVxdWVzdBISCgpzZXNzaW9uX2lkGAEgASgJIiQKEUxpc3RRdWV1ZVJlc3BvbnNlEg8KB21lc3NhZ2UYASABKAkiJwoRUGF1c2VUcmFja1JlcXVlc3QSEgoKc2Vzc2lvbl9pZBgBIAEoBSIlChJQYXVzZVRyYWNrUmVzcG9uc2USDwoHbWVzc2FnZRgBIAEoCSI/ChZBZGRUcmFja1RvUXVldWVSZXF1ZXN0EhIKCnNlc3Npb25faWQYASABKAkSEQoJdHJhY2tfdXJsGAIgASgJIioKF0FkZFRyYWNrVG9RdWV1ZVJlc3BvbnNlEg8KB21lc3NhZ2UYASABKAkiEwoRU3RvcFN0cmVhbVJlcXVlc3QiJQoSU3RvcFN0cmVhbVJlc3BvbnNlEg8KB21lc3NhZ2UYASABKAkiDQoLUGluZ1JlcXVlc3QiHwoMUGluZ1Jlc3BvbnNlEg8KB21lc3NhZ2UYASABKAkyNQoMUmFkaW9TZXJ2aWNlEiUKBFBpbmcSDC5QaW5nUmVxdWVzdBoNLlBpbmdSZXNwb25zZSIAQhJaEHNlcnZlci9zcmMvcHJvdG9iBnByb3RvMw");
-
-/**
- * @generated from message ListQueueRequest
- */
-export type ListQueueRequest = Message<"ListQueueRequest"> & {
-  /**
-   * @generated from field: string session_id = 1;
-   */
-  sessionId: string;
-};
-
-/**
- * Describes the message ListQueueRequest.
- * Use `create(ListQueueRequestSchema)` to create a new message.
- */
-export const ListQueueRequestSchema: GenMessage<ListQueueRequest> = /*@__PURE__*/
-  messageDesc(file_radio_jockey, 0);
-
-/**
- * @generated from message ListQueueResponse
- */
-export type ListQueueResponse = Message<"ListQueueResponse"> & {
-  /**
-   * @generated from field: string message = 1;
-   */
-  message: string;
-};
-
-/**
- * Describes the message ListQueueResponse.
- * Use `create(ListQueueResponseSchema)` to create a new message.
- */
-export const ListQueueResponseSchema: GenMessage<ListQueueResponse> = /*@__PURE__*/
-  messageDesc(file_radio_jockey, 1);
-
-/**
- * @generated from message PauseTrackRequest
- */
-export type PauseTrackRequest = Message<"PauseTrackRequest"> & {
-  /**
-   * @generated from field: int32 session_id = 1;
-   */
-  sessionId: number;
-};
-
-/**
- * Describes the message PauseTrackRequest.
- * Use `create(PauseTrackRequestSchema)` to create a new message.
- */
-export const PauseTrackRequestSchema: GenMessage<PauseTrackRequest> = /*@__PURE__*/
-  messageDesc(file_radio_jockey, 2);
-
-/**
- * @generated from message PauseTrackResponse
- */
-export type PauseTrackResponse = Message<"PauseTrackResponse"> & {
-  /**
-   * @generated from field: string message = 1;
-   */
-  message: string;
-};
-
-/**
- * Describes the message PauseTrackResponse.
- * Use `create(PauseTrackResponseSchema)` to create a new message.
- */
-export const PauseTrackResponseSchema: GenMessage<PauseTrackResponse> = /*@__PURE__*/
-  messageDesc(file_radio_jockey, 3);
-
-/**
- * @generated from message AddTrackToQueueRequest
- */
-export type AddTrackToQueueRequest = Message<"AddTrackToQueueRequest"> & {
-  /**
-   * @generated from field: string session_id = 1;
-   */
-  sessionId: string;
-
-  /**
-   * @generated from field: string track_url = 2;
-   */
-  trackUrl: string;
-};
-
-/**
- * Describes the message AddTrackToQueueRequest.
- * Use `create(AddTrackToQueueRequestSchema)` to create a new message.
- */
-export const AddTrackToQueueRequestSchema: GenMessage<AddTrackToQueueRequest> = /*@__PURE__*/
-  messageDesc(file_radio_jockey, 4);
-
-/**
- * @generated from message AddTrackToQueueResponse
- */
-export type AddTrackToQueueResponse = Message<"AddTrackToQueueResponse"> & {
-  /**
-   * @generated from field: string message = 1;
-   */
-  message: string;
-};
-
-/**
- * Describes the message AddTrackToQueueResponse.
- * Use `create(AddTrackToQueueResponseSchema)` to create a new message.
- */
-export const AddTrackToQueueResponseSchema: GenMessage<AddTrackToQueueResponse> = /*@__PURE__*/
-  messageDesc(file_radio_jockey, 5);
-
-/**
- * @generated from message StopStreamRequest
- */
-export type StopStreamRequest = Message<"StopStreamRequest"> & {
-};
-
-/**
- * Describes the message StopStreamRequest.
- * Use `create(StopStreamRequestSchema)` to create a new message.
- */
-export const StopStreamRequestSchema: GenMessage<StopStreamRequest> = /*@__PURE__*/
-  messageDesc(file_radio_jockey, 6);
-
-/**
- * @generated from message StopStreamResponse
- */
-export type StopStreamResponse = Message<"StopStreamResponse"> & {
-  /**
-   * @generated from field: string message = 1;
-   */
-  message: string;
-};
-
-/**
- * Describes the message StopStreamResponse.
- * Use `create(StopStreamResponseSchema)` to create a new message.
- */
-export const StopStreamResponseSchema: GenMessage<StopStreamResponse> = /*@__PURE__*/
-  messageDesc(file_radio_jockey, 7);
+  fileDesc("ChJyYWRpby1qb2NrZXkucHJvdG8iDQoLUGluZ1JlcXVlc3QiHwoMUGluZ1Jlc3BvbnNlEg8KB21lc3NhZ2UYASABKAkiKgoUQ3JlYXRlU2Vzc2lvblJlcXVlc3QSEgoKc2Vzc2lvbl9pZBgBIAEoCSIrChVDcmVhdGVTZXNzaW9uUmVzcG9uc2USEgoKc3RyZWFtX3VybBgBIAEoCSI4Cg9BZGRUcmFja1JlcXVlc3QSEgoKc2Vzc2lvbl9pZBgBIAEoCRIRCgl0cmFja191cmwYAiABKAkiKQoQQWRkVHJhY2tSZXNwb25zZRIVCgV0cmFjaxgBIAEoCzIGLlRyYWNrIjcKElJlbW92ZVRyYWNrUmVxdWVzdBISCgpzZXNzaW9uX2lkGAEgASgJEg0KBWluZGV4GAIgASgNIhUKE1JlbW92ZVRyYWNrUmVzcG9uc2UiJgoQU2tpcFRyYWNrUmVxdWVzdBISCgpzZXNzaW9uX2lkGAEgASgJIhMKEVNraXBUcmFja1Jlc3BvbnNlIiYKEExpc3RRdWV1ZVJlcXVlc3QSEgoKc2Vzc2lvbl9pZBgBIAEoCSIrChFMaXN0UXVldWVSZXNwb25zZRIWCgZ0cmFja3MYASADKAsyBi5UcmFjayJnCgVUcmFjaxIKCgJpZBgBIAEoAxIOCgZzb3VyY2UYAiABKAkSEQoJc291cmNlX2lkGAMgASgJEg0KBXRpdGxlGAQgASgJEg4KBmFydGlzdBgFIAEoCRIQCghkdXJhdGlvbhgGIAEoAzLSAgoMUmFkaW9TZXJ2aWNlEiUKBFBpbmcSDC5QaW5nUmVxdWVzdBoNLlBpbmdSZXNwb25zZSIAEkAKDUNyZWF0ZVNlc3Npb24SFS5DcmVhdGVTZXNzaW9uUmVxdWVzdBoWLkNyZWF0ZVNlc3Npb25SZXNwb25zZSIAEjEKCEFkZFRyYWNrEhAuQWRkVHJhY2tSZXF1ZXN0GhEuQWRkVHJhY2tSZXNwb25zZSIAEjoKC1JlbW92ZVRyYWNrEhMuUmVtb3ZlVHJhY2tSZXF1ZXN0GhQuUmVtb3ZlVHJhY2tSZXNwb25zZSIAEjQKCVNraXBUcmFjaxIRLlNraXBUcmFja1JlcXVlc3QaEi5Ta2lwVHJhY2tSZXNwb25zZSIAEjQKCUxpc3RRdWV1ZRIRLkxpc3RRdWV1ZVJlcXVlc3QaEi5MaXN0UXVldWVSZXNwb25zZSIAQhJaEHNlcnZlci9zcmMvcHJvdG9iBnByb3RvMw");
 
 /**
  * @generated from message PingRequest
@@ -160,7 +23,7 @@ export type PingRequest = Message<"PingRequest"> & {
  * Use `create(PingRequestSchema)` to create a new message.
  */
 export const PingRequestSchema: GenMessage<PingRequest> = /*@__PURE__*/
-  messageDesc(file_radio_jockey, 8);
+  messageDesc(file_radio_jockey, 0);
 
 /**
  * @generated from message PingResponse
@@ -177,11 +40,223 @@ export type PingResponse = Message<"PingResponse"> & {
  * Use `create(PingResponseSchema)` to create a new message.
  */
 export const PingResponseSchema: GenMessage<PingResponse> = /*@__PURE__*/
+  messageDesc(file_radio_jockey, 1);
+
+/**
+ * @generated from message CreateSessionRequest
+ */
+export type CreateSessionRequest = Message<"CreateSessionRequest"> & {
+  /**
+   * @generated from field: string session_id = 1;
+   */
+  sessionId: string;
+};
+
+/**
+ * Describes the message CreateSessionRequest.
+ * Use `create(CreateSessionRequestSchema)` to create a new message.
+ */
+export const CreateSessionRequestSchema: GenMessage<CreateSessionRequest> = /*@__PURE__*/
+  messageDesc(file_radio_jockey, 2);
+
+/**
+ * @generated from message CreateSessionResponse
+ */
+export type CreateSessionResponse = Message<"CreateSessionResponse"> & {
+  /**
+   * @generated from field: string stream_url = 1;
+   */
+  streamUrl: string;
+};
+
+/**
+ * Describes the message CreateSessionResponse.
+ * Use `create(CreateSessionResponseSchema)` to create a new message.
+ */
+export const CreateSessionResponseSchema: GenMessage<CreateSessionResponse> = /*@__PURE__*/
+  messageDesc(file_radio_jockey, 3);
+
+/**
+ * @generated from message AddTrackRequest
+ */
+export type AddTrackRequest = Message<"AddTrackRequest"> & {
+  /**
+   * @generated from field: string session_id = 1;
+   */
+  sessionId: string;
+
+  /**
+   * @generated from field: string track_url = 2;
+   */
+  trackUrl: string;
+};
+
+/**
+ * Describes the message AddTrackRequest.
+ * Use `create(AddTrackRequestSchema)` to create a new message.
+ */
+export const AddTrackRequestSchema: GenMessage<AddTrackRequest> = /*@__PURE__*/
+  messageDesc(file_radio_jockey, 4);
+
+/**
+ * @generated from message AddTrackResponse
+ */
+export type AddTrackResponse = Message<"AddTrackResponse"> & {
+  /**
+   * @generated from field: Track track = 1;
+   */
+  track?: Track | undefined;
+};
+
+/**
+ * Describes the message AddTrackResponse.
+ * Use `create(AddTrackResponseSchema)` to create a new message.
+ */
+export const AddTrackResponseSchema: GenMessage<AddTrackResponse> = /*@__PURE__*/
+  messageDesc(file_radio_jockey, 5);
+
+/**
+ * @generated from message RemoveTrackRequest
+ */
+export type RemoveTrackRequest = Message<"RemoveTrackRequest"> & {
+  /**
+   * @generated from field: string session_id = 1;
+   */
+  sessionId: string;
+
+  /**
+   * @generated from field: uint32 index = 2;
+   */
+  index: number;
+};
+
+/**
+ * Describes the message RemoveTrackRequest.
+ * Use `create(RemoveTrackRequestSchema)` to create a new message.
+ */
+export const RemoveTrackRequestSchema: GenMessage<RemoveTrackRequest> = /*@__PURE__*/
+  messageDesc(file_radio_jockey, 6);
+
+/**
+ * @generated from message RemoveTrackResponse
+ */
+export type RemoveTrackResponse = Message<"RemoveTrackResponse"> & {
+};
+
+/**
+ * Describes the message RemoveTrackResponse.
+ * Use `create(RemoveTrackResponseSchema)` to create a new message.
+ */
+export const RemoveTrackResponseSchema: GenMessage<RemoveTrackResponse> = /*@__PURE__*/
+  messageDesc(file_radio_jockey, 7);
+
+/**
+ * @generated from message SkipTrackRequest
+ */
+export type SkipTrackRequest = Message<"SkipTrackRequest"> & {
+  /**
+   * @generated from field: string session_id = 1;
+   */
+  sessionId: string;
+};
+
+/**
+ * Describes the message SkipTrackRequest.
+ * Use `create(SkipTrackRequestSchema)` to create a new message.
+ */
+export const SkipTrackRequestSchema: GenMessage<SkipTrackRequest> = /*@__PURE__*/
+  messageDesc(file_radio_jockey, 8);
+
+/**
+ * @generated from message SkipTrackResponse
+ */
+export type SkipTrackResponse = Message<"SkipTrackResponse"> & {
+};
+
+/**
+ * Describes the message SkipTrackResponse.
+ * Use `create(SkipTrackResponseSchema)` to create a new message.
+ */
+export const SkipTrackResponseSchema: GenMessage<SkipTrackResponse> = /*@__PURE__*/
   messageDesc(file_radio_jockey, 9);
 
 /**
- * service definition
- *
+ * @generated from message ListQueueRequest
+ */
+export type ListQueueRequest = Message<"ListQueueRequest"> & {
+  /**
+   * @generated from field: string session_id = 1;
+   */
+  sessionId: string;
+};
+
+/**
+ * Describes the message ListQueueRequest.
+ * Use `create(ListQueueRequestSchema)` to create a new message.
+ */
+export const ListQueueRequestSchema: GenMessage<ListQueueRequest> = /*@__PURE__*/
+  messageDesc(file_radio_jockey, 10);
+
+/**
+ * @generated from message ListQueueResponse
+ */
+export type ListQueueResponse = Message<"ListQueueResponse"> & {
+  /**
+   * @generated from field: repeated Track tracks = 1;
+   */
+  tracks: Track[];
+};
+
+/**
+ * Describes the message ListQueueResponse.
+ * Use `create(ListQueueResponseSchema)` to create a new message.
+ */
+export const ListQueueResponseSchema: GenMessage<ListQueueResponse> = /*@__PURE__*/
+  messageDesc(file_radio_jockey, 11);
+
+/**
+ * @generated from message Track
+ */
+export type Track = Message<"Track"> & {
+  /**
+   * @generated from field: int64 id = 1;
+   */
+  id: bigint;
+
+  /**
+   * @generated from field: string source = 2;
+   */
+  source: string;
+
+  /**
+   * @generated from field: string source_id = 3;
+   */
+  sourceId: string;
+
+  /**
+   * @generated from field: string title = 4;
+   */
+  title: string;
+
+  /**
+   * @generated from field: string artist = 5;
+   */
+  artist: string;
+
+  /**
+   * @generated from field: int64 duration = 6;
+   */
+  duration: bigint;
+};
+
+/**
+ * Describes the message Track.
+ * Use `create(TrackSchema)` to create a new message.
+ */
+export const TrackSchema: GenMessage<Track> = /*@__PURE__*/
+  messageDesc(file_radio_jockey, 12);
+
+/**
  * @generated from service RadioService
  */
 export const RadioService: GenService<{
@@ -192,6 +267,46 @@ export const RadioService: GenService<{
     methodKind: "unary";
     input: typeof PingRequestSchema;
     output: typeof PingResponseSchema;
+  },
+  /**
+   * @generated from rpc RadioService.CreateSession
+   */
+  createSession: {
+    methodKind: "unary";
+    input: typeof CreateSessionRequestSchema;
+    output: typeof CreateSessionResponseSchema;
+  },
+  /**
+   * @generated from rpc RadioService.AddTrack
+   */
+  addTrack: {
+    methodKind: "unary";
+    input: typeof AddTrackRequestSchema;
+    output: typeof AddTrackResponseSchema;
+  },
+  /**
+   * @generated from rpc RadioService.RemoveTrack
+   */
+  removeTrack: {
+    methodKind: "unary";
+    input: typeof RemoveTrackRequestSchema;
+    output: typeof RemoveTrackResponseSchema;
+  },
+  /**
+   * @generated from rpc RadioService.SkipTrack
+   */
+  skipTrack: {
+    methodKind: "unary";
+    input: typeof SkipTrackRequestSchema;
+    output: typeof SkipTrackResponseSchema;
+  },
+  /**
+   * @generated from rpc RadioService.ListQueue
+   */
+  listQueue: {
+    methodKind: "unary";
+    input: typeof ListQueueRequestSchema;
+    output: typeof ListQueueResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_radio_jockey, 0);
