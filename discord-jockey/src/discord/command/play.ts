@@ -146,8 +146,13 @@ export async function registerPlayCommand(
     const connection = await connectToChannel(voiceChannel);
     connection.subscribe(player);
     player.removeAllListeners(AudioPlayerStatus.Idle);
+    player.removeAllListeners("error");
     player.on(AudioPlayerStatus.Idle, () => {
       logger.withMetadata({ sessionId }).info("player idle, restarting stream");
+      startStream();
+    });
+    player.on("error", (err) => {
+      logger.withMetadata({ sessionId, err }).error("player error, restarting stream");
       startStream();
     });
     startStream();
