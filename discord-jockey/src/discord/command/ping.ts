@@ -12,11 +12,11 @@ export async function registerPingCommand(
   await withConnectError(
     async () => {
       const response = await radioClient.ping({});
-      logger.info("ping response received", response.message);
+      logger.info("ping response received");
       await interaction.reply(response.message);
     },
     async (err) => {
-      logger.withMetadata({ err }).error("ping failed");
+      logger.error("ping failed", { err });
       await interaction.reply("Something went wrong.");
     },
   );

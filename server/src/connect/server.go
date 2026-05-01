@@ -27,7 +27,7 @@ func loggingInterceptor() connect.Interceptor {
 	return connect.UnaryInterceptorFunc(func(next connect.UnaryFunc) connect.UnaryFunc {
 		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
 			rpc := path.Base(req.Spec().Procedure)
-			slog.Info("received RPC", "rpc", rpc, "request", req.Any())
+			slog.Info("RPC received", "rpc", rpc, "request", req.Any())
 			resp, err := next(ctx, req)
 			if err != nil {
 				slog.Error("RPC error", "rpc", rpc, "err", err)

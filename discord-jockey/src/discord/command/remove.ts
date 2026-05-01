@@ -11,26 +11,26 @@ export async function registerRemoveCommand(
 
   const sessionId = interaction.guildId!;
   const index = interaction.options.getInteger("position", true) - 1;
-  logger.withMetadata({ sessionId, position: index + 1 }).info("remove command received");
+  logger.info("remove command received", { sessionId, position: index + 1 });
 
   await withConnectError(
     async () => {
       await radioClient.removeTrack({ sessionId, index });
-      logger.withMetadata({ sessionId, position: index + 1 }).info("track removed");
+      logger.info("track removed", { sessionId, position: index + 1 });
       await interaction.reply(`Removed track at position ${index + 1}.`);
     },
     async (err) => {
       switch (err.code) {
         case Code.NotFound:
-          logger.withMetadata({ sessionId }).info("remove failed: session not found");
+          logger.info("remove failed: session not found", { sessionId });
           await interaction.reply("No active session. Use /play to start one!");
           break;
         case Code.InvalidArgument:
-          logger.withMetadata({ sessionId, position: index + 1 }).info("remove failed: invalid position");
+          logger.info("remove failed: invalid position", { sessionId, position: index + 1 });
           await interaction.reply("Invalid position.");
           break;
         default:
-          logger.withMetadata({ sessionId, err }).error("remove failed");
+          logger.error("remove failed", { sessionId, err });
           await interaction.reply("Something went wrong.");
       }
     },

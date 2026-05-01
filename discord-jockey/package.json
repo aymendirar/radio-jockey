@@ -18,11 +18,8 @@
     "@connectrpc/connect": "^2.1.1",
     "@connectrpc/connect-node": "^2.1.1",
     "@discordjs/voice": "^0.19.2",
-    "@loglayer/transport-pretty-terminal": "^6.0.0",
-    "@loglayer/transport-simple-pretty-terminal": "^3.0.2",
     "discord.js": "^14.26.3",
     "dotenv": "^17.4.2",
-    "loglayer": "^9.1.0",
     "serialize-error": "^13.0.1"
   }
 }

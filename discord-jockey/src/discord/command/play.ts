@@ -43,18 +43,14 @@ async function getOrCreateSession(sessionId: string): Promise<string> {
   return withConnectError(
     async () => {
       const res = await radioClient.createSession({ sessionId });
-      logger
-        .withMetadata({ sessionId, streamUrl: res.streamUrl })
-        .info("session created");
+      logger.info("session created", { sessionId, streamUrl: res.streamUrl });
       return res.streamUrl;
     },
     async (err) => {
       switch (err.code) {
         case Code.AlreadyExists: {
           const res = await radioClient.getSession({ sessionId });
-          logger
-            .withMetadata({ sessionId, streamUrl: res.streamUrl })
-            .info("session already exists");
+          logger.info("session already exists", { sessionId, streamUrl: res.streamUrl });
           return res.streamUrl;
         }
         default:
@@ -84,15 +80,13 @@ export async function registerPlayCommand(
 
   const trackUrl = interaction.options.getString("url");
   const sessionId = interaction.guildId!;
-  logger.withMetadata({ sessionId, trackUrl }).info("play command received");
+  logger.info("play command received", { sessionId, trackUrl });
 
   let streamUrl: string;
   try {
     streamUrl = await getOrCreateSession(sessionId);
   } catch (err) {
-    logger
-      .withMetadata({ sessionId, err })
-      .error("failed to get or create session");
+    logger.error("failed to get or create session", { sessionId, err });
     await interaction.reply("Failed to start a session. Please try again.");
     return;
   }
@@ -102,9 +96,7 @@ export async function registerPlayCommand(
     await withConnectError(
       async () => {
         const { track } = await radioClient.addTrack({ sessionId, trackUrl });
-        logger
-          .withMetadata({ sessionId, title: track!.title, artist: track!.artist })
-          .info("track added");
+        logger.info("track added", { sessionId, title: track!.title, artist: track!.artist });
         await interaction.followUp(
           `Added **${track!.title}** by **${track!.artist}** to the queue.`,
         );
@@ -112,27 +104,21 @@ export async function registerPlayCommand(
       async (err) => {
         switch (err.code) {
           case Code.InvalidArgument:
-            logger
-              .withMetadata({ sessionId, trackUrl })
-              .info("add track failed: invalid url");
+            logger.info("add track failed: invalid url", { sessionId, trackUrl });
             await interaction.followUp(
               "Invalid URL. Please try again with a YouTube link!",
             );
             break;
           case Code.NotFound:
-            logger
-              .withMetadata({ sessionId, trackUrl })
-              .info("add track failed: not found");
+            logger.info("add track failed: not found", { sessionId, trackUrl });
             await interaction.followUp("That video is unavailable or the session has ended.");
             break;
           case Code.ResourceExhausted:
-            logger
-              .withMetadata({ sessionId })
-              .info("add track failed: queue full");
+            logger.info("add track failed: queue full", { sessionId });
             await interaction.followUp("The queue is full!");
             break;
           default:
-            logger.withMetadata({ sessionId, err }).error("add track failed");
+            logger.error("add track failed", { sessionId, err });
             await interaction.followUp("Something went wrong adding that track.");
         }
       },
@@ -141,12 +127,36 @@ export async function registerPlayCommand(
     await interaction.reply("Starting playback!");
   }
 
-  logger
-    .withMetadata({ sessionId, streamUrl })
-    .info("connecting to voice channel");
+  logger.info("connecting to voice channel", { sessionId, streamUrl });
+
+  let connection: Awaited<ReturnType<typeof connectToChannel>>;
+  let currentRequest: ReturnType<typeof http.get> | null = null;
+  let leaving = false;
+
+  const leave = async (message: string) => {
+    if (leaving) return;
+    leaving = true;
+    player.removeAllListeners();
+    player.stop(true);
+    currentRequest?.destroy();
+    connection?.destroy();
+    await interaction.followUp(message).catch(() => {});
+  };
+
   const startStream = () => {
+    currentRequest?.destroy();
     const buffer = new PassThrough({ highWaterMark: MEGABYTE * BUFFER_SIZE });
-    http.get(streamUrl, (res) => res.pipe(buffer));
+    currentRequest = http.get(streamUrl, (res) => {
+      res.on("end", () => {
+        logger.info("stream ended, leaving voice channel", { sessionId });
+        leave("Stream ended. Use /play to start a new session.");
+      });
+      res.pipe(buffer);
+    });
+    currentRequest.on("error", (err) => {
+      logger.error("stream connection error, leaving voice channel", { sessionId, err });
+      leave("Lost connection to the stream. Use /play to reconnect.");
+    });
     buffer.once("readable", () => {
       const resource = createAudioResource(buffer, { inputType: StreamType.OggOpus });
       player.play(resource);
@@ -154,22 +164,17 @@ export async function registerPlayCommand(
   };
 
   try {
-    const connection = await connectToChannel(voiceChannel);
+    connection = await connectToChannel(voiceChannel);
     connection.subscribe(player);
-    player.removeAllListeners(AudioPlayerStatus.Idle);
     player.removeAllListeners("error");
-    player.on(AudioPlayerStatus.Idle, () => {
-      logger.withMetadata({ sessionId }).info("player idle, restarting stream");
-      startStream();
-    });
     player.on("error", (err) => {
-      logger.withMetadata({ sessionId, err }).error("player error, restarting stream");
-      startStream();
+      logger.error("player error, leaving voice channel", { sessionId, err });
+      leave("Stream error. Use /play to reconnect.");
     });
     startStream();
     await entersState(player, AudioPlayerStatus.Playing, 5_000);
-    logger.withMetadata({ sessionId, streamUrl }).info("playback started");
+    logger.info("playback started", { sessionId, streamUrl });
   } catch (err) {
-    logger.withMetadata({ sessionId, err }).error("failed to connect or play");
+    logger.error("failed to connect or play", { sessionId, err });
   }
 }

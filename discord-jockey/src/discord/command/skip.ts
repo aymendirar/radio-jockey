@@ -10,26 +10,26 @@ export async function registerSkipCommand(
   if (interaction.commandName !== "skip") return;
 
   const sessionId = interaction.guildId!;
-  logger.withMetadata({ sessionId }).info("skip command received");
+  logger.info("skip command received", { sessionId });
 
   await withConnectError(
     async () => {
       await radioClient.skipTrack({ sessionId });
-      logger.withMetadata({ sessionId }).info("track skipped");
+      logger.info("track skipped", { sessionId });
       await interaction.reply("Skipped!");
     },
     async (err) => {
       switch (err.code) {
         case Code.NotFound:
-          logger.withMetadata({ sessionId }).info("skip failed: session not found");
+          logger.info("skip failed: session not found", { sessionId });
           await interaction.reply("No active session. Use /play to start one!");
           break;
         case Code.FailedPrecondition:
-          logger.withMetadata({ sessionId }).info("skip failed: queue empty");
+          logger.info("skip failed: queue empty", { sessionId });
           await interaction.reply("The queue is empty.");
           break;
         default:
-          logger.withMetadata({ sessionId, err }).error("skip failed");
+          logger.error("skip failed", { sessionId, err });
           await interaction.reply("Something went wrong.");
       }
     },

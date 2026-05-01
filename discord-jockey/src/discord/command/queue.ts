@@ -10,12 +10,12 @@ export async function registerQueueCommand(
   if (interaction.commandName !== "queue") return;
 
   const sessionId = interaction.guildId!;
-  logger.withMetadata({ sessionId }).info("queue command received");
+  logger.info("queue command received", { sessionId });
 
   await withConnectError(
     async () => {
       const res = await radioClient.listQueue({ sessionId });
-      logger.withMetadata({ sessionId, count: res.tracks.length }).info("queue fetched");
+      logger.info("queue fetched", { sessionId, count: res.tracks.length });
       if (res.tracks.length === 0) {
         await interaction.reply("The queue is empty.");
         return;
@@ -28,11 +28,11 @@ export async function registerQueueCommand(
     async (err) => {
       switch (err.code) {
         case Code.NotFound:
-          logger.withMetadata({ sessionId }).info("queue fetch failed: session not found");
+          logger.info("queue fetch failed: session not found", { sessionId });
           await interaction.reply("No active session. Use /play to start one!");
           break;
         default:
-          logger.withMetadata({ sessionId, err }).error("queue fetch failed");
+          logger.error("queue fetch failed", { sessionId, err });
           await interaction.reply("Something went wrong fetching the queue.");
       }
     },

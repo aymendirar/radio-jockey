@@ -25,10 +25,7 @@ function setupEventHandlers(bot: Client) {
 
 function handleLogin(bot: Client) {
   bot.on(Events.ClientReady, (readyClient) => {
-    logger
-      .withMetadata({ ready: bot.isReady() })
-      .withMetadata({ userTag: readyClient.user.tag })
-      .info("discord jockey spinning...");
+    logger.info("discord jockey spinning...", { ready: bot.isReady(), userTag: readyClient.user.tag });
   });
 }
 
@@ -44,7 +41,7 @@ async function handleSlashCommands(bot: Client) {
       await registerQueueCommand(interaction);
       await registerRemoveCommand(interaction);
     } catch (err) {
-      logger.withMetadata({ command: interaction.commandName, err }).error("unhandled error in interaction handler");
+      logger.error("unhandled error in interaction handler", { command: interaction.commandName, err });
     }
   });
 }
