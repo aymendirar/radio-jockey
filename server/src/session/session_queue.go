@@ -63,6 +63,17 @@ func (q *SessionQueue) Enqueue(t *db.Track) error {
 	return nil
 }
 
+func (q *SessionQueue) Peek() (*db.Track, error) {
+	q.mu.RLock()
+	defer q.mu.RUnlock()
+
+	if len(q.tracks) == 0 {
+		return nil, EmptyQueueError
+	}
+
+	return q.tracks[0], nil
+}
+
 func (q *SessionQueue) Dequeue() (*db.Track, error) {
 	q.mu.Lock()
 	defer q.mu.Unlock()

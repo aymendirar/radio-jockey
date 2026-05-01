@@ -5,7 +5,6 @@ import { registerPlayCommand } from "./discord/command/play.js";
 import { registerSkipCommand } from "./discord/command/skip.js";
 import { registerQueueCommand } from "./discord/command/queue.js";
 import { registerRemoveCommand } from "./discord/command/remove.js";
-import { registerNowPlayingCommand } from "./discord/command/now_playing.js";
 
 export async function startDiscordBot(apiKey: string) {
   const bot = new Client({
@@ -44,7 +43,6 @@ async function handleSlashCommands(bot: Client) {
       await registerSkipCommand(interaction);
       await registerQueueCommand(interaction);
       await registerRemoveCommand(interaction);
-      await registerNowPlayingCommand(interaction);
     } catch (err) {
       logger.withMetadata({ command: interaction.commandName, err }).error("unhandled error in interaction handler");
     }
@@ -89,10 +87,6 @@ export async function registerCommands(apiKey: string, botId: string) {
           required: true,
         },
       ],
-    },
-    {
-      name: "now_playing",
-      description: "Show what's currently playing.",
     },
   ];
 

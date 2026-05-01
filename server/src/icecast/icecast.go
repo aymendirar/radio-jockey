@@ -112,22 +112,23 @@ func (i *IcecastClient) streamSession(ctx context.Context, queue *session.Sessio
 
 	for {
 		for {
-			track, err := queue.Dequeue()
+			track, err := queue.Peek()
 			if errors.Is(err, session.EmptyQueueError) {
 				break
 			}
 			if err != nil {
-				slog.Error("error while dequeuing track", "err", err, "mountpoint", mountpoint)
+				slog.Error("error while peeking queue", "err", err, "mountpoint", mountpoint)
 				return
 			}
 
 			slog.Info("playing track", "title", track.Title, "artist", track.Artist, "mountpoint", mountpoint)
 
 			var elapsedTrackTime int64
+			skipped := false
 			for {
 				trackCtx, stopSkipWatch := watchForSkip(ctx, queue)
 				elapsedTrackTime, err = i.streamTrack(trackCtx, track, conn, elapsedTrackTime)
-				skipped := stopSkipWatch()
+				skipped = stopSkipWatch()
 
 				if err == nil || skipped {
 					break
@@ -139,6 +140,11 @@ func (i *IcecastClient) streamSession(ctx context.Context, queue *session.Sessio
 				if !reconnect() {
 					return
 				}
+			}
+
+			if _, err := queue.Dequeue(); err != nil {
+				slog.Error("error while dequeuing track", "err", err, "mountpoint", mountpoint)
+				return
 			}
 		}
 

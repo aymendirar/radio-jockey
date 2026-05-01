@@ -1,9 +1,9 @@
-FROM node:25-alpine AS builder
+FROM node:25-slim AS builder
 
 WORKDIR /discord-jockey
 
-COPY package.json package-lock.json ./
-RUN npm ci
+COPY package.json ./
+RUN npm install
 
 COPY src ./src
 COPY tsconfig.json ./

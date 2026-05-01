@@ -46,9 +46,7 @@ async function getOrCreateSession(sessionId: string): Promise<string> {
       .info("session created");
     return res.streamUrl;
   } catch (err) {
-    console.log(err);
     if (err instanceof ConnectError && err.code === Code.AlreadyExists) {
-      console.log("ALREADY EXISTS");
       const res = await radioClient.getSession({ sessionId });
       logger
         .withMetadata({ sessionId, streamUrl: res.streamUrl })
@@ -135,18 +133,24 @@ export async function registerPlayCommand(
   logger
     .withMetadata({ sessionId, streamUrl })
     .info("connecting to voice channel");
+  const startStream = () => {
+    const buffer = new PassThrough({ highWaterMark: MEGABYTE * BUFFER_SIZE });
+    http.get(streamUrl, (res) => res.pipe(buffer));
+    buffer.once("readable", () => {
+      const resource = createAudioResource(buffer, { inputType: StreamType.OggOpus });
+      player.play(resource);
+    });
+  };
+
   try {
     const connection = await connectToChannel(voiceChannel);
     connection.subscribe(player);
-    const buffer = new PassThrough({ highWaterMark: MEGABYTE * BUFFER_SIZE });
-    http.get(streamUrl, (res) => res.pipe(buffer));
-
-    await new Promise<void>((resolve) => buffer.once("readable", resolve));
-
-    const resource = createAudioResource(buffer, {
-      inputType: StreamType.OggOpus,
+    player.removeAllListeners(AudioPlayerStatus.Idle);
+    player.on(AudioPlayerStatus.Idle, () => {
+      logger.withMetadata({ sessionId }).info("player idle, restarting stream");
+      startStream();
     });
-    player.play(resource);
+    startStream();
     await entersState(player, AudioPlayerStatus.Playing, 5_000);
     logger.withMetadata({ sessionId, streamUrl }).info("playback started");
   } catch (err) {
