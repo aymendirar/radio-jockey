@@ -16,6 +16,12 @@ import {
 import { Code, ConnectError } from "@connectrpc/connect";
 import { radioClient } from "../../connect/client.js";
 import { logger } from "../../util/logger.js";
+import { PassThrough } from "node:stream";
+import http from "node:http";
+
+const KILOBYTE = 1024;
+const MEGABYTE = KILOBYTE * KILOBYTE;
+const BUFFER_SIZE = 20;
 
 async function connectToChannel(channel: VoiceBasedChannel) {
   const connection = joinVoiceChannel({
@@ -102,7 +108,9 @@ export async function registerPlayCommand(
           logger
             .withMetadata({ sessionId, trackUrl })
             .info("add track failed: invalid url");
-          await interaction.followUp("That doesn't look like a valid URL.");
+          await interaction.followUp(
+            "Invalid URL. Please try again with a YouTube link!",
+          );
         } else if (err.code === Code.NotFound) {
           logger
             .withMetadata({ sessionId, trackUrl })
@@ -130,7 +138,12 @@ export async function registerPlayCommand(
   try {
     const connection = await connectToChannel(voiceChannel);
     connection.subscribe(player);
-    const resource = createAudioResource(streamUrl, {
+    const buffer = new PassThrough({ highWaterMark: MEGABYTE * BUFFER_SIZE });
+    http.get(streamUrl, (res) => res.pipe(buffer));
+
+    await new Promise<void>((resolve) => buffer.once("readable", resolve));
+
+    const resource = createAudioResource(buffer, {
       inputType: StreamType.OggOpus,
     });
     player.play(resource);
