@@ -16,7 +16,6 @@
 	});
 </script>
 
-<h1>Radio Jockey</h1>
 <p>{message}</p>
 {#if error}
 	<p>{error}</p>

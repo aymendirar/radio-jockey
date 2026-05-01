@@ -1,0 +1,46 @@
+services:
+  caddy:
+    ports:
+      - 3000:3000
+      - 9999:9999
+    volumes:
+      - ./caddy/Caddyfile.dev:/etc/caddy/Caddyfile:ro
+      - ./caddy/data:/data
+      - ./caddy/config:/config
+
+  web:
+    build:
+      context: ./web
+      target: builder
+    command: npm run dev -- --host
+    volumes:
+      - ./web/src:/web/src
+      - ./web/.env:/web/.env
+    environment:
+      NODE_ENV: development
+    develop:
+      watch:
+        - action: rebuild
+          path: ./web/package.json
+
+  discord-jockey:
+    develop:
+      watch:
+        - action: rebuild
+          path: ./discord-jockey/src
+        - action: sync+restart
+          path: ./discord-jockey/.env
+          target: /discord-jockey/.env
+        - action: rebuild
+          path: ./discord-jockey/package.json
+
+  server:
+    develop:
+      watch:
+        - action: rebuild
+          path: ./server/src
+        - action: sync+restart
+          path: ./server/.env
+          target: /server/.env
+        - action: rebuild
+          path: ./server/go.mod

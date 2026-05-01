@@ -5,11 +5,14 @@
 with docker running, run the following commands:
 
 ```bash
-$ docker compose run --rm codegen # update per-service protos
+$ make codegen # generate service proto files
 
-$ docker compose watch
+$ make dev # docker compose watch all services
 
 # look at service logs using any of the following
 $ docker compose logs -f # combined all service logs
 $ docker compose log -f [server name] # per-service
+
+# run production build
+$ make prod
 ```

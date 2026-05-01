@@ -19,12 +19,18 @@ export async function registerSkipCommand(
       await interaction.reply("Skipped!");
     },
     async (err) => {
-      if (err.code === Code.FailedPrecondition) {
-        logger.withMetadata({ sessionId }).info("skip failed: queue empty");
-        await interaction.reply("The queue is empty.");
-      } else {
-        logger.withMetadata({ sessionId, err }).error("skip failed");
-        await interaction.reply("Something went wrong.");
+      switch (err.code) {
+        case Code.NotFound:
+          logger.withMetadata({ sessionId }).info("skip failed: session not found");
+          await interaction.reply("No active session. Use /play to start one!");
+          break;
+        case Code.FailedPrecondition:
+          logger.withMetadata({ sessionId }).info("skip failed: queue empty");
+          await interaction.reply("The queue is empty.");
+          break;
+        default:
+          logger.withMetadata({ sessionId, err }).error("skip failed");
+          await interaction.reply("Something went wrong.");
       }
     },
   );

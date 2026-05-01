@@ -71,10 +71,12 @@ func (i *IcecastClient) StreamSessions(ctx context.Context) {
 			switch event.Type {
 			case session.SessionCreated:
 				slog.Info("icecast received new session, starting stream...", "sessionID", event.SessionID)
-				queue := i.sessionManager.GetQueue(event.SessionID)
-				if queue != nil {
-					go i.streamSession(ctx, queue, event.SessionID)
+				queue, err := i.sessionManager.GetQueue(event.SessionID)
+				if err != nil {
+					slog.Error("icecast: session not found after creation event", "sessionID", event.SessionID, "err", err)
+					return
 				}
+				go i.streamSession(ctx, queue, event.SessionID)
 			}
 		}
 	}

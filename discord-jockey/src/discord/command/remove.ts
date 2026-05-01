@@ -20,12 +20,18 @@ export async function registerRemoveCommand(
       await interaction.reply(`Removed track at position ${index + 1}.`);
     },
     async (err) => {
-      if (err.code === Code.InvalidArgument) {
-        logger.withMetadata({ sessionId, position: index + 1 }).info("remove failed: invalid position");
-        await interaction.reply("Invalid position.");
-      } else {
-        logger.withMetadata({ sessionId, err }).error("remove failed");
-        await interaction.reply("Something went wrong.");
+      switch (err.code) {
+        case Code.NotFound:
+          logger.withMetadata({ sessionId }).info("remove failed: session not found");
+          await interaction.reply("No active session. Use /play to start one!");
+          break;
+        case Code.InvalidArgument:
+          logger.withMetadata({ sessionId, position: index + 1 }).info("remove failed: invalid position");
+          await interaction.reply("Invalid position.");
+          break;
+        default:
+          logger.withMetadata({ sessionId, err }).error("remove failed");
+          await interaction.reply("Something went wrong.");
       }
     },
   );

@@ -16,7 +16,8 @@ type SessionManager struct {
 }
 
 var (
-	AlreadyExistsError = errors.New("session with provided id already exists")
+	AlreadyExistsError       = errors.New("session with provided id already exists")
+	SessionNotFoundError = errors.New("session with given ID does not exist")
 )
 
 func CreateSessionManager() *SessionManager {
@@ -48,10 +49,14 @@ func (m *SessionManager) CreateSession(ctx context.Context, sessionId SessionID)
 	return SessionID(sessionId), nil
 }
 
-func (m *SessionManager) GetQueue(sessionId SessionID) *SessionQueue {
+func (m *SessionManager) GetQueue(sessionId SessionID) (*SessionQueue, error) {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
-	return m.sessions[sessionId]
+	queue, ok := m.sessions[sessionId]
+	if !ok {
+		return nil, SessionNotFoundError
+	}
+	return queue, nil
 }
 
 func (m *SessionManager) DeleteSession(ctx context.Context, sessionId SessionID) error {

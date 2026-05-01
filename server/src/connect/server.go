@@ -1,9 +1,11 @@
 package connect
 
 import (
+	"context"
 	"fmt"
 	"log/slog"
 	"net/http"
+	"path"
 
 	"server/src/icecast"
 	"server/src/music"
@@ -21,6 +23,22 @@ type Server struct {
 	icecast        *icecast.IcecastClient
 }
 
+func loggingInterceptor() connect.Interceptor {
+	return connect.UnaryInterceptorFunc(func(next connect.UnaryFunc) connect.UnaryFunc {
+		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
+			rpc := path.Base(req.Spec().Procedure)
+			slog.Info("received RPC", "rpc", rpc, "request", req.Any())
+			resp, err := next(ctx, req)
+			if err != nil {
+				slog.Error("RPC error", "rpc", rpc, "err", err)
+			} else {
+				slog.Info("RPC completed", "rpc", rpc, "response", resp.Any())
+			}
+			return resp, err
+		}
+	})
+}
+
 func CreateServer(
 	host string,
 	port int,
@@ -33,11 +51,11 @@ func CreateServer(
 		icecast:        icecast,
 	}
 	mux := http.NewServeMux()
-	path, handler := protoconnect.NewRadioServiceHandler(
+	servicePath, handler := protoconnect.NewRadioServiceHandler(
 		server,
-		connect.WithInterceptors(validate.NewInterceptor()),
+		connect.WithInterceptors(loggingInterceptor(), validate.NewInterceptor()),
 	)
-	mux.Handle(path, handler)
+	mux.Handle(servicePath, handler)
 	p := new(http.Protocols)
 	p.SetHTTP1(true)
 	p.SetUnencryptedHTTP2(true)

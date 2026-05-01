@@ -1,4 +1,5 @@
 import { ChatInputCommandInteraction, type CacheType } from "discord.js";
+import { Code } from "@connectrpc/connect";
 import { radioClient } from "../../connect/client.js";
 import { withConnectError } from "../../util/helpers.js";
 import { logger } from "../../util/logger.js";
@@ -25,8 +26,15 @@ export async function registerQueueCommand(
       await interaction.reply(`**Queue:**\n${list}`);
     },
     async (err) => {
-      logger.withMetadata({ sessionId, err }).error("queue fetch failed");
-      await interaction.reply("Something went wrong fetching the queue.");
+      switch (err.code) {
+        case Code.NotFound:
+          logger.withMetadata({ sessionId }).info("queue fetch failed: session not found");
+          await interaction.reply("No active session. Use /play to start one!");
+          break;
+        default:
+          logger.withMetadata({ sessionId, err }).error("queue fetch failed");
+          await interaction.reply("Something went wrong fetching the queue.");
+      }
     },
   );
 }

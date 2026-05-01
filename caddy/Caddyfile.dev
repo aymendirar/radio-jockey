@@ -1,4 +1,5 @@
-radiojockey.live {
+localhost:3000 {
+	tls internal
 	reverse_proxy /RadioService/* server:12625
 	handle /stream/* {
 		reverse_proxy icecast:9999 {
@@ -8,7 +9,8 @@ radiojockey.live {
 	reverse_proxy web:3000
 }
 
-stream.radiojockey.live {
+localhost:9999 {
+	tls internal
 	reverse_proxy icecast:9999 {
 		flush_interval -1
 	}

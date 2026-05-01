@@ -13,8 +13,9 @@ import {
   type CacheType,
   type VoiceBasedChannel,
 } from "discord.js";
-import { Code, ConnectError } from "@connectrpc/connect";
+import { Code } from "@connectrpc/connect";
 import { radioClient } from "../../connect/client.js";
+import { withConnectError } from "../../util/helpers.js";
 import { logger } from "../../util/logger.js";
 import { PassThrough } from "node:stream";
 import http from "node:http";
@@ -39,22 +40,28 @@ async function connectToChannel(channel: VoiceBasedChannel) {
 }
 
 async function getOrCreateSession(sessionId: string): Promise<string> {
-  try {
-    const res = await radioClient.createSession({ sessionId });
-    logger
-      .withMetadata({ sessionId, streamUrl: res.streamUrl })
-      .info("session created");
-    return res.streamUrl;
-  } catch (err) {
-    if (err instanceof ConnectError && err.code === Code.AlreadyExists) {
-      const res = await radioClient.getSession({ sessionId });
+  return withConnectError(
+    async () => {
+      const res = await radioClient.createSession({ sessionId });
       logger
         .withMetadata({ sessionId, streamUrl: res.streamUrl })
-        .info("session already exists");
+        .info("session created");
       return res.streamUrl;
-    }
-    throw err;
-  }
+    },
+    async (err) => {
+      switch (err.code) {
+        case Code.AlreadyExists: {
+          const res = await radioClient.getSession({ sessionId });
+          logger
+            .withMetadata({ sessionId, streamUrl: res.streamUrl })
+            .info("session already exists");
+          return res.streamUrl;
+        }
+        default:
+          throw err;
+      }
+    },
+  );
 }
 
 export async function registerPlayCommand(
@@ -92,40 +99,44 @@ export async function registerPlayCommand(
 
   if (trackUrl) {
     await interaction.reply(`Adding **${trackUrl}** to the queue...`);
-    try {
-      const { track } = await radioClient.addTrack({ sessionId, trackUrl });
-      logger
-        .withMetadata({ sessionId, title: track!.title, artist: track!.artist })
-        .info("track added");
-      await interaction.followUp(
-        `Added **${track!.title}** by **${track!.artist}** to the queue.`,
-      );
-    } catch (err) {
-      if (err instanceof ConnectError) {
-        if (err.code === Code.InvalidArgument) {
-          logger
-            .withMetadata({ sessionId, trackUrl })
-            .info("add track failed: invalid url");
-          await interaction.followUp(
-            "Invalid URL. Please try again with a YouTube link!",
-          );
-        } else if (err.code === Code.NotFound) {
-          logger
-            .withMetadata({ sessionId, trackUrl })
-            .info("add track failed: video unavailable");
-          await interaction.followUp("That video is unavailable.");
-        } else if (err.code === Code.ResourceExhausted) {
-          logger
-            .withMetadata({ sessionId })
-            .info("add track failed: queue full");
-          await interaction.followUp("The queue is full!");
-        } else {
-          logger.withMetadata({ sessionId, err }).error("add track failed");
-          await interaction.followUp("Something went wrong adding that track.");
+    await withConnectError(
+      async () => {
+        const { track } = await radioClient.addTrack({ sessionId, trackUrl });
+        logger
+          .withMetadata({ sessionId, title: track!.title, artist: track!.artist })
+          .info("track added");
+        await interaction.followUp(
+          `Added **${track!.title}** by **${track!.artist}** to the queue.`,
+        );
+      },
+      async (err) => {
+        switch (err.code) {
+          case Code.InvalidArgument:
+            logger
+              .withMetadata({ sessionId, trackUrl })
+              .info("add track failed: invalid url");
+            await interaction.followUp(
+              "Invalid URL. Please try again with a YouTube link!",
+            );
+            break;
+          case Code.NotFound:
+            logger
+              .withMetadata({ sessionId, trackUrl })
+              .info("add track failed: not found");
+            await interaction.followUp("That video is unavailable or the session has ended.");
+            break;
+          case Code.ResourceExhausted:
+            logger
+              .withMetadata({ sessionId })
+              .info("add track failed: queue full");
+            await interaction.followUp("The queue is full!");
+            break;
+          default:
+            logger.withMetadata({ sessionId, err }).error("add track failed");
+            await interaction.followUp("Something went wrong adding that track.");
         }
-      }
-      return;
-    }
+      },
+    );
   } else {
     await interaction.reply("Starting playback!");
   }
