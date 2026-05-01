@@ -4,6 +4,7 @@ tmp/
 **/tmp
 
 server/data/*
+caddy/data/
 server/music/youtube
 discord-jockey/vendor
 discord-jockey/.bundle
