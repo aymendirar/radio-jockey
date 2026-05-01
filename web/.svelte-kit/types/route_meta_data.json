@@ -1,3 +1,7 @@
 {
-	"/": []
+	"/": [],
+	"/radio": [],
+	"/radio/create": [],
+	"/radio/listen": [],
+	"/radio/listen/[sessionId]": []
 }
