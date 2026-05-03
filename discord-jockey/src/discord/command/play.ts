@@ -22,7 +22,11 @@ import http from "node:http";
 
 const KILOBYTE = 1024;
 const MEGABYTE = KILOBYTE * KILOBYTE;
-const BUFFER_SIZE = 20;
+const BUFFER_SIZE = 20 * MEGABYTE
+
+type VoiceConnection = Awaited<ReturnType<typeof connectToChannel>>;
+const activeSessions = new Map<string, VoiceConnection>();
+const guildBuffers = new Map<string, PassThrough>();
 
 async function connectToChannel(channel: VoiceBasedChannel) {
   const connection = joinVoiceChannel({
@@ -60,11 +64,43 @@ async function getOrCreateSession(sessionId: string): Promise<string> {
   );
 }
 
+async function addTrack(
+  interaction: ChatInputCommandInteraction<CacheType>,
+  sessionId: string,
+  trackUrl: string,
+) {
+  await withConnectError(
+    async () => {
+      const { track } = await radioClient.addTrack({ sessionId, trackUrl });
+      logger.info("track added", { sessionId, title: track!.title, artist: track!.artist });
+      await interaction.followUp(`Added **${track!.title}** by **${track!.artist}** to the queue.`);
+    },
+    async (err) => {
+      switch (err.code) {
+        case Code.InvalidArgument:
+          logger.info("add track failed: invalid url", { sessionId, trackUrl });
+          await interaction.followUp("Invalid URL. Please try again with a YouTube link!");
+          break;
+        case Code.NotFound:
+          logger.info("add track failed: not found", { sessionId, trackUrl });
+          await interaction.followUp("That video is unavailable or the session has ended.");
+          break;
+        case Code.ResourceExhausted:
+          logger.info("add track failed: queue full", { sessionId });
+          await interaction.followUp("The queue is full!");
+          break;
+        default:
+          logger.error("add track failed", { sessionId, err });
+          await interaction.followUp("Something went wrong adding that track.");
+      }
+    },
+  );
+}
+
 export async function registerPlayCommand(
   interaction: ChatInputCommandInteraction<CacheType>,
 ) {
   if (interaction.commandName !== "play") return;
-  const player = createAudioPlayer();
 
   if (!interaction.inGuild()) {
     await interaction.reply("This command can only be used in a server!");
@@ -76,11 +112,20 @@ export async function registerPlayCommand(
     await interaction.reply("Join a voice channel then try again!");
     return;
   }
-  const voiceChannel = member.voice.channel;
 
   const trackUrl = interaction.options.getString("url");
   const sessionId = interaction.guildId!;
   logger.info("play command received", { sessionId, trackUrl });
+
+  if (activeSessions.has(sessionId)) {
+    if (trackUrl) {
+      await interaction.reply(`Adding **${trackUrl}** to the queue...`);
+      await addTrack(interaction, sessionId, trackUrl);
+    } else {
+      await interaction.reply("Already playing!");
+    }
+    return;
+  }
 
   let streamUrl: string;
   try {
@@ -93,59 +138,39 @@ export async function registerPlayCommand(
 
   if (trackUrl) {
     await interaction.reply(`Adding **${trackUrl}** to the queue...`);
-    await withConnectError(
-      async () => {
-        const { track } = await radioClient.addTrack({ sessionId, trackUrl });
-        logger.info("track added", { sessionId, title: track!.title, artist: track!.artist });
-        await interaction.followUp(
-          `Added **${track!.title}** by **${track!.artist}** to the queue.`,
-        );
-      },
-      async (err) => {
-        switch (err.code) {
-          case Code.InvalidArgument:
-            logger.info("add track failed: invalid url", { sessionId, trackUrl });
-            await interaction.followUp(
-              "Invalid URL. Please try again with a YouTube link!",
-            );
-            break;
-          case Code.NotFound:
-            logger.info("add track failed: not found", { sessionId, trackUrl });
-            await interaction.followUp("That video is unavailable or the session has ended.");
-            break;
-          case Code.ResourceExhausted:
-            logger.info("add track failed: queue full", { sessionId });
-            await interaction.followUp("The queue is full!");
-            break;
-          default:
-            logger.error("add track failed", { sessionId, err });
-            await interaction.followUp("Something went wrong adding that track.");
-        }
-      },
-    );
+    await addTrack(interaction, sessionId, trackUrl);
   } else {
     await interaction.reply("Starting playback!");
   }
 
   logger.info("connecting to voice channel", { sessionId, streamUrl });
 
-  let connection: Awaited<ReturnType<typeof connectToChannel>>;
+  const player = createAudioPlayer();
   let currentRequest: ReturnType<typeof http.get> | null = null;
-  let leaving = false;
+  let stopped = false;
 
-  const leave = async (message: string) => {
-    if (leaving) return;
-    leaving = true;
+  const stop = () => {
+    if (stopped) return;
+    stopped = true;
+    activeSessions.get(sessionId)?.destroy();
+    activeSessions.delete(sessionId);
+    guildBuffers.delete(sessionId);
     player.removeAllListeners();
     player.stop(true);
+    currentRequest?.removeAllListeners();
     currentRequest?.destroy();
-    connection?.destroy();
+  };
+
+  const leave = async (message: string) => {
+    stop();
     await interaction.followUp(message).catch(() => {});
   };
 
-  const startStream = () => {
+  const startStream = (conn: VoiceConnection) => {
+    currentRequest?.removeAllListeners();
     currentRequest?.destroy();
-    const buffer = new PassThrough({ highWaterMark: MEGABYTE * BUFFER_SIZE });
+    const buffer = new PassThrough({ highWaterMark: BUFFER_SIZE });
+    guildBuffers.set(sessionId, buffer);
     currentRequest = http.get(streamUrl, (res) => {
       res.on("end", () => {
         logger.info("stream ended, leaving voice channel", { sessionId });
@@ -154,27 +179,33 @@ export async function registerPlayCommand(
       res.pipe(buffer);
     });
     currentRequest.on("error", (err) => {
-      logger.error("stream connection error, leaving voice channel", { sessionId, err });
+      logger.error("stream connection error", { sessionId, err });
       leave("Lost connection to the stream. Use /play to reconnect.");
     });
     buffer.once("readable", () => {
-      const resource = createAudioResource(buffer, { inputType: StreamType.OggOpus });
-      player.play(resource);
+      if (stopped) return;
+      player.play(createAudioResource(buffer, { inputType: StreamType.OggOpus }));
     });
   };
 
   try {
-    connection = await connectToChannel(voiceChannel);
+    const connection = await connectToChannel(member.voice.channel);
     connection.subscribe(player);
-    player.removeAllListeners("error");
     player.on("error", (err) => {
-      logger.error("player error, leaving voice channel", { sessionId, err });
-      leave("Stream error. Use /play to reconnect.");
+      if (stopped) return;
+      logger.warn("player error, reconnecting stream", { sessionId, err });
+      startStream(connection);
     });
-    startStream();
-    await entersState(player, AudioPlayerStatus.Playing, 5_000);
-    logger.info("playback started", { sessionId, streamUrl });
+    player.on(AudioPlayerStatus.Idle, () => {
+      if (stopped) return;
+      logger.info("player idle, reconnecting stream", { sessionId });
+      startStream(connection);
+    });
+    activeSessions.set(sessionId, connection);
+    startStream(connection);
+    logger.info("stream started", { sessionId, streamUrl });
   } catch (err) {
     logger.error("failed to connect or play", { sessionId, err });
+    await leave("Failed to start playback. Please try again.");
   }
 }

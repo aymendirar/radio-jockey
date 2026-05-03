@@ -27,7 +27,7 @@ export async function registerRemoveCommand(
           break;
         case Code.InvalidArgument:
           logger.info("remove failed: invalid position", { sessionId, position: index + 1 });
-          await interaction.reply("Invalid position.");
+          await interaction.reply(index === 0 ? "Can't remove the currently playing track. Use /skip instead." : "Invalid position.");
           break;
         default:
           logger.error("remove failed", { sessionId, err });

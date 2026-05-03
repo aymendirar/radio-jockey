@@ -16,11 +16,22 @@ func (s *Server) Ping(_ context.Context, req *connect.Request[proto.PingRequest]
 
 func (s *Server) CreateSession(ctx context.Context, req *connect.Request[proto.CreateSessionRequest]) (*connect.Response[proto.CreateSessionResponse], error) {
 	sessionID := session.SessionID(req.Msg.SessionId)
-	if _, err := s.sessionManager.CreateSession(ctx, sessionID); err != nil {
+	ready, err := s.sessionManager.CreateSession(ctx, sessionID)
+	if err != nil {
 		if errors.Is(err, session.AlreadyExistsError) {
 			return nil, connect.NewError(connect.CodeAlreadyExists, err)
 		}
 		return nil, connect.NewError(connect.CodeInternal, err)
+	}
+
+	// block on ready
+	select {
+	case err := <-ready:
+		if err != nil {
+			return nil, connect.NewError(connect.CodeInternal, err)
+		}
+	case <-ctx.Done():
+		return nil, connect.NewError(connect.CodeDeadlineExceeded, ctx.Err())
 	}
 
 	streamURL := s.icecast.StreamURL(sessionID)
@@ -87,6 +98,9 @@ func (s *Server) RemoveTrack(ctx context.Context, req *connect.Request[proto.Rem
 			return nil, connect.NewError(connect.CodeNotFound, err)
 		}
 		return nil, connect.NewError(connect.CodeInternal, err)
+	}
+	if req.Msg.Index == 0 {
+		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("cannot remove the currently playing track"))
 	}
 	if err := queue.Remove(uint(req.Msg.Index)); err != nil {
 		if errors.Is(err, session.BadIndexError) {

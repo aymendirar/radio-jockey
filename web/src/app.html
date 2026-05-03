@@ -1,14 +1,58 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="text-scale" content="scale" />
-    <title>radio jockey 💿</title>
-    %sveltekit.head%
-  </head>
-  <body data-sveltekit-preload-data="hover">
-    <h1>Radio Jockey 💿</h1>
-    <div style="display: contents">%sveltekit.body%</div>
-  </body>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>radio jockey</title>
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div class="bg-grid" aria-hidden="true"></div>
+		<div class="content">
+			<a href="/"><h1>radio jockey</h1></a>
+			%sveltekit.body%
+		</div>
+	</body>
 </html>
+
+<style>
+	@font-face {
+		font-family: 'Pixeled';
+		src: url('/pixel.ttf') format('truetype');
+	}
+
+	html {
+		font-family: 'tahoma'
+	}
+	a,
+	a:visited,
+	a:hover,
+	a:active {
+		color: inherit;
+	}
+
+	body {
+		margin: 0;
+		min-height: 100vh;
+		background-color: #01026f;
+		color: white;
+		position: relative;
+	}
+
+	.bg-grid {
+		position: fixed;
+		inset: 0;
+		background-image: url('/radio2.png');
+		background-size: 80px 80px;
+		background-repeat: space;
+		opacity: 0.25;
+		pointer-events: none;
+		z-index: 0;
+	}
+
+	.content {
+		position: relative;
+		z-index: 1;
+		padding: 8px 24px;
+	}
+</style>

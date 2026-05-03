@@ -21,7 +21,9 @@ export async function registerQueueCommand(
         return;
       }
       const list = res.tracks
-        .map((t, i) => `${i + 1}. **${t.title}** by **${t.artist}**`)
+        .map((t, i) => i === 0
+          ? `▶ **${t.title}** by **${t.artist}** *(now playing)*`
+          : `${i + 1}. **${t.title}** by **${t.artist}**`)
         .join("\n");
       await interaction.reply(`**Queue:**\n${list}`);
     },

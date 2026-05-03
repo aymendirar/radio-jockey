@@ -28,7 +28,7 @@ func CreateSessionManager() *SessionManager {
 	}
 }
 
-func (m *SessionManager) CreateSession(ctx context.Context, sessionId SessionID) (SessionID, error) {
+func (m *SessionManager) CreateSession(ctx context.Context, sessionId SessionID) (<-chan error, error) {
 	m.mu.Lock()
 	_, ok := m.sessions[sessionId]
 	if !ok {
@@ -36,17 +36,18 @@ func (m *SessionManager) CreateSession(ctx context.Context, sessionId SessionID)
 		m.mu.Unlock()
 	} else {
 		m.mu.Unlock()
-		return SessionID(""), AlreadyExistsError
+		return nil, AlreadyExistsError
 	}
 
 	slog.Info("session created", "session", sessionId)
+	ready := make(chan error, 1)
 	select {
-	case m.Events <- SessionManagerEvent{Type: SessionCreated, SessionID: sessionId}:
+	case m.Events <- SessionManagerEvent{Type: SessionCreated, SessionID: sessionId, Ready: ready}:
 	case <-ctx.Done():
-		return SessionID(""), ctx.Err()
+		return nil, ctx.Err()
 	}
 
-	return SessionID(sessionId), nil
+	return ready, nil
 }
 
 func (m *SessionManager) GetQueue(sessionId SessionID) (*SessionQueue, error) {

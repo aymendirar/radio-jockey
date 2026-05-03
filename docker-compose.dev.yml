@@ -15,6 +15,7 @@ services:
     command: npm run dev -- --host
     volumes:
       - ./web/src:/web/src
+      - ./web/static:/web/static
       - ./web/.env:/web/.env
     environment:
       NODE_ENV: development

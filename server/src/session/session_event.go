@@ -10,6 +10,7 @@ const (
 type SessionManagerEvent struct {
 	Type      SessionManagerEventType
 	SessionID SessionID
+	Ready     chan error
 }
 
 type SessionQueueEventType string

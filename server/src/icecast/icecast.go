@@ -10,9 +10,9 @@ import (
 	"net"
 	"os"
 	"os/exec"
+	"path"
 	"server/src/db"
 	"server/src/session"
-	"path"
 	"strings"
 	"time"
 
@@ -21,8 +21,9 @@ import (
 
 const (
 	SESSION_TIMEOUT_MINUTES = 10
-	SILENCE_BITRATE         = "128k"
+	OPUS_BITRATE            = "128k"
 	STREAM_PATH_PREFIX      = "stream"
+	PCM_SAMPLE_RATE         = "48000"
 )
 
 var (
@@ -76,13 +77,13 @@ func (i *IcecastClient) StreamSessions(ctx context.Context) {
 					slog.Error("icecast: session not found after creation event", "sessionID", event.SessionID, "err", err)
 					return
 				}
-				go i.streamSession(ctx, queue, event.SessionID)
+				go i.streamSession(ctx, queue, event.SessionID, event.Ready)
 			}
 		}
 	}
 }
 
-func (i *IcecastClient) streamSession(ctx context.Context, queue *session.SessionQueue, sessionID session.SessionID) {
+func (i *IcecastClient) streamSession(ctx context.Context, queue *session.SessionQueue, sessionID session.SessionID, ready chan error) {
 	mountpoint := Mountpoint(STREAM_PATH_PREFIX + "/" + string(sessionID))
 
 	defer func() {
@@ -93,24 +94,22 @@ func (i *IcecastClient) streamSession(ctx context.Context, queue *session.Sessio
 		}
 	}()
 
-	conn, err := i.connectWithRetry(ctx, mountpoint)
+	icecastConnection, err := i.connectWithRetry(ctx, mountpoint)
 	if err != nil {
 		slog.Error("failed to connect to icecast", "mountpoint", mountpoint, "err", err)
+		ready <- err
 		return
 	}
-	defer conn.Close()
+	defer icecastConnection.Close()
 	slog.Info("stream started", "mountpoint", mountpoint)
+	ready <- nil
 
-	reconnect := func() bool {
-		conn.Close()
-		conn, err = i.connectWithRetry(ctx, mountpoint)
-		if err != nil {
-			slog.Error("failed to reconnect to icecast", "mountpoint", mountpoint, "err", err)
-			return false
-		}
-		slog.Info("reconnected to icecast", "mountpoint", mountpoint)
-		return true
+	pcm, err := startEncoder(ctx, icecastConnection)
+	if err != nil {
+		slog.Error("failed to start encoder", "mountpoint", mountpoint, "err", err)
+		return
 	}
+	defer pcm.Close()
 
 	for {
 		for {
@@ -119,17 +118,17 @@ func (i *IcecastClient) streamSession(ctx context.Context, queue *session.Sessio
 				break
 			}
 			if err != nil {
-				slog.Error("error while peeking queue", "err", err, "mountpoint", mountpoint)
+				slog.Error("error peeking queue", "err", err, "mountpoint", mountpoint)
 				return
 			}
 
 			slog.Info("playing track", "title", track.Title, "artist", track.Artist, "mountpoint", mountpoint)
 
-			var elapsedTrackTime int64
+			var elapsed int64
 			skipped := false
 			for {
 				trackCtx, stopSkipWatch := watchForSkip(ctx, queue)
-				elapsedTrackTime, err = i.streamTrack(trackCtx, track, conn, elapsedTrackTime)
+				elapsed, err = streamTrackPCM(trackCtx, track, pcm, elapsed)
 				skipped = stopSkipWatch()
 
 				if err == nil || skipped {
@@ -138,20 +137,18 @@ func (i *IcecastClient) streamSession(ctx context.Context, queue *session.Sessio
 				if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
 					return
 				}
-				slog.Error("stream error", "mountpoint", mountpoint, "err", err)
-				if !reconnect() {
-					return
-				}
+				slog.Error("track decode error", "mountpoint", mountpoint, "err", err)
+				return
 			}
 
 			if _, err := queue.Dequeue(); err != nil {
-				slog.Error("error while dequeuing track", "err", err, "mountpoint", mountpoint)
+				slog.Error("error dequeuing track", "err", err, "mountpoint", mountpoint)
 				return
 			}
 		}
 
 		slog.Info("queue empty, streaming silence", "mountpoint", mountpoint)
-		switch i.streamSilence(ctx, conn, queue) {
+		switch streamSilencePCM(ctx, pcm, queue) {
 		case silenceCancelled:
 			slog.Info("stream cancelled", "mountpoint", mountpoint)
 			return
@@ -164,6 +161,48 @@ func (i *IcecastClient) streamSession(ctx context.Context, queue *session.Sessio
 	}
 }
 
+func startEncoder(ctx context.Context, w io.Writer) (io.WriteCloser, error) {
+	cmd := exec.CommandContext(ctx, "ffmpeg",
+		"-loglevel", "error",
+		"-f", "s16le", "-ar", PCM_SAMPLE_RATE, "-ac", "2",
+		"-i", "pipe:0",
+		"-c:a", "libopus", "-vbr", "off", "-b:a", OPUS_BITRATE,
+		"-f", "ogg",
+		"pipe:1",
+	)
+	cmd.Stdout = w
+	cmd.Stderr = os.Stderr
+	pcm, err := cmd.StdinPipe()
+	if err != nil {
+		return nil, err
+	}
+	if err := cmd.Start(); err != nil {
+		return nil, err
+	}
+	go cmd.Wait()
+	return pcm, nil
+}
+
+func streamTrackPCM(ctx context.Context, track *db.Track, w io.Writer, elapsed int64) (int64, error) {
+	start := time.Now()
+	args := []string{"-loglevel", "error", "-re"}
+	if elapsed > 0 {
+		args = append(args, "-ss", fmt.Sprintf("%d", elapsed))
+	}
+	args = append(args, "-i", track.FilePath, "-f", "s16le", "-ar", PCM_SAMPLE_RATE, "-ac", "2", "pipe:1")
+	cmd := exec.CommandContext(ctx, "ffmpeg", args...)
+	cmd.Stdout = w
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		newElapsed := elapsed + int64(time.Since(start).Seconds())
+		if ctx.Err() != nil {
+			return newElapsed, ctx.Err()
+		}
+		return newElapsed, err
+	}
+	return 0, nil
+}
+
 type silenceResult int
 
 const (
@@ -172,10 +211,28 @@ const (
 	silenceCancelled silenceResult = iota
 )
 
-func (i *IcecastClient) streamSilence(ctx context.Context, conn io.Writer, queue *session.SessionQueue) silenceResult {
+func streamSilencePCM(ctx context.Context, w io.Writer, queue *session.SessionQueue) silenceResult {
 	sessionEndTimer := time.NewTimer(SESSION_TIMEOUT_MINUTES * time.Minute)
 	defer sessionEndTimer.Stop()
-	cancelSilence, silenceDone := i.startSilence(ctx, conn)
+
+	silenceCtx, cancelSilence := context.WithCancel(ctx)
+	silenceDone := make(chan struct{})
+	go func() {
+		defer close(silenceDone)
+		cmd := exec.CommandContext(silenceCtx, "ffmpeg",
+			"-loglevel", "error",
+			"-re",
+			"-f", "lavfi",
+			"-i", "anullsrc=r=" + PCM_SAMPLE_RATE + ":cl=stereo",
+			"-f", "s16le", "-ar", PCM_SAMPLE_RATE, "-ac", "2",
+			"pipe:1",
+		)
+		cmd.Stdout = w
+		cmd.Stderr = os.Stderr
+		if err := cmd.Run(); err != nil && silenceCtx.Err() == nil {
+			slog.Error("silence PCM stream error", "err", err)
+		}
+	}()
 
 	var result silenceResult
 	select {
@@ -217,55 +274,6 @@ func watchForSkip(ctx context.Context, queue *session.SessionQueue) (context.Con
 		}
 		return skipped
 	}
-}
-
-func (i *IcecastClient) startSilence(ctx context.Context, conn io.Writer) (context.CancelFunc, <-chan struct{}) {
-	silenceCtx, cancelSilence := context.WithCancel(ctx)
-	silenceDone := make(chan struct{})
-	go func() {
-		defer close(silenceDone)
-		i.streamSilenceLoop(silenceCtx, conn)
-	}()
-	return cancelSilence, silenceDone
-}
-
-func (i *IcecastClient) streamSilenceLoop(ctx context.Context, conn io.Writer) {
-	cmd := exec.CommandContext(ctx, "ffmpeg",
-		"-loglevel", "error",
-		"-re",
-		"-f", "lavfi",
-		"-i", "anullsrc=r=48000:cl=stereo",
-		"-c:a", "libopus", "-vbr", "off", "-b:a", SILENCE_BITRATE,
-		"-f", "ogg",
-		"pipe:1",
-	)
-	cmd.Stdout = conn
-	cmd.Stderr = os.Stderr
-	if err := cmd.Run(); err != nil && ctx.Err() == nil {
-		slog.Error("silence stream error", "err", err)
-	}
-}
-
-func (i *IcecastClient) streamTrack(ctx context.Context, track *db.Track, conn io.Writer, elapsedTrackTime int64) (int64, error) {
-	start := time.Now()
-
-	args := []string{"-loglevel", "error", "-re"}
-	if elapsedTrackTime > 0 {
-		args = append(args, "-ss", fmt.Sprintf("%d", elapsedTrackTime))
-	}
-	args = append(args, "-i", track.FilePath, "-c:a", "copy", "-f", "ogg", "pipe:1")
-
-	cmd := exec.CommandContext(ctx, "ffmpeg", args...)
-	cmd.Stdout = conn
-	cmd.Stderr = os.Stderr
-	if err := cmd.Run(); err != nil {
-		newElapsed := elapsedTrackTime + int64(time.Since(start).Seconds())
-		if ctx.Err() != nil {
-			return newElapsed, ctx.Err()
-		}
-		return newElapsed, err
-	}
-	return 0, nil
 }
 
 func (i *IcecastClient) connectWithRetry(ctx context.Context, mountpoint Mountpoint) (io.WriteCloser, error) {

@@ -16,7 +16,25 @@
 	});
 </script>
 
+<div>
+	<ul>
+		<a href="/stations/create"><li>create a new station</li></a>
+	</ul>
+	<ul>
+		<a href="/stations"><li>listen to live stations</li></a>
+	</ul>
+</div>
 <p>{message}</p>
 {#if error}
 	<p>{error}</p>
 {/if}
+
+<style>
+	ul {
+		list-style-type: '>  ';
+	}
+
+  a, a:visited {
+    color: unset;
+  }
+</style>
