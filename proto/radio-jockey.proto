@@ -7,6 +7,7 @@ service RadioService {
 
   rpc CreateSession (CreateSessionRequest) returns (CreateSessionResponse) {}
   rpc GetSession (GetSessionRequest) returns (GetSessionResponse) {}
+  rpc DeleteSession (DeleteSessionRequest) returns (DeleteSessionResponse) {}
   rpc AddTrack (AddTrackRequest) returns (AddTrackResponse) {}
   rpc RemoveTrack (RemoveTrackRequest) returns (RemoveTrackResponse) {}
   rpc SkipTrack (SkipTrackRequest) returns (SkipTrackResponse) {}
@@ -31,6 +32,11 @@ message GetSessionRequest {
 message GetSessionResponse {
   string stream_url = 1;
 }
+
+message DeleteSessionRequest {
+  string session_id = 1;
+}
+message DeleteSessionResponse {}
 
 message AddTrackRequest {
   string session_id = 1;

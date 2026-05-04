@@ -5,6 +5,7 @@ import { registerPlayCommand } from "./discord/command/play.js";
 import { registerSkipCommand } from "./discord/command/skip.js";
 import { registerQueueCommand } from "./discord/command/queue.js";
 import { registerRemoveCommand } from "./discord/command/remove.js";
+import { registerStopCommand } from "./discord/command/stop.js";
 
 export async function startDiscordBot(apiKey: string) {
   const bot = new Client({
@@ -40,6 +41,7 @@ async function handleSlashCommands(bot: Client) {
       await registerSkipCommand(interaction);
       await registerQueueCommand(interaction);
       await registerRemoveCommand(interaction);
+      await registerStopCommand(interaction);
     } catch (err) {
       logger.error("unhandled error in interaction handler", { command: interaction.commandName, err });
     }
@@ -84,6 +86,10 @@ export async function registerCommands(apiKey: string, botId: string) {
           required: true,
         },
       ],
+    },
+    {
+      name: "stop",
+      description: "Stop playback and leave the voice channel.",
     },
   ];
 

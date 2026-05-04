@@ -28,6 +28,12 @@ type VoiceConnection = Awaited<ReturnType<typeof connectToChannel>>;
 const activeSessions = new Map<string, VoiceConnection>();
 const guildBuffers = new Map<string, PassThrough>();
 
+export function stopSession(sessionId: string) {
+  activeSessions.get(sessionId)?.destroy();
+  activeSessions.delete(sessionId);
+  guildBuffers.delete(sessionId);
+}
+
 async function connectToChannel(channel: VoiceBasedChannel) {
   const connection = joinVoiceChannel({
     channelId: channel.id,
@@ -152,9 +158,7 @@ export async function registerPlayCommand(
   const stop = () => {
     if (stopped) return;
     stopped = true;
-    activeSessions.get(sessionId)?.destroy();
-    activeSessions.delete(sessionId);
-    guildBuffers.delete(sessionId);
+    stopSession(sessionId);
     player.removeAllListeners();
     player.stop(true);
     currentRequest?.removeAllListeners();

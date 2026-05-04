@@ -40,6 +40,9 @@ const (
 	RadioServiceCreateSessionProcedure = "/RadioService/CreateSession"
 	// RadioServiceGetSessionProcedure is the fully-qualified name of the RadioService's GetSession RPC.
 	RadioServiceGetSessionProcedure = "/RadioService/GetSession"
+	// RadioServiceDeleteSessionProcedure is the fully-qualified name of the RadioService's
+	// DeleteSession RPC.
+	RadioServiceDeleteSessionProcedure = "/RadioService/DeleteSession"
 	// RadioServiceAddTrackProcedure is the fully-qualified name of the RadioService's AddTrack RPC.
 	RadioServiceAddTrackProcedure = "/RadioService/AddTrack"
 	// RadioServiceRemoveTrackProcedure is the fully-qualified name of the RadioService's RemoveTrack
@@ -56,6 +59,7 @@ type RadioServiceClient interface {
 	Ping(context.Context, *connect.Request[proto.PingRequest]) (*connect.Response[proto.PingResponse], error)
 	CreateSession(context.Context, *connect.Request[proto.CreateSessionRequest]) (*connect.Response[proto.CreateSessionResponse], error)
 	GetSession(context.Context, *connect.Request[proto.GetSessionRequest]) (*connect.Response[proto.GetSessionResponse], error)
+	DeleteSession(context.Context, *connect.Request[proto.DeleteSessionRequest]) (*connect.Response[proto.DeleteSessionResponse], error)
 	AddTrack(context.Context, *connect.Request[proto.AddTrackRequest]) (*connect.Response[proto.AddTrackResponse], error)
 	RemoveTrack(context.Context, *connect.Request[proto.RemoveTrackRequest]) (*connect.Response[proto.RemoveTrackResponse], error)
 	SkipTrack(context.Context, *connect.Request[proto.SkipTrackRequest]) (*connect.Response[proto.SkipTrackResponse], error)
@@ -91,6 +95,12 @@ func NewRadioServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 			connect.WithSchema(radioServiceMethods.ByName("GetSession")),
 			connect.WithClientOptions(opts...),
 		),
+		deleteSession: connect.NewClient[proto.DeleteSessionRequest, proto.DeleteSessionResponse](
+			httpClient,
+			baseURL+RadioServiceDeleteSessionProcedure,
+			connect.WithSchema(radioServiceMethods.ByName("DeleteSession")),
+			connect.WithClientOptions(opts...),
+		),
 		addTrack: connect.NewClient[proto.AddTrackRequest, proto.AddTrackResponse](
 			httpClient,
 			baseURL+RadioServiceAddTrackProcedure,
@@ -123,6 +133,7 @@ type radioServiceClient struct {
 	ping          *connect.Client[proto.PingRequest, proto.PingResponse]
 	createSession *connect.Client[proto.CreateSessionRequest, proto.CreateSessionResponse]
 	getSession    *connect.Client[proto.GetSessionRequest, proto.GetSessionResponse]
+	deleteSession *connect.Client[proto.DeleteSessionRequest, proto.DeleteSessionResponse]
 	addTrack      *connect.Client[proto.AddTrackRequest, proto.AddTrackResponse]
 	removeTrack   *connect.Client[proto.RemoveTrackRequest, proto.RemoveTrackResponse]
 	skipTrack     *connect.Client[proto.SkipTrackRequest, proto.SkipTrackResponse]
@@ -142,6 +153,11 @@ func (c *radioServiceClient) CreateSession(ctx context.Context, req *connect.Req
 // GetSession calls RadioService.GetSession.
 func (c *radioServiceClient) GetSession(ctx context.Context, req *connect.Request[proto.GetSessionRequest]) (*connect.Response[proto.GetSessionResponse], error) {
 	return c.getSession.CallUnary(ctx, req)
+}
+
+// DeleteSession calls RadioService.DeleteSession.
+func (c *radioServiceClient) DeleteSession(ctx context.Context, req *connect.Request[proto.DeleteSessionRequest]) (*connect.Response[proto.DeleteSessionResponse], error) {
+	return c.deleteSession.CallUnary(ctx, req)
 }
 
 // AddTrack calls RadioService.AddTrack.
@@ -169,6 +185,7 @@ type RadioServiceHandler interface {
 	Ping(context.Context, *connect.Request[proto.PingRequest]) (*connect.Response[proto.PingResponse], error)
 	CreateSession(context.Context, *connect.Request[proto.CreateSessionRequest]) (*connect.Response[proto.CreateSessionResponse], error)
 	GetSession(context.Context, *connect.Request[proto.GetSessionRequest]) (*connect.Response[proto.GetSessionResponse], error)
+	DeleteSession(context.Context, *connect.Request[proto.DeleteSessionRequest]) (*connect.Response[proto.DeleteSessionResponse], error)
 	AddTrack(context.Context, *connect.Request[proto.AddTrackRequest]) (*connect.Response[proto.AddTrackResponse], error)
 	RemoveTrack(context.Context, *connect.Request[proto.RemoveTrackRequest]) (*connect.Response[proto.RemoveTrackResponse], error)
 	SkipTrack(context.Context, *connect.Request[proto.SkipTrackRequest]) (*connect.Response[proto.SkipTrackResponse], error)
@@ -198,6 +215,12 @@ func NewRadioServiceHandler(svc RadioServiceHandler, opts ...connect.HandlerOpti
 		RadioServiceGetSessionProcedure,
 		svc.GetSession,
 		connect.WithSchema(radioServiceMethods.ByName("GetSession")),
+		connect.WithHandlerOptions(opts...),
+	)
+	radioServiceDeleteSessionHandler := connect.NewUnaryHandler(
+		RadioServiceDeleteSessionProcedure,
+		svc.DeleteSession,
+		connect.WithSchema(radioServiceMethods.ByName("DeleteSession")),
 		connect.WithHandlerOptions(opts...),
 	)
 	radioServiceAddTrackHandler := connect.NewUnaryHandler(
@@ -232,6 +255,8 @@ func NewRadioServiceHandler(svc RadioServiceHandler, opts ...connect.HandlerOpti
 			radioServiceCreateSessionHandler.ServeHTTP(w, r)
 		case RadioServiceGetSessionProcedure:
 			radioServiceGetSessionHandler.ServeHTTP(w, r)
+		case RadioServiceDeleteSessionProcedure:
+			radioServiceDeleteSessionHandler.ServeHTTP(w, r)
 		case RadioServiceAddTrackProcedure:
 			radioServiceAddTrackHandler.ServeHTTP(w, r)
 		case RadioServiceRemoveTrackProcedure:
@@ -259,6 +284,10 @@ func (UnimplementedRadioServiceHandler) CreateSession(context.Context, *connect.
 
 func (UnimplementedRadioServiceHandler) GetSession(context.Context, *connect.Request[proto.GetSessionRequest]) (*connect.Response[proto.GetSessionResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("RadioService.GetSession is not implemented"))
+}
+
+func (UnimplementedRadioServiceHandler) DeleteSession(context.Context, *connect.Request[proto.DeleteSessionRequest]) (*connect.Response[proto.DeleteSessionResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("RadioService.DeleteSession is not implemented"))
 }
 
 func (UnimplementedRadioServiceHandler) AddTrack(context.Context, *connect.Request[proto.AddTrackRequest]) (*connect.Response[proto.AddTrackResponse], error) {

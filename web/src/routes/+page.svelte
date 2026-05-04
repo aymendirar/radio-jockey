@@ -33,8 +33,4 @@
 	ul {
 		list-style-type: '>  ';
 	}
-
-  a, a:visited {
-    color: unset;
-  }
 </style>

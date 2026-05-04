@@ -22,6 +22,7 @@ const (
 	RadioService_Ping_FullMethodName          = "/RadioService/Ping"
 	RadioService_CreateSession_FullMethodName = "/RadioService/CreateSession"
 	RadioService_GetSession_FullMethodName    = "/RadioService/GetSession"
+	RadioService_DeleteSession_FullMethodName = "/RadioService/DeleteSession"
 	RadioService_AddTrack_FullMethodName      = "/RadioService/AddTrack"
 	RadioService_RemoveTrack_FullMethodName   = "/RadioService/RemoveTrack"
 	RadioService_SkipTrack_FullMethodName     = "/RadioService/SkipTrack"
@@ -35,6 +36,7 @@ type RadioServiceClient interface {
 	Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error)
 	CreateSession(ctx context.Context, in *CreateSessionRequest, opts ...grpc.CallOption) (*CreateSessionResponse, error)
 	GetSession(ctx context.Context, in *GetSessionRequest, opts ...grpc.CallOption) (*GetSessionResponse, error)
+	DeleteSession(ctx context.Context, in *DeleteSessionRequest, opts ...grpc.CallOption) (*DeleteSessionResponse, error)
 	AddTrack(ctx context.Context, in *AddTrackRequest, opts ...grpc.CallOption) (*AddTrackResponse, error)
 	RemoveTrack(ctx context.Context, in *RemoveTrackRequest, opts ...grpc.CallOption) (*RemoveTrackResponse, error)
 	SkipTrack(ctx context.Context, in *SkipTrackRequest, opts ...grpc.CallOption) (*SkipTrackResponse, error)
@@ -73,6 +75,16 @@ func (c *radioServiceClient) GetSession(ctx context.Context, in *GetSessionReque
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetSessionResponse)
 	err := c.cc.Invoke(ctx, RadioService_GetSession_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *radioServiceClient) DeleteSession(ctx context.Context, in *DeleteSessionRequest, opts ...grpc.CallOption) (*DeleteSessionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteSessionResponse)
+	err := c.cc.Invoke(ctx, RadioService_DeleteSession_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -126,6 +138,7 @@ type RadioServiceServer interface {
 	Ping(context.Context, *PingRequest) (*PingResponse, error)
 	CreateSession(context.Context, *CreateSessionRequest) (*CreateSessionResponse, error)
 	GetSession(context.Context, *GetSessionRequest) (*GetSessionResponse, error)
+	DeleteSession(context.Context, *DeleteSessionRequest) (*DeleteSessionResponse, error)
 	AddTrack(context.Context, *AddTrackRequest) (*AddTrackResponse, error)
 	RemoveTrack(context.Context, *RemoveTrackRequest) (*RemoveTrackResponse, error)
 	SkipTrack(context.Context, *SkipTrackRequest) (*SkipTrackResponse, error)
@@ -148,6 +161,9 @@ func (UnimplementedRadioServiceServer) CreateSession(context.Context, *CreateSes
 }
 func (UnimplementedRadioServiceServer) GetSession(context.Context, *GetSessionRequest) (*GetSessionResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetSession not implemented")
+}
+func (UnimplementedRadioServiceServer) DeleteSession(context.Context, *DeleteSessionRequest) (*DeleteSessionResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteSession not implemented")
 }
 func (UnimplementedRadioServiceServer) AddTrack(context.Context, *AddTrackRequest) (*AddTrackResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method AddTrack not implemented")
@@ -232,6 +248,24 @@ func _RadioService_GetSession_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RadioServiceServer).GetSession(ctx, req.(*GetSessionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RadioService_DeleteSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteSessionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RadioServiceServer).DeleteSession(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RadioService_DeleteSession_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RadioServiceServer).DeleteSession(ctx, req.(*DeleteSessionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -326,6 +360,10 @@ var RadioService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetSession",
 			Handler:    _RadioService_GetSession_Handler,
+		},
+		{
+			MethodName: "DeleteSession",
+			Handler:    _RadioService_DeleteSession_Handler,
 		},
 		{
 			MethodName: "AddTrack",

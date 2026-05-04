@@ -14,6 +14,7 @@ import (
 	"server/src/db"
 	"server/src/session"
 	"strings"
+	"sync"
 	"time"
 
 	"server/src/util"
@@ -38,6 +39,8 @@ type IcecastClient struct {
 	icecastPort     string
 	icecastPassword string
 	streamBaseURL   string
+	mu              sync.Mutex
+	cancels         map[session.SessionID]context.CancelFunc
 }
 
 func CreateIcecastClient(
@@ -53,6 +56,7 @@ func CreateIcecastClient(
 		icecastPort:     icecastPort,
 		icecastPassword: icecastPassword,
 		streamBaseURL:   streamBaseURL,
+		cancels:         make(map[session.SessionID]context.CancelFunc),
 	}
 }
 
@@ -77,7 +81,20 @@ func (i *IcecastClient) StreamSessions(ctx context.Context) {
 					slog.Error("icecast: session not found after creation event", "sessionID", event.SessionID, "err", err)
 					return
 				}
-				go i.streamSession(ctx, queue, event.SessionID, event.Ready)
+				sessionCtx, cancel := context.WithCancel(ctx)
+				i.mu.Lock()
+				i.cancels[event.SessionID] = cancel
+				i.mu.Unlock()
+				go i.streamSession(sessionCtx, queue, event.SessionID, event.Ready)
+			case session.SessionDeleted:
+				i.mu.Lock()
+				cancel, ok := i.cancels[event.SessionID]
+				delete(i.cancels, event.SessionID)
+				i.mu.Unlock()
+				if ok {
+					slog.Info("icecast ending stream for deleted session", "sessionID", event.SessionID)
+					cancel()
+				}
 			}
 		}
 	}
@@ -86,13 +103,14 @@ func (i *IcecastClient) StreamSessions(ctx context.Context) {
 func (i *IcecastClient) streamSession(ctx context.Context, queue *session.SessionQueue, sessionID session.SessionID, ready chan error) {
 	mountpoint := Mountpoint(STREAM_PATH_PREFIX + "/" + string(sessionID))
 
-	defer func() {
+	endSession := func() {
 		deleteCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 		if err := i.sessionManager.DeleteSession(deleteCtx, sessionID); err != nil {
 			slog.Error("failed to delete session", "mountpoint", mountpoint, "err", err)
 		}
-	}()
+	}
+	defer endSession()
 
 	icecastConnection, err := i.connectWithRetry(ctx, mountpoint)
 	if err != nil {
@@ -223,7 +241,7 @@ func streamSilencePCM(ctx context.Context, w io.Writer, queue *session.SessionQu
 			"-loglevel", "error",
 			"-re",
 			"-f", "lavfi",
-			"-i", "anullsrc=r=" + PCM_SAMPLE_RATE + ":cl=stereo",
+			"-i", "anullsrc=r="+PCM_SAMPLE_RATE+":cl=stereo",
 			"-f", "s16le", "-ar", PCM_SAMPLE_RATE, "-ac", "2",
 			"pipe:1",
 		)
@@ -252,6 +270,7 @@ func watchForSkip(ctx context.Context, queue *session.SessionQueue) (context.Con
 	trackCtx, cancel := context.WithCancel(ctx)
 	skipped := false
 	done := make(chan struct{})
+
 	go func() {
 		defer close(done)
 		select {
@@ -263,7 +282,8 @@ func watchForSkip(ctx context.Context, queue *session.SessionQueue) (context.Con
 		case <-trackCtx.Done():
 		}
 	}()
-	return trackCtx, func() bool {
+
+	stop := func() bool {
 		cancel()
 		<-done
 		if !skipped {
@@ -274,6 +294,8 @@ func watchForSkip(ctx context.Context, queue *session.SessionQueue) (context.Con
 		}
 		return skipped
 	}
+
+	return trackCtx, stop
 }
 
 func (i *IcecastClient) connectWithRetry(ctx context.Context, mountpoint Mountpoint) (io.WriteCloser, error) {

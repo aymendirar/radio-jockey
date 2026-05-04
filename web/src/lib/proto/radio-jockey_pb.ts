@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file radio-jockey.proto.
  */
 export const file_radio_jockey: GenFile = /*@__PURE__*/
-  fileDesc("ChJyYWRpby1qb2NrZXkucHJvdG8iDQoLUGluZ1JlcXVlc3QiHwoMUGluZ1Jlc3BvbnNlEg8KB21lc3NhZ2UYASABKAkiKgoUQ3JlYXRlU2Vzc2lvblJlcXVlc3QSEgoKc2Vzc2lvbl9pZBgBIAEoCSIrChVDcmVhdGVTZXNzaW9uUmVzcG9uc2USEgoKc3RyZWFtX3VybBgBIAEoCSInChFHZXRTZXNzaW9uUmVxdWVzdBISCgpzZXNzaW9uX2lkGAEgASgJIigKEkdldFNlc3Npb25SZXNwb25zZRISCgpzdHJlYW1fdXJsGAEgASgJIjgKD0FkZFRyYWNrUmVxdWVzdBISCgpzZXNzaW9uX2lkGAEgASgJEhEKCXRyYWNrX3VybBgCIAEoCSIpChBBZGRUcmFja1Jlc3BvbnNlEhUKBXRyYWNrGAEgASgLMgYuVHJhY2siNwoSUmVtb3ZlVHJhY2tSZXF1ZXN0EhIKCnNlc3Npb25faWQYASABKAkSDQoFaW5kZXgYAiABKA0iFQoTUmVtb3ZlVHJhY2tSZXNwb25zZSImChBTa2lwVHJhY2tSZXF1ZXN0EhIKCnNlc3Npb25faWQYASABKAkiEwoRU2tpcFRyYWNrUmVzcG9uc2UiJgoQTGlzdFF1ZXVlUmVxdWVzdBISCgpzZXNzaW9uX2lkGAEgASgJIisKEUxpc3RRdWV1ZVJlc3BvbnNlEhYKBnRyYWNrcxgBIAMoCzIGLlRyYWNrImcKBVRyYWNrEgoKAmlkGAEgASgDEg4KBnNvdXJjZRgCIAEoCRIRCglzb3VyY2VfaWQYAyABKAkSDQoFdGl0bGUYBCABKAkSDgoGYXJ0aXN0GAUgASgJEhAKCGR1cmF0aW9uGAYgASgDMosDCgxSYWRpb1NlcnZpY2USJQoEUGluZxIMLlBpbmdSZXF1ZXN0Gg0uUGluZ1Jlc3BvbnNlIgASQAoNQ3JlYXRlU2Vzc2lvbhIVLkNyZWF0ZVNlc3Npb25SZXF1ZXN0GhYuQ3JlYXRlU2Vzc2lvblJlc3BvbnNlIgASNwoKR2V0U2Vzc2lvbhISLkdldFNlc3Npb25SZXF1ZXN0GhMuR2V0U2Vzc2lvblJlc3BvbnNlIgASMQoIQWRkVHJhY2sSEC5BZGRUcmFja1JlcXVlc3QaES5BZGRUcmFja1Jlc3BvbnNlIgASOgoLUmVtb3ZlVHJhY2sSEy5SZW1vdmVUcmFja1JlcXVlc3QaFC5SZW1vdmVUcmFja1Jlc3BvbnNlIgASNAoJU2tpcFRyYWNrEhEuU2tpcFRyYWNrUmVxdWVzdBoSLlNraXBUcmFja1Jlc3BvbnNlIgASNAoJTGlzdFF1ZXVlEhEuTGlzdFF1ZXVlUmVxdWVzdBoSLkxpc3RRdWV1ZVJlc3BvbnNlIgBCEloQc2VydmVyL3NyYy9wcm90b2IGcHJvdG8z");
+  fileDesc("ChJyYWRpby1qb2NrZXkucHJvdG8iDQoLUGluZ1JlcXVlc3QiHwoMUGluZ1Jlc3BvbnNlEg8KB21lc3NhZ2UYASABKAkiKgoUQ3JlYXRlU2Vzc2lvblJlcXVlc3QSEgoKc2Vzc2lvbl9pZBgBIAEoCSIrChVDcmVhdGVTZXNzaW9uUmVzcG9uc2USEgoKc3RyZWFtX3VybBgBIAEoCSInChFHZXRTZXNzaW9uUmVxdWVzdBISCgpzZXNzaW9uX2lkGAEgASgJIigKEkdldFNlc3Npb25SZXNwb25zZRISCgpzdHJlYW1fdXJsGAEgASgJIioKFERlbGV0ZVNlc3Npb25SZXF1ZXN0EhIKCnNlc3Npb25faWQYASABKAkiFwoVRGVsZXRlU2Vzc2lvblJlc3BvbnNlIjgKD0FkZFRyYWNrUmVxdWVzdBISCgpzZXNzaW9uX2lkGAEgASgJEhEKCXRyYWNrX3VybBgCIAEoCSIpChBBZGRUcmFja1Jlc3BvbnNlEhUKBXRyYWNrGAEgASgLMgYuVHJhY2siNwoSUmVtb3ZlVHJhY2tSZXF1ZXN0EhIKCnNlc3Npb25faWQYASABKAkSDQoFaW5kZXgYAiABKA0iFQoTUmVtb3ZlVHJhY2tSZXNwb25zZSImChBTa2lwVHJhY2tSZXF1ZXN0EhIKCnNlc3Npb25faWQYASABKAkiEwoRU2tpcFRyYWNrUmVzcG9uc2UiJgoQTGlzdFF1ZXVlUmVxdWVzdBISCgpzZXNzaW9uX2lkGAEgASgJIisKEUxpc3RRdWV1ZVJlc3BvbnNlEhYKBnRyYWNrcxgBIAMoCzIGLlRyYWNrImcKBVRyYWNrEgoKAmlkGAEgASgDEg4KBnNvdXJjZRgCIAEoCRIRCglzb3VyY2VfaWQYAyABKAkSDQoFdGl0bGUYBCABKAkSDgoGYXJ0aXN0GAUgASgJEhAKCGR1cmF0aW9uGAYgASgDMs0DCgxSYWRpb1NlcnZpY2USJQoEUGluZxIMLlBpbmdSZXF1ZXN0Gg0uUGluZ1Jlc3BvbnNlIgASQAoNQ3JlYXRlU2Vzc2lvbhIVLkNyZWF0ZVNlc3Npb25SZXF1ZXN0GhYuQ3JlYXRlU2Vzc2lvblJlc3BvbnNlIgASNwoKR2V0U2Vzc2lvbhISLkdldFNlc3Npb25SZXF1ZXN0GhMuR2V0U2Vzc2lvblJlc3BvbnNlIgASQAoNRGVsZXRlU2Vzc2lvbhIVLkRlbGV0ZVNlc3Npb25SZXF1ZXN0GhYuRGVsZXRlU2Vzc2lvblJlc3BvbnNlIgASMQoIQWRkVHJhY2sSEC5BZGRUcmFja1JlcXVlc3QaES5BZGRUcmFja1Jlc3BvbnNlIgASOgoLUmVtb3ZlVHJhY2sSEy5SZW1vdmVUcmFja1JlcXVlc3QaFC5SZW1vdmVUcmFja1Jlc3BvbnNlIgASNAoJU2tpcFRyYWNrEhEuU2tpcFRyYWNrUmVxdWVzdBoSLlNraXBUcmFja1Jlc3BvbnNlIgASNAoJTGlzdFF1ZXVlEhEuTGlzdFF1ZXVlUmVxdWVzdBoSLkxpc3RRdWV1ZVJlc3BvbnNlIgBCEloQc2VydmVyL3NyYy9wcm90b2IGcHJvdG8z");
 
 /**
  * @generated from message PingRequest
@@ -111,6 +111,36 @@ export const GetSessionResponseSchema: GenMessage<GetSessionResponse> = /*@__PUR
   messageDesc(file_radio_jockey, 5);
 
 /**
+ * @generated from message DeleteSessionRequest
+ */
+export type DeleteSessionRequest = Message<"DeleteSessionRequest"> & {
+  /**
+   * @generated from field: string session_id = 1;
+   */
+  sessionId: string;
+};
+
+/**
+ * Describes the message DeleteSessionRequest.
+ * Use `create(DeleteSessionRequestSchema)` to create a new message.
+ */
+export const DeleteSessionRequestSchema: GenMessage<DeleteSessionRequest> = /*@__PURE__*/
+  messageDesc(file_radio_jockey, 6);
+
+/**
+ * @generated from message DeleteSessionResponse
+ */
+export type DeleteSessionResponse = Message<"DeleteSessionResponse"> & {
+};
+
+/**
+ * Describes the message DeleteSessionResponse.
+ * Use `create(DeleteSessionResponseSchema)` to create a new message.
+ */
+export const DeleteSessionResponseSchema: GenMessage<DeleteSessionResponse> = /*@__PURE__*/
+  messageDesc(file_radio_jockey, 7);
+
+/**
  * @generated from message AddTrackRequest
  */
 export type AddTrackRequest = Message<"AddTrackRequest"> & {
@@ -130,7 +160,7 @@ export type AddTrackRequest = Message<"AddTrackRequest"> & {
  * Use `create(AddTrackRequestSchema)` to create a new message.
  */
 export const AddTrackRequestSchema: GenMessage<AddTrackRequest> = /*@__PURE__*/
-  messageDesc(file_radio_jockey, 6);
+  messageDesc(file_radio_jockey, 8);
 
 /**
  * @generated from message AddTrackResponse
@@ -147,7 +177,7 @@ export type AddTrackResponse = Message<"AddTrackResponse"> & {
  * Use `create(AddTrackResponseSchema)` to create a new message.
  */
 export const AddTrackResponseSchema: GenMessage<AddTrackResponse> = /*@__PURE__*/
-  messageDesc(file_radio_jockey, 7);
+  messageDesc(file_radio_jockey, 9);
 
 /**
  * @generated from message RemoveTrackRequest
@@ -169,7 +199,7 @@ export type RemoveTrackRequest = Message<"RemoveTrackRequest"> & {
  * Use `create(RemoveTrackRequestSchema)` to create a new message.
  */
 export const RemoveTrackRequestSchema: GenMessage<RemoveTrackRequest> = /*@__PURE__*/
-  messageDesc(file_radio_jockey, 8);
+  messageDesc(file_radio_jockey, 10);
 
 /**
  * @generated from message RemoveTrackResponse
@@ -182,7 +212,7 @@ export type RemoveTrackResponse = Message<"RemoveTrackResponse"> & {
  * Use `create(RemoveTrackResponseSchema)` to create a new message.
  */
 export const RemoveTrackResponseSchema: GenMessage<RemoveTrackResponse> = /*@__PURE__*/
-  messageDesc(file_radio_jockey, 9);
+  messageDesc(file_radio_jockey, 11);
 
 /**
  * @generated from message SkipTrackRequest
@@ -199,7 +229,7 @@ export type SkipTrackRequest = Message<"SkipTrackRequest"> & {
  * Use `create(SkipTrackRequestSchema)` to create a new message.
  */
 export const SkipTrackRequestSchema: GenMessage<SkipTrackRequest> = /*@__PURE__*/
-  messageDesc(file_radio_jockey, 10);
+  messageDesc(file_radio_jockey, 12);
 
 /**
  * @generated from message SkipTrackResponse
@@ -212,7 +242,7 @@ export type SkipTrackResponse = Message<"SkipTrackResponse"> & {
  * Use `create(SkipTrackResponseSchema)` to create a new message.
  */
 export const SkipTrackResponseSchema: GenMessage<SkipTrackResponse> = /*@__PURE__*/
-  messageDesc(file_radio_jockey, 11);
+  messageDesc(file_radio_jockey, 13);
 
 /**
  * @generated from message ListQueueRequest
@@ -229,7 +259,7 @@ export type ListQueueRequest = Message<"ListQueueRequest"> & {
  * Use `create(ListQueueRequestSchema)` to create a new message.
  */
 export const ListQueueRequestSchema: GenMessage<ListQueueRequest> = /*@__PURE__*/
-  messageDesc(file_radio_jockey, 12);
+  messageDesc(file_radio_jockey, 14);
 
 /**
  * @generated from message ListQueueResponse
@@ -246,7 +276,7 @@ export type ListQueueResponse = Message<"ListQueueResponse"> & {
  * Use `create(ListQueueResponseSchema)` to create a new message.
  */
 export const ListQueueResponseSchema: GenMessage<ListQueueResponse> = /*@__PURE__*/
-  messageDesc(file_radio_jockey, 13);
+  messageDesc(file_radio_jockey, 15);
 
 /**
  * @generated from message Track
@@ -288,7 +318,7 @@ export type Track = Message<"Track"> & {
  * Use `create(TrackSchema)` to create a new message.
  */
 export const TrackSchema: GenMessage<Track> = /*@__PURE__*/
-  messageDesc(file_radio_jockey, 14);
+  messageDesc(file_radio_jockey, 16);
 
 /**
  * @generated from service RadioService
@@ -317,6 +347,14 @@ export const RadioService: GenService<{
     methodKind: "unary";
     input: typeof GetSessionRequestSchema;
     output: typeof GetSessionResponseSchema;
+  },
+  /**
+   * @generated from rpc RadioService.DeleteSession
+   */
+  deleteSession: {
+    methodKind: "unary";
+    input: typeof DeleteSessionRequestSchema;
+    output: typeof DeleteSessionResponseSchema;
   },
   /**
    * @generated from rpc RadioService.AddTrack

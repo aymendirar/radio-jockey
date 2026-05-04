@@ -17,19 +17,34 @@
 
 <style>
 	@font-face {
-		font-family: 'Pixeled';
-		src: url('/pixel.ttf') format('truetype');
+		font-family: '04B_30';
+		src: url('04B_30.TTF') format('truetype');
+	}
+
+	@font-face {
+		font-family: 'dogica';
+		src: url('/dogica.ttf') format('truetype');
 	}
 
 	html {
-		font-family: 'tahoma'
+    font-family: 'dogica';
 	}
-	a,
-	a:visited,
-	a:hover,
-	a:active {
-		color: inherit;
+
+	h1 {
+    font-size: 2em;
+		font-family: '04B_30';
+    padding-bottom: 20px;
 	}
+
+	@media (max-width: 600px) {
+		h1 {
+			text-align: center;
+		}
+	}
+
+  p, ul {
+    font-size: 12px;
+  }
 
 	body {
 		margin: 0;
@@ -37,6 +52,7 @@
 		background-color: #01026f;
 		color: white;
 		position: relative;
+    line-height: 24px;
 	}
 
 	.bg-grid {
@@ -45,7 +61,7 @@
 		background-image: url('/radio2.png');
 		background-size: 80px 80px;
 		background-repeat: space;
-		opacity: 0.25;
+		opacity: 0.35;
 		pointer-events: none;
 		z-index: 0;
 	}
@@ -55,4 +71,17 @@
 		z-index: 1;
 		padding: 8px 24px;
 	}
+
+	a,
+	a:visited,
+	a:hover,
+	a:active {
+		color: inherit;
+    text-decoration: none;
+	}
+
+  a:hover {
+    text-decoration: underline;
+
+  }
 </style>
