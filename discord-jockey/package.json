@@ -20,6 +20,7 @@
     "@discordjs/voice": "^0.19.2",
     "discord.js": "^14.26.3",
     "dotenv": "^17.4.2",
+    "paseto-ts": "^2.0.6",
     "serialize-error": "^13.0.1"
   }
 }

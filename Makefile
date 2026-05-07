@@ -1,4 +1,4 @@
-.PHONY: prod dev logs codegen clean
+.PHONY: prod dev logs codegen clean prune genkeys signnonce
 
 prod:
 	docker compose up --build
@@ -11,8 +11,17 @@ dev:
 logs:
 	docker compose logs -f $(service)
 
+clean:
+	docker compose down --rmi local --volumes --remove-orphans
+
 codegen:
 	docker compose run --rm codegen
 
-clean:
-	docker compose down --rmi local --volumes --remove-orphans
+prune:
+	docker system prune -a --volumes
+
+genkeys:
+	cd server && go run ./cmd/genkeys
+
+signnonce:
+	cd server && go run ./cmd/signnonce $(nonce)

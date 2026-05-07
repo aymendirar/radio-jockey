@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/signal"
 	"server/src/connect"
+	"server/src/connect/auth"
 	"server/src/db"
 	"server/src/icecast"
 	"server/src/music"
@@ -56,7 +57,11 @@ func run() error {
 	)
 	slog.Info("icecast client created", "host", env.ICECAST_SERVER_HOST, "port", env.ICECAST_SERVER_PORT, "stream_base_url", env.STREAM_BASE_URL)
 
-	server, err := connect.CreateServer(env.HOST, env.PORT, sessionManager, youtube, icecast)
+	a, err := auth.NewAuth(env.PRIVATE_PASETO_KEY, env.PUBLIC_PASETO_KEY, 2*time.Minute)
+	if err != nil {
+		return fmt.Errorf("failed to create auth: %v", err)
+	}
+	server, err := connect.CreateServer(env.HOST, env.PORT, sessionManager, youtube, icecast, a)
 	if err != nil {
 		return fmt.Errorf("failed to create server: %v", err)
 	}

@@ -14,6 +14,8 @@ type Environment struct {
 	ICECAST_SERVER_PORT     string `env:"ICECAST_SERVER_PORT"`
 	ICECAST_SERVER_PASSWORD string `env:"ICECAST_SERVER_PASSWORD"`
 	STREAM_BASE_URL         string `env:"STREAM_BASE_URL"`
+	PUBLIC_PASETO_KEY  string `env:"PUBLIC_PASETO_KEY"`
+	PRIVATE_PASETO_KEY string `env:"PRIVATE_PASETO_KEY"`
 }
 
 func LoadEnv() (Environment, error) {

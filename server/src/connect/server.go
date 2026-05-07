@@ -1,12 +1,11 @@
 package connect
 
 import (
-	"context"
 	"fmt"
 	"log/slog"
 	"net/http"
-	"path"
 
+	"server/src/connect/auth"
 	"server/src/icecast"
 	"server/src/music"
 	"server/src/proto/protoconnect"
@@ -21,22 +20,7 @@ type Server struct {
 	sessionManager *session.SessionManager
 	youtube        *music.YouTube
 	icecast        *icecast.IcecastClient
-}
-
-func loggingInterceptor() connect.Interceptor {
-	return connect.UnaryInterceptorFunc(func(next connect.UnaryFunc) connect.UnaryFunc {
-		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
-			rpc := path.Base(req.Spec().Procedure)
-			slog.Info("RPC received", "rpc", rpc, "request", req.Any())
-			resp, err := next(ctx, req)
-			if err != nil {
-				slog.Error("RPC error", "rpc", rpc, "err", err)
-			} else {
-				slog.Info("RPC completed", "rpc", rpc, "response", resp.Any())
-			}
-			return resp, err
-		}
-	})
+	auth           *auth.Auth
 }
 
 func CreateServer(
@@ -44,16 +28,18 @@ func CreateServer(
 	port int,
 	sessionManager *session.SessionManager,
 	youtube *music.YouTube,
-	icecast *icecast.IcecastClient) (*http.Server, error) {
+	icecast *icecast.IcecastClient,
+	a *auth.Auth) (*http.Server, error) {
 	server := &Server{
 		sessionManager: sessionManager,
 		youtube:        youtube,
 		icecast:        icecast,
+		auth:           a,
 	}
 	mux := http.NewServeMux()
 	servicePath, handler := protoconnect.NewRadioServiceHandler(
 		server,
-		connect.WithInterceptors(loggingInterceptor(), validate.NewInterceptor()),
+		connect.WithInterceptors(stripInterceptor(), loggingInterceptor(), validate.NewInterceptor(), authInterceptor(a)),
 	)
 	mux.Handle(servicePath, handler)
 	p := new(http.Protocols)

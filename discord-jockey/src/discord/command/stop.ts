@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, type CacheType } from "discord.js";
 import { Code } from "@connectrpc/connect";
-import { radioClient } from "../../connect/client.js";
+import { deleteSession } from "../../connect/auth/auth.js";
 import { withConnectError } from "../../util/helpers.js";
 import { logger } from "../../util/logger.js";
 import { stopSession } from "./play.js";
@@ -15,7 +15,7 @@ export async function registerStopCommand(
 
   await withConnectError(
     async () => {
-      await radioClient.deleteSession({ sessionId });
+      await deleteSession(sessionId);
       stopSession(sessionId);
       logger.info("session stopped", { sessionId });
       await interaction.reply("Stopped and left the voice channel.");

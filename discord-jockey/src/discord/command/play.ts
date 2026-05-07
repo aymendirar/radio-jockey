@@ -5,6 +5,7 @@ import {
   entersState,
   StreamType,
   joinVoiceChannel,
+  VoiceConnection,
   VoiceConnectionStatus,
 } from "@discordjs/voice";
 import {
@@ -19,22 +20,17 @@ import { withConnectError } from "../../util/helpers.js";
 import { logger } from "../../util/logger.js";
 import { PassThrough } from "node:stream";
 import http from "node:http";
+import { hasSession, createSession, setBuffer, destroySession } from "../sessions.js";
 
 const KILOBYTE = 1024;
 const MEGABYTE = KILOBYTE * KILOBYTE;
-const BUFFER_SIZE = 20 * MEGABYTE
-
-type VoiceConnection = Awaited<ReturnType<typeof connectToChannel>>;
-const activeSessions = new Map<string, VoiceConnection>();
-const guildBuffers = new Map<string, PassThrough>();
+const BUFFER_SIZE = 20 * MEGABYTE;
 
 export function stopSession(sessionId: string) {
-  activeSessions.get(sessionId)?.destroy();
-  activeSessions.delete(sessionId);
-  guildBuffers.delete(sessionId);
+  destroySession(sessionId);
 }
 
-async function connectToChannel(channel: VoiceBasedChannel) {
+async function connectToChannel(channel: VoiceBasedChannel): Promise<VoiceConnection> {
   const connection = joinVoiceChannel({
     channelId: channel.id,
     guildId: channel.guild.id,
@@ -123,7 +119,7 @@ export async function registerPlayCommand(
   const sessionId = interaction.guildId!;
   logger.info("play command received", { sessionId, trackUrl });
 
-  if (activeSessions.has(sessionId)) {
+  if (hasSession(sessionId)) {
     if (trackUrl) {
       await interaction.reply(`Adding **${trackUrl}** to the queue...`);
       await addTrack(interaction, sessionId, trackUrl);
@@ -174,7 +170,7 @@ export async function registerPlayCommand(
     currentRequest?.removeAllListeners();
     currentRequest?.destroy();
     const buffer = new PassThrough({ highWaterMark: BUFFER_SIZE });
-    guildBuffers.set(sessionId, buffer);
+    setBuffer(sessionId, buffer);
     currentRequest = http.get(streamUrl, (res) => {
       res.on("end", () => {
         logger.info("stream ended, leaving voice channel", { sessionId });
@@ -205,7 +201,7 @@ export async function registerPlayCommand(
       logger.info("player idle, reconnecting stream", { sessionId });
       startStream(connection);
     });
-    activeSessions.set(sessionId, connection);
+    createSession(sessionId, connection);
     startStream(connection);
     logger.info("stream started", { sessionId, streamUrl });
   } catch (err) {

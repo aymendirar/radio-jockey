@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { AddTrackRequest, AddTrackResponse, CreateSessionRequest, CreateSessionResponse, DeleteSessionRequest, DeleteSessionResponse, GetSessionRequest, GetSessionResponse, ListQueueRequest, ListQueueResponse, PingRequest, PingResponse, RemoveTrackRequest, RemoveTrackResponse, SkipTrackRequest, SkipTrackResponse } from "./radio-jockey_pb.js";
+import { AddTrackRequest, AddTrackResponse, CreateSessionRequest, CreateSessionResponse, DeleteSessionAuthRequest, DeleteSessionAuthResponse, GetSessionRequest, GetSessionResponse, ListQueueRequest, ListQueueResponse, PingRequest, PingResponse, RemoveTrackRequest, RemoveTrackResponse, RequestNonceRequest, RequestNonceResponse, RespondNonceRequest, RespondNonceResponse, SkipTrackRequest, SkipTrackResponse } from "./radio-jockey_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -19,6 +19,24 @@ export const RadioService = {
       name: "Ping",
       I: PingRequest,
       O: PingResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc RadioService.RequestNonce
+     */
+    requestNonce: {
+      name: "RequestNonce",
+      I: RequestNonceRequest,
+      O: RequestNonceResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc RadioService.RespondNonce
+     */
+    respondNonce: {
+      name: "RespondNonce",
+      I: RespondNonceRequest,
+      O: RespondNonceResponse,
       kind: MethodKind.Unary,
     },
     /**
@@ -40,12 +58,12 @@ export const RadioService = {
       kind: MethodKind.Unary,
     },
     /**
-     * @generated from rpc RadioService.DeleteSession
+     * @generated from rpc RadioService.DeleteSessionAuth
      */
-    deleteSession: {
-      name: "DeleteSession",
-      I: DeleteSessionRequest,
-      O: DeleteSessionResponse,
+    deleteSessionAuth: {
+      name: "DeleteSessionAuth",
+      I: DeleteSessionAuthRequest,
+      O: DeleteSessionAuthResponse,
       kind: MethodKind.Unary,
     },
     /**

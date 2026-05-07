@@ -5,9 +5,12 @@ option go_package = "server/src/proto";
 service RadioService {
   rpc Ping (PingRequest) returns (PingResponse) {}
 
+  rpc RequestNonce(RequestNonceRequest) returns (RequestNonceResponse) {}
+  rpc RespondNonce(RespondNonceRequest) returns (RespondNonceResponse){}
+
   rpc CreateSession (CreateSessionRequest) returns (CreateSessionResponse) {}
   rpc GetSession (GetSessionRequest) returns (GetSessionResponse) {}
-  rpc DeleteSession (DeleteSessionRequest) returns (DeleteSessionResponse) {}
+  rpc DeleteSessionAuth (DeleteSessionAuthRequest) returns (DeleteSessionAuthResponse) {}
   rpc AddTrack (AddTrackRequest) returns (AddTrackResponse) {}
   rpc RemoveTrack (RemoveTrackRequest) returns (RemoveTrackResponse) {}
   rpc SkipTrack (SkipTrackRequest) returns (SkipTrackResponse) {}
@@ -33,10 +36,22 @@ message GetSessionResponse {
   string stream_url = 1;
 }
 
-message DeleteSessionRequest {
+message RequestNonceRequest { }
+message RequestNonceResponse {
+  string nonce = 1;
+}
+
+message RespondNonceRequest {
+  string pass_key = 1;
+}
+message RespondNonceResponse {
+  string auth_token = 1;
+}
+
+message DeleteSessionAuthRequest {
   string session_id = 1;
 }
-message DeleteSessionResponse {}
+message DeleteSessionAuthResponse { }
 
 message AddTrackRequest {
   string session_id = 1;

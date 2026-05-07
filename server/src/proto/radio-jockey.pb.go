@@ -277,28 +277,196 @@ func (x *GetSessionResponse) GetStreamUrl() string {
 	return ""
 }
 
-type DeleteSessionRequest struct {
+type RequestNonceRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RequestNonceRequest) Reset() {
+	*x = RequestNonceRequest{}
+	mi := &file_radio_jockey_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RequestNonceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RequestNonceRequest) ProtoMessage() {}
+
+func (x *RequestNonceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_radio_jockey_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RequestNonceRequest.ProtoReflect.Descriptor instead.
+func (*RequestNonceRequest) Descriptor() ([]byte, []int) {
+	return file_radio_jockey_proto_rawDescGZIP(), []int{6}
+}
+
+type RequestNonceResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Nonce         string                 `protobuf:"bytes,1,opt,name=nonce,proto3" json:"nonce,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RequestNonceResponse) Reset() {
+	*x = RequestNonceResponse{}
+	mi := &file_radio_jockey_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RequestNonceResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RequestNonceResponse) ProtoMessage() {}
+
+func (x *RequestNonceResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_radio_jockey_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RequestNonceResponse.ProtoReflect.Descriptor instead.
+func (*RequestNonceResponse) Descriptor() ([]byte, []int) {
+	return file_radio_jockey_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *RequestNonceResponse) GetNonce() string {
+	if x != nil {
+		return x.Nonce
+	}
+	return ""
+}
+
+type RespondNonceRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PassKey       string                 `protobuf:"bytes,1,opt,name=pass_key,json=passKey,proto3" json:"pass_key,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RespondNonceRequest) Reset() {
+	*x = RespondNonceRequest{}
+	mi := &file_radio_jockey_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RespondNonceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RespondNonceRequest) ProtoMessage() {}
+
+func (x *RespondNonceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_radio_jockey_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RespondNonceRequest.ProtoReflect.Descriptor instead.
+func (*RespondNonceRequest) Descriptor() ([]byte, []int) {
+	return file_radio_jockey_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *RespondNonceRequest) GetPassKey() string {
+	if x != nil {
+		return x.PassKey
+	}
+	return ""
+}
+
+type RespondNonceResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AuthToken     string                 `protobuf:"bytes,1,opt,name=auth_token,json=authToken,proto3" json:"auth_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RespondNonceResponse) Reset() {
+	*x = RespondNonceResponse{}
+	mi := &file_radio_jockey_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RespondNonceResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RespondNonceResponse) ProtoMessage() {}
+
+func (x *RespondNonceResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_radio_jockey_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RespondNonceResponse.ProtoReflect.Descriptor instead.
+func (*RespondNonceResponse) Descriptor() ([]byte, []int) {
+	return file_radio_jockey_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *RespondNonceResponse) GetAuthToken() string {
+	if x != nil {
+		return x.AuthToken
+	}
+	return ""
+}
+
+type DeleteSessionAuthRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	SessionId     string                 `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DeleteSessionRequest) Reset() {
-	*x = DeleteSessionRequest{}
-	mi := &file_radio_jockey_proto_msgTypes[6]
+func (x *DeleteSessionAuthRequest) Reset() {
+	*x = DeleteSessionAuthRequest{}
+	mi := &file_radio_jockey_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DeleteSessionRequest) String() string {
+func (x *DeleteSessionAuthRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DeleteSessionRequest) ProtoMessage() {}
+func (*DeleteSessionAuthRequest) ProtoMessage() {}
 
-func (x *DeleteSessionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_jockey_proto_msgTypes[6]
+func (x *DeleteSessionAuthRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_radio_jockey_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -309,39 +477,39 @@ func (x *DeleteSessionRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DeleteSessionRequest.ProtoReflect.Descriptor instead.
-func (*DeleteSessionRequest) Descriptor() ([]byte, []int) {
-	return file_radio_jockey_proto_rawDescGZIP(), []int{6}
+// Deprecated: Use DeleteSessionAuthRequest.ProtoReflect.Descriptor instead.
+func (*DeleteSessionAuthRequest) Descriptor() ([]byte, []int) {
+	return file_radio_jockey_proto_rawDescGZIP(), []int{10}
 }
 
-func (x *DeleteSessionRequest) GetSessionId() string {
+func (x *DeleteSessionAuthRequest) GetSessionId() string {
 	if x != nil {
 		return x.SessionId
 	}
 	return ""
 }
 
-type DeleteSessionResponse struct {
+type DeleteSessionAuthResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DeleteSessionResponse) Reset() {
-	*x = DeleteSessionResponse{}
-	mi := &file_radio_jockey_proto_msgTypes[7]
+func (x *DeleteSessionAuthResponse) Reset() {
+	*x = DeleteSessionAuthResponse{}
+	mi := &file_radio_jockey_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DeleteSessionResponse) String() string {
+func (x *DeleteSessionAuthResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DeleteSessionResponse) ProtoMessage() {}
+func (*DeleteSessionAuthResponse) ProtoMessage() {}
 
-func (x *DeleteSessionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_jockey_proto_msgTypes[7]
+func (x *DeleteSessionAuthResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_radio_jockey_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -352,9 +520,9 @@ func (x *DeleteSessionResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DeleteSessionResponse.ProtoReflect.Descriptor instead.
-func (*DeleteSessionResponse) Descriptor() ([]byte, []int) {
-	return file_radio_jockey_proto_rawDescGZIP(), []int{7}
+// Deprecated: Use DeleteSessionAuthResponse.ProtoReflect.Descriptor instead.
+func (*DeleteSessionAuthResponse) Descriptor() ([]byte, []int) {
+	return file_radio_jockey_proto_rawDescGZIP(), []int{11}
 }
 
 type AddTrackRequest struct {
@@ -367,7 +535,7 @@ type AddTrackRequest struct {
 
 func (x *AddTrackRequest) Reset() {
 	*x = AddTrackRequest{}
-	mi := &file_radio_jockey_proto_msgTypes[8]
+	mi := &file_radio_jockey_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -379,7 +547,7 @@ func (x *AddTrackRequest) String() string {
 func (*AddTrackRequest) ProtoMessage() {}
 
 func (x *AddTrackRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_jockey_proto_msgTypes[8]
+	mi := &file_radio_jockey_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -392,7 +560,7 @@ func (x *AddTrackRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddTrackRequest.ProtoReflect.Descriptor instead.
 func (*AddTrackRequest) Descriptor() ([]byte, []int) {
-	return file_radio_jockey_proto_rawDescGZIP(), []int{8}
+	return file_radio_jockey_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *AddTrackRequest) GetSessionId() string {
@@ -418,7 +586,7 @@ type AddTrackResponse struct {
 
 func (x *AddTrackResponse) Reset() {
 	*x = AddTrackResponse{}
-	mi := &file_radio_jockey_proto_msgTypes[9]
+	mi := &file_radio_jockey_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -430,7 +598,7 @@ func (x *AddTrackResponse) String() string {
 func (*AddTrackResponse) ProtoMessage() {}
 
 func (x *AddTrackResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_jockey_proto_msgTypes[9]
+	mi := &file_radio_jockey_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -443,7 +611,7 @@ func (x *AddTrackResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddTrackResponse.ProtoReflect.Descriptor instead.
 func (*AddTrackResponse) Descriptor() ([]byte, []int) {
-	return file_radio_jockey_proto_rawDescGZIP(), []int{9}
+	return file_radio_jockey_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *AddTrackResponse) GetTrack() *Track {
@@ -463,7 +631,7 @@ type RemoveTrackRequest struct {
 
 func (x *RemoveTrackRequest) Reset() {
 	*x = RemoveTrackRequest{}
-	mi := &file_radio_jockey_proto_msgTypes[10]
+	mi := &file_radio_jockey_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -475,7 +643,7 @@ func (x *RemoveTrackRequest) String() string {
 func (*RemoveTrackRequest) ProtoMessage() {}
 
 func (x *RemoveTrackRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_jockey_proto_msgTypes[10]
+	mi := &file_radio_jockey_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -488,7 +656,7 @@ func (x *RemoveTrackRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RemoveTrackRequest.ProtoReflect.Descriptor instead.
 func (*RemoveTrackRequest) Descriptor() ([]byte, []int) {
-	return file_radio_jockey_proto_rawDescGZIP(), []int{10}
+	return file_radio_jockey_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *RemoveTrackRequest) GetSessionId() string {
@@ -513,7 +681,7 @@ type RemoveTrackResponse struct {
 
 func (x *RemoveTrackResponse) Reset() {
 	*x = RemoveTrackResponse{}
-	mi := &file_radio_jockey_proto_msgTypes[11]
+	mi := &file_radio_jockey_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -525,7 +693,7 @@ func (x *RemoveTrackResponse) String() string {
 func (*RemoveTrackResponse) ProtoMessage() {}
 
 func (x *RemoveTrackResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_jockey_proto_msgTypes[11]
+	mi := &file_radio_jockey_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -538,7 +706,7 @@ func (x *RemoveTrackResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RemoveTrackResponse.ProtoReflect.Descriptor instead.
 func (*RemoveTrackResponse) Descriptor() ([]byte, []int) {
-	return file_radio_jockey_proto_rawDescGZIP(), []int{11}
+	return file_radio_jockey_proto_rawDescGZIP(), []int{15}
 }
 
 type SkipTrackRequest struct {
@@ -550,7 +718,7 @@ type SkipTrackRequest struct {
 
 func (x *SkipTrackRequest) Reset() {
 	*x = SkipTrackRequest{}
-	mi := &file_radio_jockey_proto_msgTypes[12]
+	mi := &file_radio_jockey_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -562,7 +730,7 @@ func (x *SkipTrackRequest) String() string {
 func (*SkipTrackRequest) ProtoMessage() {}
 
 func (x *SkipTrackRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_jockey_proto_msgTypes[12]
+	mi := &file_radio_jockey_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -575,7 +743,7 @@ func (x *SkipTrackRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SkipTrackRequest.ProtoReflect.Descriptor instead.
 func (*SkipTrackRequest) Descriptor() ([]byte, []int) {
-	return file_radio_jockey_proto_rawDescGZIP(), []int{12}
+	return file_radio_jockey_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *SkipTrackRequest) GetSessionId() string {
@@ -593,7 +761,7 @@ type SkipTrackResponse struct {
 
 func (x *SkipTrackResponse) Reset() {
 	*x = SkipTrackResponse{}
-	mi := &file_radio_jockey_proto_msgTypes[13]
+	mi := &file_radio_jockey_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -605,7 +773,7 @@ func (x *SkipTrackResponse) String() string {
 func (*SkipTrackResponse) ProtoMessage() {}
 
 func (x *SkipTrackResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_jockey_proto_msgTypes[13]
+	mi := &file_radio_jockey_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -618,7 +786,7 @@ func (x *SkipTrackResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SkipTrackResponse.ProtoReflect.Descriptor instead.
 func (*SkipTrackResponse) Descriptor() ([]byte, []int) {
-	return file_radio_jockey_proto_rawDescGZIP(), []int{13}
+	return file_radio_jockey_proto_rawDescGZIP(), []int{17}
 }
 
 type ListQueueRequest struct {
@@ -630,7 +798,7 @@ type ListQueueRequest struct {
 
 func (x *ListQueueRequest) Reset() {
 	*x = ListQueueRequest{}
-	mi := &file_radio_jockey_proto_msgTypes[14]
+	mi := &file_radio_jockey_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -642,7 +810,7 @@ func (x *ListQueueRequest) String() string {
 func (*ListQueueRequest) ProtoMessage() {}
 
 func (x *ListQueueRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_jockey_proto_msgTypes[14]
+	mi := &file_radio_jockey_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -655,7 +823,7 @@ func (x *ListQueueRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListQueueRequest.ProtoReflect.Descriptor instead.
 func (*ListQueueRequest) Descriptor() ([]byte, []int) {
-	return file_radio_jockey_proto_rawDescGZIP(), []int{14}
+	return file_radio_jockey_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *ListQueueRequest) GetSessionId() string {
@@ -674,7 +842,7 @@ type ListQueueResponse struct {
 
 func (x *ListQueueResponse) Reset() {
 	*x = ListQueueResponse{}
-	mi := &file_radio_jockey_proto_msgTypes[15]
+	mi := &file_radio_jockey_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -686,7 +854,7 @@ func (x *ListQueueResponse) String() string {
 func (*ListQueueResponse) ProtoMessage() {}
 
 func (x *ListQueueResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_jockey_proto_msgTypes[15]
+	mi := &file_radio_jockey_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -699,7 +867,7 @@ func (x *ListQueueResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListQueueResponse.ProtoReflect.Descriptor instead.
 func (*ListQueueResponse) Descriptor() ([]byte, []int) {
-	return file_radio_jockey_proto_rawDescGZIP(), []int{15}
+	return file_radio_jockey_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *ListQueueResponse) GetTracks() []*Track {
@@ -723,7 +891,7 @@ type Track struct {
 
 func (x *Track) Reset() {
 	*x = Track{}
-	mi := &file_radio_jockey_proto_msgTypes[16]
+	mi := &file_radio_jockey_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -735,7 +903,7 @@ func (x *Track) String() string {
 func (*Track) ProtoMessage() {}
 
 func (x *Track) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_jockey_proto_msgTypes[16]
+	mi := &file_radio_jockey_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -748,7 +916,7 @@ func (x *Track) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Track.ProtoReflect.Descriptor instead.
 func (*Track) Descriptor() ([]byte, []int) {
-	return file_radio_jockey_proto_rawDescGZIP(), []int{16}
+	return file_radio_jockey_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *Track) GetId() int64 {
@@ -812,11 +980,19 @@ const file_radio_jockey_proto_rawDesc = "" +
 	"session_id\x18\x01 \x01(\tR\tsessionId\"3\n" +
 	"\x12GetSessionResponse\x12\x1d\n" +
 	"\n" +
-	"stream_url\x18\x01 \x01(\tR\tstreamUrl\"5\n" +
-	"\x14DeleteSessionRequest\x12\x1d\n" +
+	"stream_url\x18\x01 \x01(\tR\tstreamUrl\"\x15\n" +
+	"\x13RequestNonceRequest\",\n" +
+	"\x14RequestNonceResponse\x12\x14\n" +
+	"\x05nonce\x18\x01 \x01(\tR\x05nonce\"0\n" +
+	"\x13RespondNonceRequest\x12\x19\n" +
+	"\bpass_key\x18\x01 \x01(\tR\apassKey\"5\n" +
+	"\x14RespondNonceResponse\x12\x1d\n" +
 	"\n" +
-	"session_id\x18\x01 \x01(\tR\tsessionId\"\x17\n" +
-	"\x15DeleteSessionResponse\"M\n" +
+	"auth_token\x18\x01 \x01(\tR\tauthToken\"9\n" +
+	"\x18DeleteSessionAuthRequest\x12\x1d\n" +
+	"\n" +
+	"session_id\x18\x01 \x01(\tR\tsessionId\"\x1b\n" +
+	"\x19DeleteSessionAuthResponse\"M\n" +
 	"\x0fAddTrackRequest\x12\x1d\n" +
 	"\n" +
 	"session_id\x18\x01 \x01(\tR\tsessionId\x12\x1b\n" +
@@ -843,13 +1019,15 @@ const file_radio_jockey_proto_rawDesc = "" +
 	"\tsource_id\x18\x03 \x01(\tR\bsourceId\x12\x14\n" +
 	"\x05title\x18\x04 \x01(\tR\x05title\x12\x16\n" +
 	"\x06artist\x18\x05 \x01(\tR\x06artist\x12\x1a\n" +
-	"\bduration\x18\x06 \x01(\x03R\bduration2\xcd\x03\n" +
+	"\bduration\x18\x06 \x01(\x03R\bduration2\xd7\x04\n" +
 	"\fRadioService\x12%\n" +
-	"\x04Ping\x12\f.PingRequest\x1a\r.PingResponse\"\x00\x12@\n" +
+	"\x04Ping\x12\f.PingRequest\x1a\r.PingResponse\"\x00\x12=\n" +
+	"\fRequestNonce\x12\x14.RequestNonceRequest\x1a\x15.RequestNonceResponse\"\x00\x12=\n" +
+	"\fRespondNonce\x12\x14.RespondNonceRequest\x1a\x15.RespondNonceResponse\"\x00\x12@\n" +
 	"\rCreateSession\x12\x15.CreateSessionRequest\x1a\x16.CreateSessionResponse\"\x00\x127\n" +
 	"\n" +
-	"GetSession\x12\x12.GetSessionRequest\x1a\x13.GetSessionResponse\"\x00\x12@\n" +
-	"\rDeleteSession\x12\x15.DeleteSessionRequest\x1a\x16.DeleteSessionResponse\"\x00\x121\n" +
+	"GetSession\x12\x12.GetSessionRequest\x1a\x13.GetSessionResponse\"\x00\x12L\n" +
+	"\x11DeleteSessionAuth\x12\x19.DeleteSessionAuthRequest\x1a\x1a.DeleteSessionAuthResponse\"\x00\x121\n" +
 	"\bAddTrack\x12\x10.AddTrackRequest\x1a\x11.AddTrackResponse\"\x00\x12:\n" +
 	"\vRemoveTrack\x12\x13.RemoveTrackRequest\x1a\x14.RemoveTrackResponse\"\x00\x124\n" +
 	"\tSkipTrack\x12\x11.SkipTrackRequest\x1a\x12.SkipTrackResponse\"\x00\x124\n" +
@@ -867,47 +1045,55 @@ func file_radio_jockey_proto_rawDescGZIP() []byte {
 	return file_radio_jockey_proto_rawDescData
 }
 
-var file_radio_jockey_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
+var file_radio_jockey_proto_msgTypes = make([]protoimpl.MessageInfo, 21)
 var file_radio_jockey_proto_goTypes = []any{
-	(*PingRequest)(nil),           // 0: PingRequest
-	(*PingResponse)(nil),          // 1: PingResponse
-	(*CreateSessionRequest)(nil),  // 2: CreateSessionRequest
-	(*CreateSessionResponse)(nil), // 3: CreateSessionResponse
-	(*GetSessionRequest)(nil),     // 4: GetSessionRequest
-	(*GetSessionResponse)(nil),    // 5: GetSessionResponse
-	(*DeleteSessionRequest)(nil),  // 6: DeleteSessionRequest
-	(*DeleteSessionResponse)(nil), // 7: DeleteSessionResponse
-	(*AddTrackRequest)(nil),       // 8: AddTrackRequest
-	(*AddTrackResponse)(nil),      // 9: AddTrackResponse
-	(*RemoveTrackRequest)(nil),    // 10: RemoveTrackRequest
-	(*RemoveTrackResponse)(nil),   // 11: RemoveTrackResponse
-	(*SkipTrackRequest)(nil),      // 12: SkipTrackRequest
-	(*SkipTrackResponse)(nil),     // 13: SkipTrackResponse
-	(*ListQueueRequest)(nil),      // 14: ListQueueRequest
-	(*ListQueueResponse)(nil),     // 15: ListQueueResponse
-	(*Track)(nil),                 // 16: Track
+	(*PingRequest)(nil),               // 0: PingRequest
+	(*PingResponse)(nil),              // 1: PingResponse
+	(*CreateSessionRequest)(nil),      // 2: CreateSessionRequest
+	(*CreateSessionResponse)(nil),     // 3: CreateSessionResponse
+	(*GetSessionRequest)(nil),         // 4: GetSessionRequest
+	(*GetSessionResponse)(nil),        // 5: GetSessionResponse
+	(*RequestNonceRequest)(nil),       // 6: RequestNonceRequest
+	(*RequestNonceResponse)(nil),      // 7: RequestNonceResponse
+	(*RespondNonceRequest)(nil),       // 8: RespondNonceRequest
+	(*RespondNonceResponse)(nil),      // 9: RespondNonceResponse
+	(*DeleteSessionAuthRequest)(nil),  // 10: DeleteSessionAuthRequest
+	(*DeleteSessionAuthResponse)(nil), // 11: DeleteSessionAuthResponse
+	(*AddTrackRequest)(nil),           // 12: AddTrackRequest
+	(*AddTrackResponse)(nil),          // 13: AddTrackResponse
+	(*RemoveTrackRequest)(nil),        // 14: RemoveTrackRequest
+	(*RemoveTrackResponse)(nil),       // 15: RemoveTrackResponse
+	(*SkipTrackRequest)(nil),          // 16: SkipTrackRequest
+	(*SkipTrackResponse)(nil),         // 17: SkipTrackResponse
+	(*ListQueueRequest)(nil),          // 18: ListQueueRequest
+	(*ListQueueResponse)(nil),         // 19: ListQueueResponse
+	(*Track)(nil),                     // 20: Track
 }
 var file_radio_jockey_proto_depIdxs = []int32{
-	16, // 0: AddTrackResponse.track:type_name -> Track
-	16, // 1: ListQueueResponse.tracks:type_name -> Track
+	20, // 0: AddTrackResponse.track:type_name -> Track
+	20, // 1: ListQueueResponse.tracks:type_name -> Track
 	0,  // 2: RadioService.Ping:input_type -> PingRequest
-	2,  // 3: RadioService.CreateSession:input_type -> CreateSessionRequest
-	4,  // 4: RadioService.GetSession:input_type -> GetSessionRequest
-	6,  // 5: RadioService.DeleteSession:input_type -> DeleteSessionRequest
-	8,  // 6: RadioService.AddTrack:input_type -> AddTrackRequest
-	10, // 7: RadioService.RemoveTrack:input_type -> RemoveTrackRequest
-	12, // 8: RadioService.SkipTrack:input_type -> SkipTrackRequest
-	14, // 9: RadioService.ListQueue:input_type -> ListQueueRequest
-	1,  // 10: RadioService.Ping:output_type -> PingResponse
-	3,  // 11: RadioService.CreateSession:output_type -> CreateSessionResponse
-	5,  // 12: RadioService.GetSession:output_type -> GetSessionResponse
-	7,  // 13: RadioService.DeleteSession:output_type -> DeleteSessionResponse
-	9,  // 14: RadioService.AddTrack:output_type -> AddTrackResponse
-	11, // 15: RadioService.RemoveTrack:output_type -> RemoveTrackResponse
-	13, // 16: RadioService.SkipTrack:output_type -> SkipTrackResponse
-	15, // 17: RadioService.ListQueue:output_type -> ListQueueResponse
-	10, // [10:18] is the sub-list for method output_type
-	2,  // [2:10] is the sub-list for method input_type
+	6,  // 3: RadioService.RequestNonce:input_type -> RequestNonceRequest
+	8,  // 4: RadioService.RespondNonce:input_type -> RespondNonceRequest
+	2,  // 5: RadioService.CreateSession:input_type -> CreateSessionRequest
+	4,  // 6: RadioService.GetSession:input_type -> GetSessionRequest
+	10, // 7: RadioService.DeleteSessionAuth:input_type -> DeleteSessionAuthRequest
+	12, // 8: RadioService.AddTrack:input_type -> AddTrackRequest
+	14, // 9: RadioService.RemoveTrack:input_type -> RemoveTrackRequest
+	16, // 10: RadioService.SkipTrack:input_type -> SkipTrackRequest
+	18, // 11: RadioService.ListQueue:input_type -> ListQueueRequest
+	1,  // 12: RadioService.Ping:output_type -> PingResponse
+	7,  // 13: RadioService.RequestNonce:output_type -> RequestNonceResponse
+	9,  // 14: RadioService.RespondNonce:output_type -> RespondNonceResponse
+	3,  // 15: RadioService.CreateSession:output_type -> CreateSessionResponse
+	5,  // 16: RadioService.GetSession:output_type -> GetSessionResponse
+	11, // 17: RadioService.DeleteSessionAuth:output_type -> DeleteSessionAuthResponse
+	13, // 18: RadioService.AddTrack:output_type -> AddTrackResponse
+	15, // 19: RadioService.RemoveTrack:output_type -> RemoveTrackResponse
+	17, // 20: RadioService.SkipTrack:output_type -> SkipTrackResponse
+	19, // 21: RadioService.ListQueue:output_type -> ListQueueResponse
+	12, // [12:22] is the sub-list for method output_type
+	2,  // [2:12] is the sub-list for method input_type
 	2,  // [2:2] is the sub-list for extension type_name
 	2,  // [2:2] is the sub-list for extension extendee
 	0,  // [0:2] is the sub-list for field type_name
@@ -924,7 +1110,7 @@ func file_radio_jockey_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_radio_jockey_proto_rawDesc), len(file_radio_jockey_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   17,
+			NumMessages:   21,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

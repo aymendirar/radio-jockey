@@ -14,6 +14,34 @@ func (s *Server) Ping(_ context.Context, req *connect.Request[proto.PingRequest]
 	return connect.NewResponse(&proto.PingResponse{Message: "Pong!"}), nil
 }
 
+func (s *Server) RequestNonce(context.Context, *connect.Request[proto.RequestNonceRequest]) (*connect.Response[proto.RequestNonceResponse], error) {
+	nonce, err := s.auth.IssueNonce()
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, errors.New("bad"))
+	}
+	return connect.NewResponse(&proto.RequestNonceResponse{Nonce: nonce}), nil
+}
+
+func (s *Server) RespondNonce(ctx context.Context, req *connect.Request[proto.RespondNonceRequest]) (*connect.Response[proto.RespondNonceResponse], error) {
+	if !s.auth.ConsumeNonce(req.Msg.PassKey) {
+		return nil, connect.NewError(connect.CodeUnauthenticated, errors.New("bad"))
+	}
+
+	token := s.auth.NewToken()
+	return connect.NewResponse(&proto.RespondNonceResponse{AuthToken: token}), nil
+}
+
+func (s *Server) DeleteSessionAuth(ctx context.Context, req *connect.Request[proto.DeleteSessionAuthRequest]) (*connect.Response[proto.DeleteSessionAuthResponse], error) {
+	sessionID := session.SessionID(req.Msg.SessionId)
+	if err := s.sessionManager.DeleteSession(ctx, sessionID); err != nil {
+		if errors.Is(err, session.SessionNotFoundError) {
+			return nil, connect.NewError(connect.CodeNotFound, err)
+		}
+		return nil, connect.NewError(connect.CodeInternal, err)
+	}
+	return connect.NewResponse(&proto.DeleteSessionAuthResponse{}), nil
+}
+
 func (s *Server) CreateSession(ctx context.Context, req *connect.Request[proto.CreateSessionRequest]) (*connect.Response[proto.CreateSessionResponse], error) {
 	sessionID := session.SessionID(req.Msg.SessionId)
 	ready, err := s.sessionManager.CreateSession(ctx, sessionID)
@@ -51,16 +79,6 @@ func (s *Server) GetSession(ctx context.Context, req *connect.Request[proto.GetS
 	return connect.NewResponse(&proto.GetSessionResponse{StreamUrl: streamURL}), nil
 }
 
-func (s *Server) DeleteSession(ctx context.Context, req *connect.Request[proto.DeleteSessionRequest]) (*connect.Response[proto.DeleteSessionResponse], error) {
-	sessionID := session.SessionID(req.Msg.SessionId)
-	if err := s.sessionManager.DeleteSession(ctx, sessionID); err != nil {
-		if errors.Is(err, session.SessionNotFoundError) {
-			return nil, connect.NewError(connect.CodeNotFound, err)
-		}
-		return nil, connect.NewError(connect.CodeInternal, err)
-	}
-	return connect.NewResponse(&proto.DeleteSessionResponse{}), nil
-}
 
 func (s *Server) AddTrack(ctx context.Context, req *connect.Request[proto.AddTrackRequest]) (*connect.Response[proto.AddTrackResponse], error) {
 	track, err := s.youtube.DownloadTrackFromURL(ctx, req.Msg.TrackUrl)
