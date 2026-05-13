@@ -15,7 +15,7 @@ clean:
 	docker compose down --rmi local --volumes --remove-orphans
 
 codegen:
-	docker compose run --rm codegen
+	docker compose --profile codegen run --rm codegen
 
 prune:
 	docker system prune -a --volumes

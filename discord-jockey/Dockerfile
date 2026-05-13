@@ -1,20 +1,12 @@
-FROM node:25-slim AS builder
-
-WORKDIR /discord-jockey
-
-COPY package.json ./
-RUN npm install
-
-COPY src ./src
-COPY tsconfig.json ./
-RUN npm run build
-
-FROM node:25-slim
+FROM oven/bun
 
 RUN apt-get update && apt-get install -y ffmpeg && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /discord-jockey
 
-COPY --from=builder /discord-jockey ./
+COPY package.json bun.lockb ./
+RUN bun install --frozen-lockfile
 
-CMD ["node", "dist/index.js"]
+COPY src ./src
+
+CMD ["bun", "src/index.ts"]

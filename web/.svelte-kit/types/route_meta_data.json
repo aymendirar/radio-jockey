@@ -1,7 +1,18 @@
 {
-	"/": [],
-	"/radio": [],
-	"/radio/create": [],
-	"/radio/listen": [],
-	"/radio/listen/[sessionId]": []
+	"/": [
+		"src/routes/+layout.server.ts",
+		"src/routes/+layout.server.ts"
+	],
+	"/admin": [
+		"src/routes/+layout.server.ts"
+	],
+	"/stations": [
+		"src/routes/+layout.server.ts"
+	],
+	"/stations/create": [
+		"src/routes/+layout.server.ts"
+	],
+	"/stations/[sessionId]": [
+		"src/routes/+layout.server.ts"
+	]
 }

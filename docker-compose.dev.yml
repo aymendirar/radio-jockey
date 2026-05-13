@@ -12,7 +12,7 @@ services:
     build:
       context: ./web
       target: builder
-    command: npm run dev -- --host
+    command: bun dev --host
     volumes:
       - ./web/src:/web/src
       - ./web/static:/web/static

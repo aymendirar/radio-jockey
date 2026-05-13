@@ -1,14 +1,14 @@
-FROM node:25-alpine AS builder
+FROM oven/bun:alpine AS builder
 
 WORKDIR /web
 
-COPY package.json ./
-RUN npm install
+COPY package.json bun.lockb ./
+RUN bun install --frozen-lockfile
 
 COPY . ./
-RUN npm run build
+RUN bun run build
 
-FROM node:25-alpine
+FROM oven/bun:alpine
 
 WORKDIR /web
 
@@ -21,4 +21,4 @@ ENV PORT=3000
 
 EXPOSE 3000
 
-CMD ["node", "build/index.js"]
+CMD ["bun", "build/index.js"]
