@@ -38,9 +38,6 @@
  * The above values will be the same _even if_ different values for `ENVIRONMENT` or `PUBLIC_BASE_URL` are set at runtime, as they are statically replaced in your code with their build time values.
  */
 declare module '$env/static/private' {
-	export const NoDefaultCurrentDirectoryInExePath: string;
-	export const CLAUDE_EFFORT: string;
-	export const CLAUDE_CODE_ENTRYPOINT: string;
 	export const WARP_CLI_AGENT_PROTOCOL_VERSION: string;
 	export const TERM_PROGRAM: string;
 	export const NODE: string;
@@ -54,8 +51,6 @@ declare module '$env/static/private' {
 	export const FPATH: string;
 	export const npm_config_local_prefix: string;
 	export const ZSH: string;
-	export const GIT_EDITOR: string;
-	export const AI_AGENT: string;
 	export const USER: string;
 	export const NVM_DIR: string;
 	export const LS_COLORS: string;
@@ -86,21 +81,17 @@ declare module '$env/static/private' {
 	export const XPC_SERVICE_NAME: string;
 	export const SHLVL: string;
 	export const HOME: string;
-	export const CLAUDE_CODE_EXECPATH: string;
 	export const HOMEBREW_PREFIX: string;
 	export const LOGNAME: string;
 	export const LESS: string;
 	export const CARAPACE_BRIDGES: string;
-	export const COREPACK_ENABLE_AUTO_PIN: string;
 	export const TMUX_PLUGIN_MANAGER_PATH: string;
 	export const SSH_SOCKET_DIR: string;
 	export const npm_config_user_agent: string;
-	export const CLAUDE_CODE_SESSION_ID: string;
 	export const WARP_CLIENT_VERSION: string;
 	export const INFOPATH: string;
 	export const HOMEBREW_CELLAR: string;
 	export const CONDA_CHANGEPS1: string;
-	export const CLAUDECODE: string;
 	export const is_vim: string;
 	export const SECURITYSESSIONID: string;
 	export const npm_node_execpath: string;
@@ -191,9 +182,6 @@ declare module '$env/static/public' {
  */
 declare module '$env/dynamic/private' {
 	export const env: {
-		NoDefaultCurrentDirectoryInExePath: string;
-		CLAUDE_EFFORT: string;
-		CLAUDE_CODE_ENTRYPOINT: string;
 		WARP_CLI_AGENT_PROTOCOL_VERSION: string;
 		TERM_PROGRAM: string;
 		NODE: string;
@@ -207,8 +195,6 @@ declare module '$env/dynamic/private' {
 		FPATH: string;
 		npm_config_local_prefix: string;
 		ZSH: string;
-		GIT_EDITOR: string;
-		AI_AGENT: string;
 		USER: string;
 		NVM_DIR: string;
 		LS_COLORS: string;
@@ -239,21 +225,17 @@ declare module '$env/dynamic/private' {
 		XPC_SERVICE_NAME: string;
 		SHLVL: string;
 		HOME: string;
-		CLAUDE_CODE_EXECPATH: string;
 		HOMEBREW_PREFIX: string;
 		LOGNAME: string;
 		LESS: string;
 		CARAPACE_BRIDGES: string;
-		COREPACK_ENABLE_AUTO_PIN: string;
 		TMUX_PLUGIN_MANAGER_PATH: string;
 		SSH_SOCKET_DIR: string;
 		npm_config_user_agent: string;
-		CLAUDE_CODE_SESSION_ID: string;
 		WARP_CLIENT_VERSION: string;
 		INFOPATH: string;
 		HOMEBREW_CELLAR: string;
 		CONDA_CHANGEPS1: string;
-		CLAUDECODE: string;
 		is_vim: string;
 		SECURITYSESSIONID: string;
 		npm_node_execpath: string;
