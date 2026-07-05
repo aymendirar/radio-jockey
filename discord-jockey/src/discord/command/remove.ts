@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, type CacheType } from "discord.js";
 import { Code } from "@connectrpc/connect";
 import { radioClient } from "../../connect/client.js";
-import { withConnectError } from "../../util/helpers.js";
+import { getSessionId, withConnectError } from "../../util/helpers.js";
 import { logger } from "../../util/logger.js";
 
 export async function registerRemoveCommand(
@@ -9,7 +9,7 @@ export async function registerRemoveCommand(
 ) {
   if (interaction.commandName !== "remove") return;
 
-  const sessionId = interaction.guildId!;
+  const sessionId = getSessionId(interaction);
   const index = interaction.options.getInteger("position", true) - 1;
   logger.info("remove command received", { sessionId, position: index + 1 });
 

@@ -19,16 +19,20 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	RadioService_Ping_FullMethodName              = "/RadioService/Ping"
-	RadioService_RequestNonce_FullMethodName      = "/RadioService/RequestNonce"
-	RadioService_RespondNonce_FullMethodName      = "/RadioService/RespondNonce"
-	RadioService_CreateSession_FullMethodName     = "/RadioService/CreateSession"
-	RadioService_GetSession_FullMethodName        = "/RadioService/GetSession"
-	RadioService_DeleteSessionAuth_FullMethodName = "/RadioService/DeleteSessionAuth"
-	RadioService_AddTrack_FullMethodName          = "/RadioService/AddTrack"
-	RadioService_RemoveTrack_FullMethodName       = "/RadioService/RemoveTrack"
-	RadioService_SkipTrack_FullMethodName         = "/RadioService/SkipTrack"
-	RadioService_ListQueue_FullMethodName         = "/RadioService/ListQueue"
+	RadioService_Ping_FullMethodName                 = "/RadioService/Ping"
+	RadioService_RequestNonce_FullMethodName         = "/RadioService/RequestNonce"
+	RadioService_RespondNonce_FullMethodName         = "/RadioService/RespondNonce"
+	RadioService_CreateSession_FullMethodName        = "/RadioService/CreateSession"
+	RadioService_GetSession_FullMethodName           = "/RadioService/GetSession"
+	RadioService_DeleteSessionAuth_FullMethodName    = "/RadioService/DeleteSessionAuth"
+	RadioService_AddTrack_FullMethodName             = "/RadioService/AddTrack"
+	RadioService_RemoveTrack_FullMethodName          = "/RadioService/RemoveTrack"
+	RadioService_SkipTrack_FullMethodName            = "/RadioService/SkipTrack"
+	RadioService_ListQueue_FullMethodName            = "/RadioService/ListQueue"
+	RadioService_ListSessions_FullMethodName         = "/RadioService/ListSessions"
+	RadioService_ListSessionArchives_FullMethodName  = "/RadioService/ListSessionArchives"
+	RadioService_GetSessionArchive_FullMethodName    = "/RadioService/GetSessionArchive"
+	RadioService_DeleteSessionArchive_FullMethodName = "/RadioService/DeleteSessionArchive"
 )
 
 // RadioServiceClient is the client API for RadioService service.
@@ -45,6 +49,10 @@ type RadioServiceClient interface {
 	RemoveTrack(ctx context.Context, in *RemoveTrackRequest, opts ...grpc.CallOption) (*RemoveTrackResponse, error)
 	SkipTrack(ctx context.Context, in *SkipTrackRequest, opts ...grpc.CallOption) (*SkipTrackResponse, error)
 	ListQueue(ctx context.Context, in *ListQueueRequest, opts ...grpc.CallOption) (*ListQueueResponse, error)
+	ListSessions(ctx context.Context, in *ListSessionsRequest, opts ...grpc.CallOption) (*ListSessionsResponse, error)
+	ListSessionArchives(ctx context.Context, in *ListSessionArchivesRequest, opts ...grpc.CallOption) (*ListSessionArchivesResponse, error)
+	GetSessionArchive(ctx context.Context, in *GetSessionArchiveRequest, opts ...grpc.CallOption) (*GetSessionArchiveResponse, error)
+	DeleteSessionArchive(ctx context.Context, in *DeleteSessionArchiveRequest, opts ...grpc.CallOption) (*DeleteSessionArchiveResponse, error)
 }
 
 type radioServiceClient struct {
@@ -155,6 +163,46 @@ func (c *radioServiceClient) ListQueue(ctx context.Context, in *ListQueueRequest
 	return out, nil
 }
 
+func (c *radioServiceClient) ListSessions(ctx context.Context, in *ListSessionsRequest, opts ...grpc.CallOption) (*ListSessionsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListSessionsResponse)
+	err := c.cc.Invoke(ctx, RadioService_ListSessions_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *radioServiceClient) ListSessionArchives(ctx context.Context, in *ListSessionArchivesRequest, opts ...grpc.CallOption) (*ListSessionArchivesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListSessionArchivesResponse)
+	err := c.cc.Invoke(ctx, RadioService_ListSessionArchives_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *radioServiceClient) GetSessionArchive(ctx context.Context, in *GetSessionArchiveRequest, opts ...grpc.CallOption) (*GetSessionArchiveResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetSessionArchiveResponse)
+	err := c.cc.Invoke(ctx, RadioService_GetSessionArchive_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *radioServiceClient) DeleteSessionArchive(ctx context.Context, in *DeleteSessionArchiveRequest, opts ...grpc.CallOption) (*DeleteSessionArchiveResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteSessionArchiveResponse)
+	err := c.cc.Invoke(ctx, RadioService_DeleteSessionArchive_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RadioServiceServer is the server API for RadioService service.
 // All implementations must embed UnimplementedRadioServiceServer
 // for forward compatibility.
@@ -169,6 +217,10 @@ type RadioServiceServer interface {
 	RemoveTrack(context.Context, *RemoveTrackRequest) (*RemoveTrackResponse, error)
 	SkipTrack(context.Context, *SkipTrackRequest) (*SkipTrackResponse, error)
 	ListQueue(context.Context, *ListQueueRequest) (*ListQueueResponse, error)
+	ListSessions(context.Context, *ListSessionsRequest) (*ListSessionsResponse, error)
+	ListSessionArchives(context.Context, *ListSessionArchivesRequest) (*ListSessionArchivesResponse, error)
+	GetSessionArchive(context.Context, *GetSessionArchiveRequest) (*GetSessionArchiveResponse, error)
+	DeleteSessionArchive(context.Context, *DeleteSessionArchiveRequest) (*DeleteSessionArchiveResponse, error)
 	mustEmbedUnimplementedRadioServiceServer()
 }
 
@@ -208,6 +260,18 @@ func (UnimplementedRadioServiceServer) SkipTrack(context.Context, *SkipTrackRequ
 }
 func (UnimplementedRadioServiceServer) ListQueue(context.Context, *ListQueueRequest) (*ListQueueResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListQueue not implemented")
+}
+func (UnimplementedRadioServiceServer) ListSessions(context.Context, *ListSessionsRequest) (*ListSessionsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListSessions not implemented")
+}
+func (UnimplementedRadioServiceServer) ListSessionArchives(context.Context, *ListSessionArchivesRequest) (*ListSessionArchivesResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListSessionArchives not implemented")
+}
+func (UnimplementedRadioServiceServer) GetSessionArchive(context.Context, *GetSessionArchiveRequest) (*GetSessionArchiveResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetSessionArchive not implemented")
+}
+func (UnimplementedRadioServiceServer) DeleteSessionArchive(context.Context, *DeleteSessionArchiveRequest) (*DeleteSessionArchiveResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteSessionArchive not implemented")
 }
 func (UnimplementedRadioServiceServer) mustEmbedUnimplementedRadioServiceServer() {}
 func (UnimplementedRadioServiceServer) testEmbeddedByValue()                      {}
@@ -410,6 +474,78 @@ func _RadioService_ListQueue_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RadioService_ListSessions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListSessionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RadioServiceServer).ListSessions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RadioService_ListSessions_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RadioServiceServer).ListSessions(ctx, req.(*ListSessionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RadioService_ListSessionArchives_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListSessionArchivesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RadioServiceServer).ListSessionArchives(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RadioService_ListSessionArchives_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RadioServiceServer).ListSessionArchives(ctx, req.(*ListSessionArchivesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RadioService_GetSessionArchive_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSessionArchiveRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RadioServiceServer).GetSessionArchive(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RadioService_GetSessionArchive_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RadioServiceServer).GetSessionArchive(ctx, req.(*GetSessionArchiveRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RadioService_DeleteSessionArchive_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteSessionArchiveRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RadioServiceServer).DeleteSessionArchive(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RadioService_DeleteSessionArchive_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RadioServiceServer).DeleteSessionArchive(ctx, req.(*DeleteSessionArchiveRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // RadioService_ServiceDesc is the grpc.ServiceDesc for RadioService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -456,6 +592,22 @@ var RadioService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListQueue",
 			Handler:    _RadioService_ListQueue_Handler,
+		},
+		{
+			MethodName: "ListSessions",
+			Handler:    _RadioService_ListSessions_Handler,
+		},
+		{
+			MethodName: "ListSessionArchives",
+			Handler:    _RadioService_ListSessionArchives_Handler,
+		},
+		{
+			MethodName: "GetSessionArchive",
+			Handler:    _RadioService_GetSessionArchive_Handler,
+		},
+		{
+			MethodName: "DeleteSessionArchive",
+			Handler:    _RadioService_DeleteSessionArchive_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

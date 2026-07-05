@@ -12,6 +12,7 @@ type SessionQueue struct {
 	sessionId SessionID
 	notify    chan struct{}
 	Events    chan SessionQueueEvent
+	archiveID *int64
 }
 
 const MaxQueueSize = 16
@@ -22,14 +23,19 @@ var (
 	FullQueueError  = errors.New("queue is full")
 )
 
-func NewQueue(sessionId SessionID) *SessionQueue {
+func NewQueue(sessionId SessionID, archiveID *int64) *SessionQueue {
 	return &SessionQueue{
 		mu:        sync.RWMutex{},
 		tracks:    make([]*db.Track, 0, MaxQueueSize),
 		sessionId: sessionId,
 		notify:    make(chan struct{}, 1),
 		Events:    make(chan SessionQueueEvent, 1),
+		archiveID: archiveID,
 	}
+}
+
+func (q *SessionQueue) ArchiveID() *int64 {
+	return q.archiveID
 }
 
 func (q *SessionQueue) Skip() error {

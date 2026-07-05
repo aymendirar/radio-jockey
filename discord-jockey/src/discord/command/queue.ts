@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, type CacheType } from "discord.js";
 import { Code } from "@connectrpc/connect";
 import { radioClient } from "../../connect/client.js";
-import { withConnectError } from "../../util/helpers.js";
+import { getSessionId, withConnectError } from "../../util/helpers.js";
 import { logger } from "../../util/logger.js";
 
 export async function registerQueueCommand(
@@ -9,7 +9,7 @@ export async function registerQueueCommand(
 ) {
   if (interaction.commandName !== "queue") return;
 
-  const sessionId = interaction.guildId!;
+  const sessionId = getSessionId(interaction);
   logger.info("queue command received", { sessionId });
 
   await withConnectError(

@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, type CacheType } from "discord.js";
 import { Code } from "@connectrpc/connect";
 import { radioClient } from "../../connect/client.js";
-import { withConnectError } from "../../util/helpers.js";
+import { getSessionId, withConnectError } from "../../util/helpers.js";
 import { logger } from "../../util/logger.js";
 
 export async function registerSkipCommand(
@@ -9,7 +9,7 @@ export async function registerSkipCommand(
 ) {
   if (interaction.commandName !== "skip") return;
 
-  const sessionId = interaction.guildId!;
+  const sessionId = getSessionId(interaction);
   logger.info("skip command received", { sessionId });
 
   await withConnectError(

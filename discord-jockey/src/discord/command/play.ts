@@ -16,7 +16,7 @@ import {
 } from "discord.js";
 import { Code } from "@connectrpc/connect";
 import { radioClient } from "../../connect/client.js";
-import { withConnectError } from "../../util/helpers.js";
+import { getSessionId, withConnectError } from "../../util/helpers.js";
 import { logger } from "../../util/logger.js";
 import { PassThrough } from "node:stream";
 import http from "node:http";
@@ -25,6 +25,12 @@ import { hasSession, createSession, setBuffer, destroySession } from "../session
 const KILOBYTE = 1024;
 const MEGABYTE = KILOBYTE * KILOBYTE;
 const BUFFER_SIZE = 20 * MEGABYTE;
+
+const ICECAST_INTERNAL_URL = process.env.ICECAST_INTERNAL_URL!;
+
+function internalStreamUrl(sessionId: string): string {
+  return `${ICECAST_INTERNAL_URL}/stream/${sessionId}`;
+}
 
 export function stopSession(sessionId: string) {
   destroySession(sessionId);
@@ -48,16 +54,18 @@ async function connectToChannel(channel: VoiceBasedChannel): Promise<VoiceConnec
 async function getOrCreateSession(sessionId: string): Promise<string> {
   return withConnectError(
     async () => {
-      const res = await radioClient.createSession({ sessionId });
-      logger.info("session created", { sessionId, streamUrl: res.streamUrl });
-      return res.streamUrl;
+      await radioClient.createSession({ sessionId, archive: true });
+      const streamUrl = internalStreamUrl(sessionId);
+      logger.info("session created", { sessionId, streamUrl });
+      return streamUrl;
     },
     async (err) => {
       switch (err.code) {
         case Code.AlreadyExists: {
-          const res = await radioClient.getSession({ sessionId });
-          logger.info("session already exists", { sessionId, streamUrl: res.streamUrl });
-          return res.streamUrl;
+          await radioClient.getSession({ sessionId });
+          const streamUrl = internalStreamUrl(sessionId);
+          logger.info("session already exists", { sessionId, streamUrl });
+          return streamUrl;
         }
         default:
           throw err;
@@ -116,7 +124,7 @@ export async function registerPlayCommand(
   }
 
   const trackUrl = interaction.options.getString("url");
-  const sessionId = interaction.guildId!;
+  const sessionId = getSessionId(interaction);
   logger.info("play command received", { sessionId, trackUrl });
 
   if (hasSession(sessionId)) {

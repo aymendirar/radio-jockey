@@ -28,11 +28,11 @@ func CreateSessionManager() *SessionManager {
 	}
 }
 
-func (m *SessionManager) CreateSession(ctx context.Context, sessionId SessionID) (<-chan error, error) {
+func (m *SessionManager) CreateSession(ctx context.Context, sessionId SessionID, archiveID *int64) (<-chan error, error) {
 	m.mu.Lock()
 	_, ok := m.sessions[sessionId]
 	if !ok {
-		m.sessions[sessionId] = NewQueue(sessionId)
+		m.sessions[sessionId] = NewQueue(sessionId, archiveID)
 		m.mu.Unlock()
 	} else {
 		m.mu.Unlock()
@@ -58,6 +58,16 @@ func (m *SessionManager) GetQueue(sessionId SessionID) (*SessionQueue, error) {
 		return nil, SessionNotFoundError
 	}
 	return queue, nil
+}
+
+func (m *SessionManager) ListSessions() []SessionID {
+	m.mu.RLock()
+	defer m.mu.RUnlock()
+	ids := make([]SessionID, 0, len(m.sessions))
+	for id := range m.sessions {
+		ids = append(ids, id)
+	}
+	return ids
 }
 
 func (m *SessionManager) DeleteSession(ctx context.Context, sessionId SessionID) error {

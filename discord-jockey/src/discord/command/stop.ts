@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, type CacheType } from "discord.js";
 import { Code } from "@connectrpc/connect";
 import { deleteSession } from "../../connect/auth/auth.js";
-import { withConnectError } from "../../util/helpers.js";
+import { getSessionId, withConnectError } from "../../util/helpers.js";
 import { logger } from "../../util/logger.js";
 import { stopSession } from "./play.js";
 
@@ -10,7 +10,7 @@ export async function registerStopCommand(
 ) {
   if (interaction.commandName !== "stop") return;
 
-  const sessionId = interaction.guildId!;
+  const sessionId = getSessionId(interaction);
   logger.info("stop command received", { sessionId });
 
   await withConnectError(

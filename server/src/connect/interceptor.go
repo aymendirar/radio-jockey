@@ -16,6 +16,7 @@ import (
 
 var AuthenticatedProcedures = []string{
 	protoconnect.RadioServiceDeleteSessionAuthProcedure,
+	protoconnect.RadioServiceDeleteSessionArchiveProcedure,
 }
 
 func authInterceptor(a *auth.Auth) connect.Interceptor {

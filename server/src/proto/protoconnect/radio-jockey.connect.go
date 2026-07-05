@@ -58,6 +58,18 @@ const (
 	RadioServiceSkipTrackProcedure = "/RadioService/SkipTrack"
 	// RadioServiceListQueueProcedure is the fully-qualified name of the RadioService's ListQueue RPC.
 	RadioServiceListQueueProcedure = "/RadioService/ListQueue"
+	// RadioServiceListSessionsProcedure is the fully-qualified name of the RadioService's ListSessions
+	// RPC.
+	RadioServiceListSessionsProcedure = "/RadioService/ListSessions"
+	// RadioServiceListSessionArchivesProcedure is the fully-qualified name of the RadioService's
+	// ListSessionArchives RPC.
+	RadioServiceListSessionArchivesProcedure = "/RadioService/ListSessionArchives"
+	// RadioServiceGetSessionArchiveProcedure is the fully-qualified name of the RadioService's
+	// GetSessionArchive RPC.
+	RadioServiceGetSessionArchiveProcedure = "/RadioService/GetSessionArchive"
+	// RadioServiceDeleteSessionArchiveProcedure is the fully-qualified name of the RadioService's
+	// DeleteSessionArchive RPC.
+	RadioServiceDeleteSessionArchiveProcedure = "/RadioService/DeleteSessionArchive"
 )
 
 // RadioServiceClient is a client for the RadioService service.
@@ -72,6 +84,10 @@ type RadioServiceClient interface {
 	RemoveTrack(context.Context, *connect.Request[proto.RemoveTrackRequest]) (*connect.Response[proto.RemoveTrackResponse], error)
 	SkipTrack(context.Context, *connect.Request[proto.SkipTrackRequest]) (*connect.Response[proto.SkipTrackResponse], error)
 	ListQueue(context.Context, *connect.Request[proto.ListQueueRequest]) (*connect.Response[proto.ListQueueResponse], error)
+	ListSessions(context.Context, *connect.Request[proto.ListSessionsRequest]) (*connect.Response[proto.ListSessionsResponse], error)
+	ListSessionArchives(context.Context, *connect.Request[proto.ListSessionArchivesRequest]) (*connect.Response[proto.ListSessionArchivesResponse], error)
+	GetSessionArchive(context.Context, *connect.Request[proto.GetSessionArchiveRequest]) (*connect.Response[proto.GetSessionArchiveResponse], error)
+	DeleteSessionArchive(context.Context, *connect.Request[proto.DeleteSessionArchiveRequest]) (*connect.Response[proto.DeleteSessionArchiveResponse], error)
 }
 
 // NewRadioServiceClient constructs a client for the RadioService service. By default, it uses the
@@ -145,21 +161,49 @@ func NewRadioServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 			connect.WithSchema(radioServiceMethods.ByName("ListQueue")),
 			connect.WithClientOptions(opts...),
 		),
+		listSessions: connect.NewClient[proto.ListSessionsRequest, proto.ListSessionsResponse](
+			httpClient,
+			baseURL+RadioServiceListSessionsProcedure,
+			connect.WithSchema(radioServiceMethods.ByName("ListSessions")),
+			connect.WithClientOptions(opts...),
+		),
+		listSessionArchives: connect.NewClient[proto.ListSessionArchivesRequest, proto.ListSessionArchivesResponse](
+			httpClient,
+			baseURL+RadioServiceListSessionArchivesProcedure,
+			connect.WithSchema(radioServiceMethods.ByName("ListSessionArchives")),
+			connect.WithClientOptions(opts...),
+		),
+		getSessionArchive: connect.NewClient[proto.GetSessionArchiveRequest, proto.GetSessionArchiveResponse](
+			httpClient,
+			baseURL+RadioServiceGetSessionArchiveProcedure,
+			connect.WithSchema(radioServiceMethods.ByName("GetSessionArchive")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteSessionArchive: connect.NewClient[proto.DeleteSessionArchiveRequest, proto.DeleteSessionArchiveResponse](
+			httpClient,
+			baseURL+RadioServiceDeleteSessionArchiveProcedure,
+			connect.WithSchema(radioServiceMethods.ByName("DeleteSessionArchive")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // radioServiceClient implements RadioServiceClient.
 type radioServiceClient struct {
-	ping              *connect.Client[proto.PingRequest, proto.PingResponse]
-	requestNonce      *connect.Client[proto.RequestNonceRequest, proto.RequestNonceResponse]
-	respondNonce      *connect.Client[proto.RespondNonceRequest, proto.RespondNonceResponse]
-	createSession     *connect.Client[proto.CreateSessionRequest, proto.CreateSessionResponse]
-	getSession        *connect.Client[proto.GetSessionRequest, proto.GetSessionResponse]
-	deleteSessionAuth *connect.Client[proto.DeleteSessionAuthRequest, proto.DeleteSessionAuthResponse]
-	addTrack          *connect.Client[proto.AddTrackRequest, proto.AddTrackResponse]
-	removeTrack       *connect.Client[proto.RemoveTrackRequest, proto.RemoveTrackResponse]
-	skipTrack         *connect.Client[proto.SkipTrackRequest, proto.SkipTrackResponse]
-	listQueue         *connect.Client[proto.ListQueueRequest, proto.ListQueueResponse]
+	ping                 *connect.Client[proto.PingRequest, proto.PingResponse]
+	requestNonce         *connect.Client[proto.RequestNonceRequest, proto.RequestNonceResponse]
+	respondNonce         *connect.Client[proto.RespondNonceRequest, proto.RespondNonceResponse]
+	createSession        *connect.Client[proto.CreateSessionRequest, proto.CreateSessionResponse]
+	getSession           *connect.Client[proto.GetSessionRequest, proto.GetSessionResponse]
+	deleteSessionAuth    *connect.Client[proto.DeleteSessionAuthRequest, proto.DeleteSessionAuthResponse]
+	addTrack             *connect.Client[proto.AddTrackRequest, proto.AddTrackResponse]
+	removeTrack          *connect.Client[proto.RemoveTrackRequest, proto.RemoveTrackResponse]
+	skipTrack            *connect.Client[proto.SkipTrackRequest, proto.SkipTrackResponse]
+	listQueue            *connect.Client[proto.ListQueueRequest, proto.ListQueueResponse]
+	listSessions         *connect.Client[proto.ListSessionsRequest, proto.ListSessionsResponse]
+	listSessionArchives  *connect.Client[proto.ListSessionArchivesRequest, proto.ListSessionArchivesResponse]
+	getSessionArchive    *connect.Client[proto.GetSessionArchiveRequest, proto.GetSessionArchiveResponse]
+	deleteSessionArchive *connect.Client[proto.DeleteSessionArchiveRequest, proto.DeleteSessionArchiveResponse]
 }
 
 // Ping calls RadioService.Ping.
@@ -212,6 +256,26 @@ func (c *radioServiceClient) ListQueue(ctx context.Context, req *connect.Request
 	return c.listQueue.CallUnary(ctx, req)
 }
 
+// ListSessions calls RadioService.ListSessions.
+func (c *radioServiceClient) ListSessions(ctx context.Context, req *connect.Request[proto.ListSessionsRequest]) (*connect.Response[proto.ListSessionsResponse], error) {
+	return c.listSessions.CallUnary(ctx, req)
+}
+
+// ListSessionArchives calls RadioService.ListSessionArchives.
+func (c *radioServiceClient) ListSessionArchives(ctx context.Context, req *connect.Request[proto.ListSessionArchivesRequest]) (*connect.Response[proto.ListSessionArchivesResponse], error) {
+	return c.listSessionArchives.CallUnary(ctx, req)
+}
+
+// GetSessionArchive calls RadioService.GetSessionArchive.
+func (c *radioServiceClient) GetSessionArchive(ctx context.Context, req *connect.Request[proto.GetSessionArchiveRequest]) (*connect.Response[proto.GetSessionArchiveResponse], error) {
+	return c.getSessionArchive.CallUnary(ctx, req)
+}
+
+// DeleteSessionArchive calls RadioService.DeleteSessionArchive.
+func (c *radioServiceClient) DeleteSessionArchive(ctx context.Context, req *connect.Request[proto.DeleteSessionArchiveRequest]) (*connect.Response[proto.DeleteSessionArchiveResponse], error) {
+	return c.deleteSessionArchive.CallUnary(ctx, req)
+}
+
 // RadioServiceHandler is an implementation of the RadioService service.
 type RadioServiceHandler interface {
 	Ping(context.Context, *connect.Request[proto.PingRequest]) (*connect.Response[proto.PingResponse], error)
@@ -224,6 +288,10 @@ type RadioServiceHandler interface {
 	RemoveTrack(context.Context, *connect.Request[proto.RemoveTrackRequest]) (*connect.Response[proto.RemoveTrackResponse], error)
 	SkipTrack(context.Context, *connect.Request[proto.SkipTrackRequest]) (*connect.Response[proto.SkipTrackResponse], error)
 	ListQueue(context.Context, *connect.Request[proto.ListQueueRequest]) (*connect.Response[proto.ListQueueResponse], error)
+	ListSessions(context.Context, *connect.Request[proto.ListSessionsRequest]) (*connect.Response[proto.ListSessionsResponse], error)
+	ListSessionArchives(context.Context, *connect.Request[proto.ListSessionArchivesRequest]) (*connect.Response[proto.ListSessionArchivesResponse], error)
+	GetSessionArchive(context.Context, *connect.Request[proto.GetSessionArchiveRequest]) (*connect.Response[proto.GetSessionArchiveResponse], error)
+	DeleteSessionArchive(context.Context, *connect.Request[proto.DeleteSessionArchiveRequest]) (*connect.Response[proto.DeleteSessionArchiveResponse], error)
 }
 
 // NewRadioServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -293,6 +361,30 @@ func NewRadioServiceHandler(svc RadioServiceHandler, opts ...connect.HandlerOpti
 		connect.WithSchema(radioServiceMethods.ByName("ListQueue")),
 		connect.WithHandlerOptions(opts...),
 	)
+	radioServiceListSessionsHandler := connect.NewUnaryHandler(
+		RadioServiceListSessionsProcedure,
+		svc.ListSessions,
+		connect.WithSchema(radioServiceMethods.ByName("ListSessions")),
+		connect.WithHandlerOptions(opts...),
+	)
+	radioServiceListSessionArchivesHandler := connect.NewUnaryHandler(
+		RadioServiceListSessionArchivesProcedure,
+		svc.ListSessionArchives,
+		connect.WithSchema(radioServiceMethods.ByName("ListSessionArchives")),
+		connect.WithHandlerOptions(opts...),
+	)
+	radioServiceGetSessionArchiveHandler := connect.NewUnaryHandler(
+		RadioServiceGetSessionArchiveProcedure,
+		svc.GetSessionArchive,
+		connect.WithSchema(radioServiceMethods.ByName("GetSessionArchive")),
+		connect.WithHandlerOptions(opts...),
+	)
+	radioServiceDeleteSessionArchiveHandler := connect.NewUnaryHandler(
+		RadioServiceDeleteSessionArchiveProcedure,
+		svc.DeleteSessionArchive,
+		connect.WithSchema(radioServiceMethods.ByName("DeleteSessionArchive")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/RadioService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case RadioServicePingProcedure:
@@ -315,6 +407,14 @@ func NewRadioServiceHandler(svc RadioServiceHandler, opts ...connect.HandlerOpti
 			radioServiceSkipTrackHandler.ServeHTTP(w, r)
 		case RadioServiceListQueueProcedure:
 			radioServiceListQueueHandler.ServeHTTP(w, r)
+		case RadioServiceListSessionsProcedure:
+			radioServiceListSessionsHandler.ServeHTTP(w, r)
+		case RadioServiceListSessionArchivesProcedure:
+			radioServiceListSessionArchivesHandler.ServeHTTP(w, r)
+		case RadioServiceGetSessionArchiveProcedure:
+			radioServiceGetSessionArchiveHandler.ServeHTTP(w, r)
+		case RadioServiceDeleteSessionArchiveProcedure:
+			radioServiceDeleteSessionArchiveHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -362,4 +462,20 @@ func (UnimplementedRadioServiceHandler) SkipTrack(context.Context, *connect.Requ
 
 func (UnimplementedRadioServiceHandler) ListQueue(context.Context, *connect.Request[proto.ListQueueRequest]) (*connect.Response[proto.ListQueueResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("RadioService.ListQueue is not implemented"))
+}
+
+func (UnimplementedRadioServiceHandler) ListSessions(context.Context, *connect.Request[proto.ListSessionsRequest]) (*connect.Response[proto.ListSessionsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("RadioService.ListSessions is not implemented"))
+}
+
+func (UnimplementedRadioServiceHandler) ListSessionArchives(context.Context, *connect.Request[proto.ListSessionArchivesRequest]) (*connect.Response[proto.ListSessionArchivesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("RadioService.ListSessionArchives is not implemented"))
+}
+
+func (UnimplementedRadioServiceHandler) GetSessionArchive(context.Context, *connect.Request[proto.GetSessionArchiveRequest]) (*connect.Response[proto.GetSessionArchiveResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("RadioService.GetSessionArchive is not implemented"))
+}
+
+func (UnimplementedRadioServiceHandler) DeleteSessionArchive(context.Context, *connect.Request[proto.DeleteSessionArchiveRequest]) (*connect.Response[proto.DeleteSessionArchiveResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("RadioService.DeleteSessionArchive is not implemented"))
 }

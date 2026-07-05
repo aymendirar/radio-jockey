@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file radio-jockey.proto.
  */
 export const file_radio_jockey: GenFile = /*@__PURE__*/
-  fileDesc("ChJyYWRpby1qb2NrZXkucHJvdG8iDQoLUGluZ1JlcXVlc3QiHwoMUGluZ1Jlc3BvbnNlEg8KB21lc3NhZ2UYASABKAkiKgoUQ3JlYXRlU2Vzc2lvblJlcXVlc3QSEgoKc2Vzc2lvbl9pZBgBIAEoCSIrChVDcmVhdGVTZXNzaW9uUmVzcG9uc2USEgoKc3RyZWFtX3VybBgBIAEoCSInChFHZXRTZXNzaW9uUmVxdWVzdBISCgpzZXNzaW9uX2lkGAEgASgJIigKEkdldFNlc3Npb25SZXNwb25zZRISCgpzdHJlYW1fdXJsGAEgASgJIhUKE1JlcXVlc3ROb25jZVJlcXVlc3QiJQoUUmVxdWVzdE5vbmNlUmVzcG9uc2USDQoFbm9uY2UYASABKAkiJwoTUmVzcG9uZE5vbmNlUmVxdWVzdBIQCghwYXNzX2tleRgBIAEoCSIqChRSZXNwb25kTm9uY2VSZXNwb25zZRISCgphdXRoX3Rva2VuGAEgASgJIi4KGERlbGV0ZVNlc3Npb25BdXRoUmVxdWVzdBISCgpzZXNzaW9uX2lkGAEgASgJIhsKGURlbGV0ZVNlc3Npb25BdXRoUmVzcG9uc2UiOAoPQWRkVHJhY2tSZXF1ZXN0EhIKCnNlc3Npb25faWQYASABKAkSEQoJdHJhY2tfdXJsGAIgASgJIikKEEFkZFRyYWNrUmVzcG9uc2USFQoFdHJhY2sYASABKAsyBi5UcmFjayI3ChJSZW1vdmVUcmFja1JlcXVlc3QSEgoKc2Vzc2lvbl9pZBgBIAEoCRINCgVpbmRleBgCIAEoDSIVChNSZW1vdmVUcmFja1Jlc3BvbnNlIiYKEFNraXBUcmFja1JlcXVlc3QSEgoKc2Vzc2lvbl9pZBgBIAEoCSITChFTa2lwVHJhY2tSZXNwb25zZSImChBMaXN0UXVldWVSZXF1ZXN0EhIKCnNlc3Npb25faWQYASABKAkiKwoRTGlzdFF1ZXVlUmVzcG9uc2USFgoGdHJhY2tzGAEgAygLMgYuVHJhY2siZwoFVHJhY2sSCgoCaWQYASABKAMSDgoGc291cmNlGAIgASgJEhEKCXNvdXJjZV9pZBgDIAEoCRINCgV0aXRsZRgEIAEoCRIOCgZhcnRpc3QYBSABKAkSEAoIZHVyYXRpb24YBiABKAMy1wQKDFJhZGlvU2VydmljZRIlCgRQaW5nEgwuUGluZ1JlcXVlc3QaDS5QaW5nUmVzcG9uc2UiABI9CgxSZXF1ZXN0Tm9uY2USFC5SZXF1ZXN0Tm9uY2VSZXF1ZXN0GhUuUmVxdWVzdE5vbmNlUmVzcG9uc2UiABI9CgxSZXNwb25kTm9uY2USFC5SZXNwb25kTm9uY2VSZXF1ZXN0GhUuUmVzcG9uZE5vbmNlUmVzcG9uc2UiABJACg1DcmVhdGVTZXNzaW9uEhUuQ3JlYXRlU2Vzc2lvblJlcXVlc3QaFi5DcmVhdGVTZXNzaW9uUmVzcG9uc2UiABI3CgpHZXRTZXNzaW9uEhIuR2V0U2Vzc2lvblJlcXVlc3QaEy5HZXRTZXNzaW9uUmVzcG9uc2UiABJMChFEZWxldGVTZXNzaW9uQXV0aBIZLkRlbGV0ZVNlc3Npb25BdXRoUmVxdWVzdBoaLkRlbGV0ZVNlc3Npb25BdXRoUmVzcG9uc2UiABIxCghBZGRUcmFjaxIQLkFkZFRyYWNrUmVxdWVzdBoRLkFkZFRyYWNrUmVzcG9uc2UiABI6CgtSZW1vdmVUcmFjaxITLlJlbW92ZVRyYWNrUmVxdWVzdBoULlJlbW92ZVRyYWNrUmVzcG9uc2UiABI0CglTa2lwVHJhY2sSES5Ta2lwVHJhY2tSZXF1ZXN0GhIuU2tpcFRyYWNrUmVzcG9uc2UiABI0CglMaXN0UXVldWUSES5MaXN0UXVldWVSZXF1ZXN0GhIuTGlzdFF1ZXVlUmVzcG9uc2UiAEISWhBzZXJ2ZXIvc3JjL3Byb3RvYgZwcm90bzM");
+  fileDesc("ChJyYWRpby1qb2NrZXkucHJvdG8iDQoLUGluZ1JlcXVlc3QiHwoMUGluZ1Jlc3BvbnNlEg8KB21lc3NhZ2UYASABKAkiOwoUQ3JlYXRlU2Vzc2lvblJlcXVlc3QSEgoKc2Vzc2lvbl9pZBgBIAEoCRIPCgdhcmNoaXZlGAIgASgIIisKFUNyZWF0ZVNlc3Npb25SZXNwb25zZRISCgpzdHJlYW1fdXJsGAEgASgJIicKEUdldFNlc3Npb25SZXF1ZXN0EhIKCnNlc3Npb25faWQYASABKAkiKAoSR2V0U2Vzc2lvblJlc3BvbnNlEhIKCnN0cmVhbV91cmwYASABKAkiFQoTUmVxdWVzdE5vbmNlUmVxdWVzdCIlChRSZXF1ZXN0Tm9uY2VSZXNwb25zZRINCgVub25jZRgBIAEoCSInChNSZXNwb25kTm9uY2VSZXF1ZXN0EhAKCHBhc3Nfa2V5GAEgASgJIioKFFJlc3BvbmROb25jZVJlc3BvbnNlEhIKCmF1dGhfdG9rZW4YASABKAkiLgoYRGVsZXRlU2Vzc2lvbkF1dGhSZXF1ZXN0EhIKCnNlc3Npb25faWQYASABKAkiGwoZRGVsZXRlU2Vzc2lvbkF1dGhSZXNwb25zZSI4Cg9BZGRUcmFja1JlcXVlc3QSEgoKc2Vzc2lvbl9pZBgBIAEoCRIRCgl0cmFja191cmwYAiABKAkiKQoQQWRkVHJhY2tSZXNwb25zZRIVCgV0cmFjaxgBIAEoCzIGLlRyYWNrIjcKElJlbW92ZVRyYWNrUmVxdWVzdBISCgpzZXNzaW9uX2lkGAEgASgJEg0KBWluZGV4GAIgASgNIhUKE1JlbW92ZVRyYWNrUmVzcG9uc2UiJgoQU2tpcFRyYWNrUmVxdWVzdBISCgpzZXNzaW9uX2lkGAEgASgJIhMKEVNraXBUcmFja1Jlc3BvbnNlIiYKEExpc3RRdWV1ZVJlcXVlc3QSEgoKc2Vzc2lvbl9pZBgBIAEoCSIrChFMaXN0UXVldWVSZXNwb25zZRIWCgZ0cmFja3MYASADKAsyBi5UcmFjayIVChNMaXN0U2Vzc2lvbnNSZXF1ZXN0IjYKFExpc3RTZXNzaW9uc1Jlc3BvbnNlEh4KCHNlc3Npb25zGAEgAygLMgwuU2Vzc2lvbkluZm8iNQoLU2Vzc2lvbkluZm8SEgoKc2Vzc2lvbl9pZBgBIAEoCRISCgpzdHJlYW1fdXJsGAIgASgJIn4KBVRyYWNrEgoKAmlkGAEgASgDEg4KBnNvdXJjZRgCIAEoCRIRCglzb3VyY2VfaWQYAyABKAkSDQoFdGl0bGUYBCABKAkSDgoGYXJ0aXN0GAUgASgJEhAKCGR1cmF0aW9uGAYgASgDEhUKDWFsYnVtX2FydF91cmwYByABKAkiSAoSU2Vzc2lvbkFyY2hpdmVJbmZvEgoKAmlkGAEgASgDEhIKCnNlc3Npb25faWQYAiABKAkSEgoKY3JlYXRlZF9hdBgDIAEoAyIcChpMaXN0U2Vzc2lvbkFyY2hpdmVzUmVxdWVzdCJEChtMaXN0U2Vzc2lvbkFyY2hpdmVzUmVzcG9uc2USJQoIYXJjaGl2ZXMYASADKAsyEy5TZXNzaW9uQXJjaGl2ZUluZm8iJgoYR2V0U2Vzc2lvbkFyY2hpdmVSZXF1ZXN0EgoKAmlkGAEgASgDImcKGUdldFNlc3Npb25BcmNoaXZlUmVzcG9uc2USCgoCaWQYASABKAMSEgoKc2Vzc2lvbl9pZBgCIAEoCRISCgpjcmVhdGVkX2F0GAMgASgDEhYKBnRyYWNrcxgEIAMoCzIGLlRyYWNrIikKG0RlbGV0ZVNlc3Npb25BcmNoaXZlUmVxdWVzdBIKCgJpZBgBIAEoAyIeChxEZWxldGVTZXNzaW9uQXJjaGl2ZVJlc3BvbnNlMo8HCgxSYWRpb1NlcnZpY2USJQoEUGluZxIMLlBpbmdSZXF1ZXN0Gg0uUGluZ1Jlc3BvbnNlIgASPQoMUmVxdWVzdE5vbmNlEhQuUmVxdWVzdE5vbmNlUmVxdWVzdBoVLlJlcXVlc3ROb25jZVJlc3BvbnNlIgASPQoMUmVzcG9uZE5vbmNlEhQuUmVzcG9uZE5vbmNlUmVxdWVzdBoVLlJlc3BvbmROb25jZVJlc3BvbnNlIgASQAoNQ3JlYXRlU2Vzc2lvbhIVLkNyZWF0ZVNlc3Npb25SZXF1ZXN0GhYuQ3JlYXRlU2Vzc2lvblJlc3BvbnNlIgASNwoKR2V0U2Vzc2lvbhISLkdldFNlc3Npb25SZXF1ZXN0GhMuR2V0U2Vzc2lvblJlc3BvbnNlIgASTAoRRGVsZXRlU2Vzc2lvbkF1dGgSGS5EZWxldGVTZXNzaW9uQXV0aFJlcXVlc3QaGi5EZWxldGVTZXNzaW9uQXV0aFJlc3BvbnNlIgASMQoIQWRkVHJhY2sSEC5BZGRUcmFja1JlcXVlc3QaES5BZGRUcmFja1Jlc3BvbnNlIgASOgoLUmVtb3ZlVHJhY2sSEy5SZW1vdmVUcmFja1JlcXVlc3QaFC5SZW1vdmVUcmFja1Jlc3BvbnNlIgASNAoJU2tpcFRyYWNrEhEuU2tpcFRyYWNrUmVxdWVzdBoSLlNraXBUcmFja1Jlc3BvbnNlIgASNAoJTGlzdFF1ZXVlEhEuTGlzdFF1ZXVlUmVxdWVzdBoSLkxpc3RRdWV1ZVJlc3BvbnNlIgASPQoMTGlzdFNlc3Npb25zEhQuTGlzdFNlc3Npb25zUmVxdWVzdBoVLkxpc3RTZXNzaW9uc1Jlc3BvbnNlIgASUgoTTGlzdFNlc3Npb25BcmNoaXZlcxIbLkxpc3RTZXNzaW9uQXJjaGl2ZXNSZXF1ZXN0GhwuTGlzdFNlc3Npb25BcmNoaXZlc1Jlc3BvbnNlIgASTAoRR2V0U2Vzc2lvbkFyY2hpdmUSGS5HZXRTZXNzaW9uQXJjaGl2ZVJlcXVlc3QaGi5HZXRTZXNzaW9uQXJjaGl2ZVJlc3BvbnNlIgASVQoURGVsZXRlU2Vzc2lvbkFyY2hpdmUSHC5EZWxldGVTZXNzaW9uQXJjaGl2ZVJlcXVlc3QaHS5EZWxldGVTZXNzaW9uQXJjaGl2ZVJlc3BvbnNlIgBCEloQc2VydmVyL3NyYy9wcm90b2IGcHJvdG8z");
 
 /**
  * @generated from message PingRequest
@@ -50,6 +50,11 @@ export type CreateSessionRequest = Message<"CreateSessionRequest"> & {
    * @generated from field: string session_id = 1;
    */
   sessionId: string;
+
+  /**
+   * @generated from field: bool archive = 2;
+   */
+  archive: boolean;
 };
 
 /**
@@ -343,6 +348,58 @@ export const ListQueueResponseSchema: GenMessage<ListQueueResponse> = /*@__PURE_
   messageDesc(file_radio_jockey, 19);
 
 /**
+ * @generated from message ListSessionsRequest
+ */
+export type ListSessionsRequest = Message<"ListSessionsRequest"> & {
+};
+
+/**
+ * Describes the message ListSessionsRequest.
+ * Use `create(ListSessionsRequestSchema)` to create a new message.
+ */
+export const ListSessionsRequestSchema: GenMessage<ListSessionsRequest> = /*@__PURE__*/
+  messageDesc(file_radio_jockey, 20);
+
+/**
+ * @generated from message ListSessionsResponse
+ */
+export type ListSessionsResponse = Message<"ListSessionsResponse"> & {
+  /**
+   * @generated from field: repeated SessionInfo sessions = 1;
+   */
+  sessions: SessionInfo[];
+};
+
+/**
+ * Describes the message ListSessionsResponse.
+ * Use `create(ListSessionsResponseSchema)` to create a new message.
+ */
+export const ListSessionsResponseSchema: GenMessage<ListSessionsResponse> = /*@__PURE__*/
+  messageDesc(file_radio_jockey, 21);
+
+/**
+ * @generated from message SessionInfo
+ */
+export type SessionInfo = Message<"SessionInfo"> & {
+  /**
+   * @generated from field: string session_id = 1;
+   */
+  sessionId: string;
+
+  /**
+   * @generated from field: string stream_url = 2;
+   */
+  streamUrl: string;
+};
+
+/**
+ * Describes the message SessionInfo.
+ * Use `create(SessionInfoSchema)` to create a new message.
+ */
+export const SessionInfoSchema: GenMessage<SessionInfo> = /*@__PURE__*/
+  messageDesc(file_radio_jockey, 22);
+
+/**
  * @generated from message Track
  */
 export type Track = Message<"Track"> & {
@@ -375,6 +432,11 @@ export type Track = Message<"Track"> & {
    * @generated from field: int64 duration = 6;
    */
   duration: bigint;
+
+  /**
+   * @generated from field: string album_art_url = 7;
+   */
+  albumArtUrl: string;
 };
 
 /**
@@ -382,7 +444,143 @@ export type Track = Message<"Track"> & {
  * Use `create(TrackSchema)` to create a new message.
  */
 export const TrackSchema: GenMessage<Track> = /*@__PURE__*/
-  messageDesc(file_radio_jockey, 20);
+  messageDesc(file_radio_jockey, 23);
+
+/**
+ * @generated from message SessionArchiveInfo
+ */
+export type SessionArchiveInfo = Message<"SessionArchiveInfo"> & {
+  /**
+   * @generated from field: int64 id = 1;
+   */
+  id: bigint;
+
+  /**
+   * @generated from field: string session_id = 2;
+   */
+  sessionId: string;
+
+  /**
+   * @generated from field: int64 created_at = 3;
+   */
+  createdAt: bigint;
+};
+
+/**
+ * Describes the message SessionArchiveInfo.
+ * Use `create(SessionArchiveInfoSchema)` to create a new message.
+ */
+export const SessionArchiveInfoSchema: GenMessage<SessionArchiveInfo> = /*@__PURE__*/
+  messageDesc(file_radio_jockey, 24);
+
+/**
+ * @generated from message ListSessionArchivesRequest
+ */
+export type ListSessionArchivesRequest = Message<"ListSessionArchivesRequest"> & {
+};
+
+/**
+ * Describes the message ListSessionArchivesRequest.
+ * Use `create(ListSessionArchivesRequestSchema)` to create a new message.
+ */
+export const ListSessionArchivesRequestSchema: GenMessage<ListSessionArchivesRequest> = /*@__PURE__*/
+  messageDesc(file_radio_jockey, 25);
+
+/**
+ * @generated from message ListSessionArchivesResponse
+ */
+export type ListSessionArchivesResponse = Message<"ListSessionArchivesResponse"> & {
+  /**
+   * @generated from field: repeated SessionArchiveInfo archives = 1;
+   */
+  archives: SessionArchiveInfo[];
+};
+
+/**
+ * Describes the message ListSessionArchivesResponse.
+ * Use `create(ListSessionArchivesResponseSchema)` to create a new message.
+ */
+export const ListSessionArchivesResponseSchema: GenMessage<ListSessionArchivesResponse> = /*@__PURE__*/
+  messageDesc(file_radio_jockey, 26);
+
+/**
+ * @generated from message GetSessionArchiveRequest
+ */
+export type GetSessionArchiveRequest = Message<"GetSessionArchiveRequest"> & {
+  /**
+   * @generated from field: int64 id = 1;
+   */
+  id: bigint;
+};
+
+/**
+ * Describes the message GetSessionArchiveRequest.
+ * Use `create(GetSessionArchiveRequestSchema)` to create a new message.
+ */
+export const GetSessionArchiveRequestSchema: GenMessage<GetSessionArchiveRequest> = /*@__PURE__*/
+  messageDesc(file_radio_jockey, 27);
+
+/**
+ * @generated from message GetSessionArchiveResponse
+ */
+export type GetSessionArchiveResponse = Message<"GetSessionArchiveResponse"> & {
+  /**
+   * @generated from field: int64 id = 1;
+   */
+  id: bigint;
+
+  /**
+   * @generated from field: string session_id = 2;
+   */
+  sessionId: string;
+
+  /**
+   * @generated from field: int64 created_at = 3;
+   */
+  createdAt: bigint;
+
+  /**
+   * @generated from field: repeated Track tracks = 4;
+   */
+  tracks: Track[];
+};
+
+/**
+ * Describes the message GetSessionArchiveResponse.
+ * Use `create(GetSessionArchiveResponseSchema)` to create a new message.
+ */
+export const GetSessionArchiveResponseSchema: GenMessage<GetSessionArchiveResponse> = /*@__PURE__*/
+  messageDesc(file_radio_jockey, 28);
+
+/**
+ * @generated from message DeleteSessionArchiveRequest
+ */
+export type DeleteSessionArchiveRequest = Message<"DeleteSessionArchiveRequest"> & {
+  /**
+   * @generated from field: int64 id = 1;
+   */
+  id: bigint;
+};
+
+/**
+ * Describes the message DeleteSessionArchiveRequest.
+ * Use `create(DeleteSessionArchiveRequestSchema)` to create a new message.
+ */
+export const DeleteSessionArchiveRequestSchema: GenMessage<DeleteSessionArchiveRequest> = /*@__PURE__*/
+  messageDesc(file_radio_jockey, 29);
+
+/**
+ * @generated from message DeleteSessionArchiveResponse
+ */
+export type DeleteSessionArchiveResponse = Message<"DeleteSessionArchiveResponse"> & {
+};
+
+/**
+ * Describes the message DeleteSessionArchiveResponse.
+ * Use `create(DeleteSessionArchiveResponseSchema)` to create a new message.
+ */
+export const DeleteSessionArchiveResponseSchema: GenMessage<DeleteSessionArchiveResponse> = /*@__PURE__*/
+  messageDesc(file_radio_jockey, 30);
 
 /**
  * @generated from service RadioService
@@ -467,6 +665,38 @@ export const RadioService: GenService<{
     methodKind: "unary";
     input: typeof ListQueueRequestSchema;
     output: typeof ListQueueResponseSchema;
+  },
+  /**
+   * @generated from rpc RadioService.ListSessions
+   */
+  listSessions: {
+    methodKind: "unary";
+    input: typeof ListSessionsRequestSchema;
+    output: typeof ListSessionsResponseSchema;
+  },
+  /**
+   * @generated from rpc RadioService.ListSessionArchives
+   */
+  listSessionArchives: {
+    methodKind: "unary";
+    input: typeof ListSessionArchivesRequestSchema;
+    output: typeof ListSessionArchivesResponseSchema;
+  },
+  /**
+   * @generated from rpc RadioService.GetSessionArchive
+   */
+  getSessionArchive: {
+    methodKind: "unary";
+    input: typeof GetSessionArchiveRequestSchema;
+    output: typeof GetSessionArchiveResponseSchema;
+  },
+  /**
+   * @generated from rpc RadioService.DeleteSessionArchive
+   */
+  deleteSessionArchive: {
+    methodKind: "unary";
+    input: typeof DeleteSessionArchiveRequestSchema;
+    output: typeof DeleteSessionArchiveResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_radio_jockey, 0);

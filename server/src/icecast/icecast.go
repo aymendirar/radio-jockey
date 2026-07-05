@@ -41,6 +41,7 @@ type IcecastClient struct {
 	streamBaseURL   string
 	mu              sync.Mutex
 	cancels         map[session.SessionID]context.CancelFunc
+	db              *db.DB
 }
 
 func CreateIcecastClient(
@@ -49,6 +50,7 @@ func CreateIcecastClient(
 	icecastPort string,
 	icecastPassword string,
 	streamBaseURL string,
+	d *db.DB,
 ) *IcecastClient {
 	return &IcecastClient{
 		sessionManager:  sessionManager,
@@ -57,6 +59,7 @@ func CreateIcecastClient(
 		icecastPassword: icecastPassword,
 		streamBaseURL:   streamBaseURL,
 		cancels:         make(map[session.SessionID]context.CancelFunc),
+		db:              d,
 	}
 }
 
@@ -141,6 +144,12 @@ func (i *IcecastClient) streamSession(ctx context.Context, queue *session.Sessio
 			}
 
 			slog.Info("playing track", "title", track.Title, "artist", track.Artist, "mountpoint", mountpoint)
+
+			if archiveID := queue.ArchiveID(); archiveID != nil {
+				if err := i.db.AddSessionArchiveTrack(ctx, *archiveID, track.Id); err != nil {
+					slog.Error("failed to record archive track", "err", err, "mountpoint", mountpoint)
+				}
+			}
 
 			var elapsed int64
 			skipped := false

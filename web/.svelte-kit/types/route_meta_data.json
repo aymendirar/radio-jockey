@@ -6,6 +6,12 @@
 	"/admin": [
 		"src/routes/+layout.server.ts"
 	],
+	"/archive": [
+		"src/routes/+layout.server.ts"
+	],
+	"/archive/[archiveId]": [
+		"src/routes/+layout.server.ts"
+	],
 	"/stations": [
 		"src/routes/+layout.server.ts"
 	],

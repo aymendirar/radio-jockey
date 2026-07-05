@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"server/src/connect/auth"
+	"server/src/db"
 	"server/src/icecast"
 	"server/src/music"
 	"server/src/proto/protoconnect"
@@ -21,6 +22,7 @@ type Server struct {
 	youtube        *music.YouTube
 	icecast        *icecast.IcecastClient
 	auth           *auth.Auth
+	db             *db.DB
 }
 
 func CreateServer(
@@ -29,12 +31,14 @@ func CreateServer(
 	sessionManager *session.SessionManager,
 	youtube *music.YouTube,
 	icecast *icecast.IcecastClient,
-	a *auth.Auth) (*http.Server, error) {
+	a *auth.Auth,
+	d *db.DB) (*http.Server, error) {
 	server := &Server{
 		sessionManager: sessionManager,
 		youtube:        youtube,
 		icecast:        icecast,
 		auth:           a,
+		db:             d,
 	}
 	mux := http.NewServeMux()
 	servicePath, handler := protoconnect.NewRadioServiceHandler(

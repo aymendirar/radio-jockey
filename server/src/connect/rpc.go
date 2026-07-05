@@ -2,6 +2,7 @@ package connect
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"server/src/music"
 	"server/src/proto"
@@ -44,7 +45,17 @@ func (s *Server) DeleteSessionAuth(ctx context.Context, req *connect.Request[pro
 
 func (s *Server) CreateSession(ctx context.Context, req *connect.Request[proto.CreateSessionRequest]) (*connect.Response[proto.CreateSessionResponse], error) {
 	sessionID := session.SessionID(req.Msg.SessionId)
-	ready, err := s.sessionManager.CreateSession(ctx, sessionID)
+
+	var archiveID *int64
+	if req.Msg.Archive {
+		archive, err := s.db.CreateSessionArchive(ctx, req.Msg.SessionId)
+		if err != nil {
+			return nil, connect.NewError(connect.CodeInternal, err)
+		}
+		archiveID = &archive.Id
+	}
+
+	ready, err := s.sessionManager.CreateSession(ctx, sessionID, archiveID)
 	if err != nil {
 		if errors.Is(err, session.AlreadyExistsError) {
 			return nil, connect.NewError(connect.CodeAlreadyExists, err)
@@ -79,6 +90,18 @@ func (s *Server) GetSession(ctx context.Context, req *connect.Request[proto.GetS
 	return connect.NewResponse(&proto.GetSessionResponse{StreamUrl: streamURL}), nil
 }
 
+func (s *Server) ListSessions(ctx context.Context, req *connect.Request[proto.ListSessionsRequest]) (*connect.Response[proto.ListSessionsResponse], error) {
+	sessionIDs := s.sessionManager.ListSessions()
+	sessions := make([]*proto.SessionInfo, len(sessionIDs))
+	for i, id := range sessionIDs {
+		sessions[i] = &proto.SessionInfo{
+			SessionId: string(id),
+			StreamUrl: s.icecast.StreamURL(id),
+		}
+	}
+
+	return connect.NewResponse(&proto.ListSessionsResponse{Sessions: sessions}), nil
+}
 
 func (s *Server) AddTrack(ctx context.Context, req *connect.Request[proto.AddTrackRequest]) (*connect.Response[proto.AddTrackResponse], error) {
 	track, err := s.youtube.DownloadTrackFromURL(ctx, req.Msg.TrackUrl)
@@ -109,12 +132,13 @@ func (s *Server) AddTrack(ctx context.Context, req *connect.Request[proto.AddTra
 
 	return connect.NewResponse(&proto.AddTrackResponse{
 		Track: &proto.Track{
-			Id:       track.Id,
-			Source:   track.Source,
-			SourceId: track.SourceId,
-			Title:    track.Title,
-			Artist:   track.Artist,
-			Duration: track.Duration,
+			Id:          track.Id,
+			Source:      track.Source,
+			SourceId:    track.SourceId,
+			Title:       track.Title,
+			Artist:      track.Artist,
+			Duration:    track.Duration,
+			AlbumArtUrl: track.AlbumArtUrl,
 		},
 	}), nil
 }
@@ -178,14 +202,83 @@ func (s *Server) ListQueue(ctx context.Context, req *connect.Request[proto.ListQ
 	protoTracks := make([]*proto.Track, len(tracks))
 	for i, t := range tracks {
 		protoTracks[i] = &proto.Track{
-			Id:       t.Id,
-			Source:   t.Source,
-			SourceId: t.SourceId,
-			Title:    t.Title,
-			Artist:   t.Artist,
-			Duration: t.Duration,
+			Id:          t.Id,
+			Source:      t.Source,
+			SourceId:    t.SourceId,
+			Title:       t.Title,
+			Artist:      t.Artist,
+			Duration:    t.Duration,
+			AlbumArtUrl: t.AlbumArtUrl,
 		}
 	}
 
 	return connect.NewResponse(&proto.ListQueueResponse{Tracks: protoTracks}), nil
+}
+
+func (s *Server) ListSessionArchives(ctx context.Context, req *connect.Request[proto.ListSessionArchivesRequest]) (*connect.Response[proto.ListSessionArchivesResponse], error) {
+	archives, err := s.db.ListSessionArchives(ctx)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, err)
+	}
+
+	protoArchives := make([]*proto.SessionArchiveInfo, len(archives))
+	for i, a := range archives {
+		protoArchives[i] = &proto.SessionArchiveInfo{
+			Id:        a.Id,
+			SessionId: a.SessionId,
+			CreatedAt: a.CreatedAt,
+		}
+	}
+
+	return connect.NewResponse(&proto.ListSessionArchivesResponse{Archives: protoArchives}), nil
+}
+
+func (s *Server) GetSessionArchive(ctx context.Context, req *connect.Request[proto.GetSessionArchiveRequest]) (*connect.Response[proto.GetSessionArchiveResponse], error) {
+	archive, err := s.db.GetSessionArchive(ctx, req.Msg.Id)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, connect.NewError(connect.CodeNotFound, err)
+		}
+		return nil, connect.NewError(connect.CodeInternal, err)
+	}
+
+	tracks, err := s.db.ListSessionArchiveTracks(ctx, archive.Id)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, err)
+	}
+
+	protoTracks := make([]*proto.Track, len(tracks))
+	for i, t := range tracks {
+		protoTracks[i] = &proto.Track{
+			Id:          t.Id,
+			Source:      t.Source,
+			SourceId:    t.SourceId,
+			Title:       t.Title,
+			Artist:      t.Artist,
+			Duration:    t.Duration,
+			AlbumArtUrl: t.AlbumArtUrl,
+		}
+	}
+
+	return connect.NewResponse(&proto.GetSessionArchiveResponse{
+		Id:        archive.Id,
+		SessionId: archive.SessionId,
+		CreatedAt: archive.CreatedAt,
+		Tracks:    protoTracks,
+	}), nil
+}
+
+func (s *Server) DeleteSessionArchive(ctx context.Context, req *connect.Request[proto.DeleteSessionArchiveRequest]) (*connect.Response[proto.DeleteSessionArchiveResponse], error) {
+	if _, err := s.db.GetSessionArchive(ctx, req.Msg.Id); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, connect.NewError(connect.CodeNotFound, err)
+		}
+		return nil, connect.NewError(connect.CodeInternal, err)
+	}
+
+	if err := s.db.DeleteSessionArchive(ctx, req.Msg.Id); err != nil {
+		return nil, connect.NewError(connect.CodeInternal, err)
+	}
+
+	return connect.NewResponse(&proto.DeleteSessionArchiveResponse{}), nil
 }

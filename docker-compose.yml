@@ -1,6 +1,7 @@
 services:
   caddy:
     image: caddy:2-alpine
+    restart: unless-stopped
     ports:
       - 80:80
       - 443:443
@@ -17,6 +18,7 @@ services:
 
   web:
     build: ./web
+    restart: unless-stopped
     env_file: ./web/.env
     depends_on:
       server:
@@ -25,6 +27,7 @@ services:
   discord-jockey:
     build: ./discord-jockey
     platform: linux/amd64
+    restart: unless-stopped
     env_file: ./discord-jockey/.env
     depends_on:
       server:
@@ -32,6 +35,7 @@ services:
 
   server:
     build: ./server
+    restart: unless-stopped
     env_file: ./server/.env
     healthcheck:
       test: ["CMD", "nc", "-z", "localhost", "12625"]
@@ -64,3 +68,9 @@ services:
       - ./web/src/lib/proto:/codegen/web/src/lib/proto
       - ./codegen/scripts:/codegen/scripts
     command: sh /codegen/scripts/update_protos.sh
+
+  server-test:
+    build:
+      context: ./server
+      target: test
+    profiles: ["test"]

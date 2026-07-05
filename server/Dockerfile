@@ -1,4 +1,4 @@
-FROM golang:1.25-alpine AS builder
+FROM golang:1.25-alpine AS base
 
 WORKDIR /server
 
@@ -7,7 +7,15 @@ RUN go mod download
 
 COPY . ./
 
+FROM base AS builder
+
 RUN go build -o ./main ./src
+
+FROM base AS test
+
+RUN apk add --no-cache ffmpeg
+
+CMD ["go", "test", "./...", "-v"]
 
 FROM alpine
 

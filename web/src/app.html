@@ -9,50 +9,75 @@
 	<body data-sveltekit-preload-data="hover">
 		<div class="bg-grid" aria-hidden="true"></div>
 		<div class="content">
-			<a href="/"><h1>radio jockey</h1></a>
+			<a href="/"
+				><h1>
+					<span class="wave-1">(</span> <span class="wave-2">(</span>
+					<span class="wave-3">(</span> radio jockey <span class="wave-3">)</span>
+					<span class="wave-2">)</span> <span class="wave-1">)</span>
+				</h1></a
+			>
 			%sveltekit.body%
 		</div>
 	</body>
 </html>
 
 <style>
-	@font-face {
-		font-family: '04B_30';
-		src: url('04B_30.TTF') format('truetype');
-	}
-
-	@font-face {
-		font-family: 'dogica';
-		src: url('/dogica.ttf') format('truetype');
-	}
-
 	html {
-    font-family: 'dogica';
+		font-family: 'Courier New', monospace;
+		font-weight: bold;
 	}
 
 	h1 {
-    font-size: 2em;
-		font-family: '04B_30';
-    padding-bottom: 20px;
+		font-size: 32px;
+		padding-bottom: 20px;
+	}
+
+	.wave-1 {
+		font-size: 22px;
+	}
+
+	.wave-2 {
+		font-size: 16px;
+	}
+
+	.wave-3 {
+		font-size: 11px;
 	}
 
 	@media (max-width: 600px) {
 		h1 {
+			font-size: 20px;
 			text-align: center;
+		}
+
+		.wave-1 {
+			font-size: 17px;
+		}
+
+		.wave-2 {
+			font-size: 12px;
+		}
+
+		.wave-3 {
+			font-size: 8px;
 		}
 	}
 
-  p, ul {
-    font-size: 12px;
-  }
+	p,
+	ul,
+	ol {
+		font-size: 16px;
+	}
 
 	body {
-		margin: 0;
-		min-height: 100vh;
+		margin: 16px;
+		min-height: calc(100vh - 32px);
 		background-color: #01026f;
 		color: white;
 		position: relative;
-    line-height: 24px;
+		line-height: 24px;
+		border: 1px solid white;
+		box-sizing: border-box;
 	}
 
 	.bg-grid {
@@ -61,7 +86,7 @@
 		background-image: url('/radio2.png');
 		background-size: 80px 80px;
 		background-repeat: space;
-		opacity: 0.35;
+		opacity: 0.3;
 		pointer-events: none;
 		z-index: 0;
 	}
@@ -69,7 +94,7 @@
 	.content {
 		position: relative;
 		z-index: 1;
-		padding: 8px 24px;
+		padding: 16px 32px;
 	}
 
 	a,
@@ -77,11 +102,60 @@
 	a:hover,
 	a:active {
 		color: inherit;
-    text-decoration: none;
+		text-decoration: none;
 	}
 
-  a:hover {
-    text-decoration: underline;
+	a:hover {
+		text-decoration: underline;
+	}
 
-  }
+	h2,
+	h3 {
+		font-family: 'Courier New', monospace;
+	}
+
+	p {
+		margin: 12px 0;
+	}
+
+	.panel {
+		border: 1px solid white;
+		padding: 16px;
+		margin-bottom: 24px;
+	}
+
+	form {
+		border: 1px solid white;
+		padding: 16px;
+		margin-bottom: 24px;
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	ul,
+	ol {
+		border: 1px solid white;
+		padding: 16px 16px 16px 44px;
+		margin: 0 0 24px 0;
+	}
+
+	li {
+		padding: 4px 0;
+	}
+
+	button,
+	input {
+		font-family: inherit;
+		font-size: 16px;
+		font-weight: bold;
+		background: transparent;
+		color: white;
+		border: 1px solid white;
+		padding: 6px 10px;
+	}
+
+	button:hover {
+		text-decoration: underline;
+	}
 </style>

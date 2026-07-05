@@ -1,4 +1,11 @@
 import { ConnectError } from "@connectrpc/connect";
+import type { ChatInputCommandInteraction, CacheType } from "discord.js";
+
+export function getSessionId(interaction: ChatInputCommandInteraction<CacheType>): string {
+  const serverName = interaction.guild?.name ?? "unknown";
+  const slug = serverName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  return `${slug}-${interaction.guildId}`;
+}
 
 export async function withConnectError<T, E = T>(
   fn: () => Promise<T>,

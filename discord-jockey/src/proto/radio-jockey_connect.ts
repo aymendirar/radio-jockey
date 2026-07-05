@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { AddTrackRequest, AddTrackResponse, CreateSessionRequest, CreateSessionResponse, DeleteSessionAuthRequest, DeleteSessionAuthResponse, GetSessionRequest, GetSessionResponse, ListQueueRequest, ListQueueResponse, PingRequest, PingResponse, RemoveTrackRequest, RemoveTrackResponse, RequestNonceRequest, RequestNonceResponse, RespondNonceRequest, RespondNonceResponse, SkipTrackRequest, SkipTrackResponse } from "./radio-jockey_pb.js";
+import { AddTrackRequest, AddTrackResponse, CreateSessionRequest, CreateSessionResponse, DeleteSessionArchiveRequest, DeleteSessionArchiveResponse, DeleteSessionAuthRequest, DeleteSessionAuthResponse, GetSessionArchiveRequest, GetSessionArchiveResponse, GetSessionRequest, GetSessionResponse, ListQueueRequest, ListQueueResponse, ListSessionArchivesRequest, ListSessionArchivesResponse, ListSessionsRequest, ListSessionsResponse, PingRequest, PingResponse, RemoveTrackRequest, RemoveTrackResponse, RequestNonceRequest, RequestNonceResponse, RespondNonceRequest, RespondNonceResponse, SkipTrackRequest, SkipTrackResponse } from "./radio-jockey_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -100,6 +100,42 @@ export const RadioService = {
       name: "ListQueue",
       I: ListQueueRequest,
       O: ListQueueResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc RadioService.ListSessions
+     */
+    listSessions: {
+      name: "ListSessions",
+      I: ListSessionsRequest,
+      O: ListSessionsResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc RadioService.ListSessionArchives
+     */
+    listSessionArchives: {
+      name: "ListSessionArchives",
+      I: ListSessionArchivesRequest,
+      O: ListSessionArchivesResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc RadioService.GetSessionArchive
+     */
+    getSessionArchive: {
+      name: "GetSessionArchive",
+      I: GetSessionArchiveRequest,
+      O: GetSessionArchiveResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc RadioService.DeleteSessionArchive
+     */
+    deleteSessionArchive: {
+      name: "DeleteSessionArchive",
+      I: DeleteSessionArchiveRequest,
+      O: DeleteSessionArchiveResponse,
       kind: MethodKind.Unary,
     },
   }

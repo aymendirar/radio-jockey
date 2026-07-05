@@ -54,6 +54,7 @@ func run() error {
 		env.ICECAST_SERVER_PORT,
 		env.ICECAST_SERVER_PASSWORD,
 		env.STREAM_BASE_URL,
+		db,
 	)
 	slog.Info("icecast client created", "host", env.ICECAST_SERVER_HOST, "port", env.ICECAST_SERVER_PORT, "stream_base_url", env.STREAM_BASE_URL)
 
@@ -61,7 +62,7 @@ func run() error {
 	if err != nil {
 		return fmt.Errorf("failed to create auth: %v", err)
 	}
-	server, err := connect.CreateServer(env.HOST, env.PORT, sessionManager, youtube, icecast, a)
+	server, err := connect.CreateServer(env.HOST, env.PORT, sessionManager, youtube, icecast, a, db)
 	if err != nil {
 		return fmt.Errorf("failed to create server: %v", err)
 	}

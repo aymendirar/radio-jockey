@@ -104,6 +104,7 @@ func (x *PingResponse) GetMessage() string {
 type CreateSessionRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	SessionId     string                 `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
+	Archive       bool                   `protobuf:"varint,2,opt,name=archive,proto3" json:"archive,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -143,6 +144,13 @@ func (x *CreateSessionRequest) GetSessionId() string {
 		return x.SessionId
 	}
 	return ""
+}
+
+func (x *CreateSessionRequest) GetArchive() bool {
+	if x != nil {
+		return x.Archive
+	}
+	return false
 }
 
 type CreateSessionResponse struct {
@@ -877,6 +885,138 @@ func (x *ListQueueResponse) GetTracks() []*Track {
 	return nil
 }
 
+type ListSessionsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListSessionsRequest) Reset() {
+	*x = ListSessionsRequest{}
+	mi := &file_radio_jockey_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListSessionsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListSessionsRequest) ProtoMessage() {}
+
+func (x *ListSessionsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_radio_jockey_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListSessionsRequest.ProtoReflect.Descriptor instead.
+func (*ListSessionsRequest) Descriptor() ([]byte, []int) {
+	return file_radio_jockey_proto_rawDescGZIP(), []int{20}
+}
+
+type ListSessionsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Sessions      []*SessionInfo         `protobuf:"bytes,1,rep,name=sessions,proto3" json:"sessions,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListSessionsResponse) Reset() {
+	*x = ListSessionsResponse{}
+	mi := &file_radio_jockey_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListSessionsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListSessionsResponse) ProtoMessage() {}
+
+func (x *ListSessionsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_radio_jockey_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListSessionsResponse.ProtoReflect.Descriptor instead.
+func (*ListSessionsResponse) Descriptor() ([]byte, []int) {
+	return file_radio_jockey_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *ListSessionsResponse) GetSessions() []*SessionInfo {
+	if x != nil {
+		return x.Sessions
+	}
+	return nil
+}
+
+type SessionInfo struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SessionId     string                 `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
+	StreamUrl     string                 `protobuf:"bytes,2,opt,name=stream_url,json=streamUrl,proto3" json:"stream_url,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SessionInfo) Reset() {
+	*x = SessionInfo{}
+	mi := &file_radio_jockey_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SessionInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SessionInfo) ProtoMessage() {}
+
+func (x *SessionInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_radio_jockey_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SessionInfo.ProtoReflect.Descriptor instead.
+func (*SessionInfo) Descriptor() ([]byte, []int) {
+	return file_radio_jockey_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *SessionInfo) GetSessionId() string {
+	if x != nil {
+		return x.SessionId
+	}
+	return ""
+}
+
+func (x *SessionInfo) GetStreamUrl() string {
+	if x != nil {
+		return x.StreamUrl
+	}
+	return ""
+}
+
 type Track struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -885,13 +1025,14 @@ type Track struct {
 	Title         string                 `protobuf:"bytes,4,opt,name=title,proto3" json:"title,omitempty"`
 	Artist        string                 `protobuf:"bytes,5,opt,name=artist,proto3" json:"artist,omitempty"`
 	Duration      int64                  `protobuf:"varint,6,opt,name=duration,proto3" json:"duration,omitempty"`
+	AlbumArtUrl   string                 `protobuf:"bytes,7,opt,name=album_art_url,json=albumArtUrl,proto3" json:"album_art_url,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *Track) Reset() {
 	*x = Track{}
-	mi := &file_radio_jockey_proto_msgTypes[20]
+	mi := &file_radio_jockey_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -903,7 +1044,7 @@ func (x *Track) String() string {
 func (*Track) ProtoMessage() {}
 
 func (x *Track) ProtoReflect() protoreflect.Message {
-	mi := &file_radio_jockey_proto_msgTypes[20]
+	mi := &file_radio_jockey_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -916,7 +1057,7 @@ func (x *Track) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Track.ProtoReflect.Descriptor instead.
 func (*Track) Descriptor() ([]byte, []int) {
-	return file_radio_jockey_proto_rawDescGZIP(), []int{20}
+	return file_radio_jockey_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *Track) GetId() int64 {
@@ -961,6 +1102,345 @@ func (x *Track) GetDuration() int64 {
 	return 0
 }
 
+func (x *Track) GetAlbumArtUrl() string {
+	if x != nil {
+		return x.AlbumArtUrl
+	}
+	return ""
+}
+
+type SessionArchiveInfo struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	SessionId     string                 `protobuf:"bytes,2,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
+	CreatedAt     int64                  `protobuf:"varint,3,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SessionArchiveInfo) Reset() {
+	*x = SessionArchiveInfo{}
+	mi := &file_radio_jockey_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SessionArchiveInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SessionArchiveInfo) ProtoMessage() {}
+
+func (x *SessionArchiveInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_radio_jockey_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SessionArchiveInfo.ProtoReflect.Descriptor instead.
+func (*SessionArchiveInfo) Descriptor() ([]byte, []int) {
+	return file_radio_jockey_proto_rawDescGZIP(), []int{24}
+}
+
+func (x *SessionArchiveInfo) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *SessionArchiveInfo) GetSessionId() string {
+	if x != nil {
+		return x.SessionId
+	}
+	return ""
+}
+
+func (x *SessionArchiveInfo) GetCreatedAt() int64 {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return 0
+}
+
+type ListSessionArchivesRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListSessionArchivesRequest) Reset() {
+	*x = ListSessionArchivesRequest{}
+	mi := &file_radio_jockey_proto_msgTypes[25]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListSessionArchivesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListSessionArchivesRequest) ProtoMessage() {}
+
+func (x *ListSessionArchivesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_radio_jockey_proto_msgTypes[25]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListSessionArchivesRequest.ProtoReflect.Descriptor instead.
+func (*ListSessionArchivesRequest) Descriptor() ([]byte, []int) {
+	return file_radio_jockey_proto_rawDescGZIP(), []int{25}
+}
+
+type ListSessionArchivesResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Archives      []*SessionArchiveInfo  `protobuf:"bytes,1,rep,name=archives,proto3" json:"archives,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListSessionArchivesResponse) Reset() {
+	*x = ListSessionArchivesResponse{}
+	mi := &file_radio_jockey_proto_msgTypes[26]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListSessionArchivesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListSessionArchivesResponse) ProtoMessage() {}
+
+func (x *ListSessionArchivesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_radio_jockey_proto_msgTypes[26]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListSessionArchivesResponse.ProtoReflect.Descriptor instead.
+func (*ListSessionArchivesResponse) Descriptor() ([]byte, []int) {
+	return file_radio_jockey_proto_rawDescGZIP(), []int{26}
+}
+
+func (x *ListSessionArchivesResponse) GetArchives() []*SessionArchiveInfo {
+	if x != nil {
+		return x.Archives
+	}
+	return nil
+}
+
+type GetSessionArchiveRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetSessionArchiveRequest) Reset() {
+	*x = GetSessionArchiveRequest{}
+	mi := &file_radio_jockey_proto_msgTypes[27]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetSessionArchiveRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetSessionArchiveRequest) ProtoMessage() {}
+
+func (x *GetSessionArchiveRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_radio_jockey_proto_msgTypes[27]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetSessionArchiveRequest.ProtoReflect.Descriptor instead.
+func (*GetSessionArchiveRequest) Descriptor() ([]byte, []int) {
+	return file_radio_jockey_proto_rawDescGZIP(), []int{27}
+}
+
+func (x *GetSessionArchiveRequest) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+type GetSessionArchiveResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	SessionId     string                 `protobuf:"bytes,2,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
+	CreatedAt     int64                  `protobuf:"varint,3,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	Tracks        []*Track               `protobuf:"bytes,4,rep,name=tracks,proto3" json:"tracks,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetSessionArchiveResponse) Reset() {
+	*x = GetSessionArchiveResponse{}
+	mi := &file_radio_jockey_proto_msgTypes[28]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetSessionArchiveResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetSessionArchiveResponse) ProtoMessage() {}
+
+func (x *GetSessionArchiveResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_radio_jockey_proto_msgTypes[28]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetSessionArchiveResponse.ProtoReflect.Descriptor instead.
+func (*GetSessionArchiveResponse) Descriptor() ([]byte, []int) {
+	return file_radio_jockey_proto_rawDescGZIP(), []int{28}
+}
+
+func (x *GetSessionArchiveResponse) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *GetSessionArchiveResponse) GetSessionId() string {
+	if x != nil {
+		return x.SessionId
+	}
+	return ""
+}
+
+func (x *GetSessionArchiveResponse) GetCreatedAt() int64 {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return 0
+}
+
+func (x *GetSessionArchiveResponse) GetTracks() []*Track {
+	if x != nil {
+		return x.Tracks
+	}
+	return nil
+}
+
+type DeleteSessionArchiveRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteSessionArchiveRequest) Reset() {
+	*x = DeleteSessionArchiveRequest{}
+	mi := &file_radio_jockey_proto_msgTypes[29]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteSessionArchiveRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteSessionArchiveRequest) ProtoMessage() {}
+
+func (x *DeleteSessionArchiveRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_radio_jockey_proto_msgTypes[29]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteSessionArchiveRequest.ProtoReflect.Descriptor instead.
+func (*DeleteSessionArchiveRequest) Descriptor() ([]byte, []int) {
+	return file_radio_jockey_proto_rawDescGZIP(), []int{29}
+}
+
+func (x *DeleteSessionArchiveRequest) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+type DeleteSessionArchiveResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteSessionArchiveResponse) Reset() {
+	*x = DeleteSessionArchiveResponse{}
+	mi := &file_radio_jockey_proto_msgTypes[30]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteSessionArchiveResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteSessionArchiveResponse) ProtoMessage() {}
+
+func (x *DeleteSessionArchiveResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_radio_jockey_proto_msgTypes[30]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteSessionArchiveResponse.ProtoReflect.Descriptor instead.
+func (*DeleteSessionArchiveResponse) Descriptor() ([]byte, []int) {
+	return file_radio_jockey_proto_rawDescGZIP(), []int{30}
+}
+
 var File_radio_jockey_proto protoreflect.FileDescriptor
 
 const file_radio_jockey_proto_rawDesc = "" +
@@ -968,10 +1448,11 @@ const file_radio_jockey_proto_rawDesc = "" +
 	"\x12radio-jockey.proto\"\r\n" +
 	"\vPingRequest\"(\n" +
 	"\fPingResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage\"5\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"O\n" +
 	"\x14CreateSessionRequest\x12\x1d\n" +
 	"\n" +
-	"session_id\x18\x01 \x01(\tR\tsessionId\"6\n" +
+	"session_id\x18\x01 \x01(\tR\tsessionId\x12\x18\n" +
+	"\aarchive\x18\x02 \x01(\bR\aarchive\"6\n" +
 	"\x15CreateSessionResponse\x12\x1d\n" +
 	"\n" +
 	"stream_url\x18\x01 \x01(\tR\tstreamUrl\"2\n" +
@@ -1012,14 +1493,44 @@ const file_radio_jockey_proto_rawDesc = "" +
 	"\n" +
 	"session_id\x18\x01 \x01(\tR\tsessionId\"3\n" +
 	"\x11ListQueueResponse\x12\x1e\n" +
-	"\x06tracks\x18\x01 \x03(\v2\x06.TrackR\x06tracks\"\x96\x01\n" +
+	"\x06tracks\x18\x01 \x03(\v2\x06.TrackR\x06tracks\"\x15\n" +
+	"\x13ListSessionsRequest\"@\n" +
+	"\x14ListSessionsResponse\x12(\n" +
+	"\bsessions\x18\x01 \x03(\v2\f.SessionInfoR\bsessions\"K\n" +
+	"\vSessionInfo\x12\x1d\n" +
+	"\n" +
+	"session_id\x18\x01 \x01(\tR\tsessionId\x12\x1d\n" +
+	"\n" +
+	"stream_url\x18\x02 \x01(\tR\tstreamUrl\"\xba\x01\n" +
 	"\x05Track\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x16\n" +
 	"\x06source\x18\x02 \x01(\tR\x06source\x12\x1b\n" +
 	"\tsource_id\x18\x03 \x01(\tR\bsourceId\x12\x14\n" +
 	"\x05title\x18\x04 \x01(\tR\x05title\x12\x16\n" +
 	"\x06artist\x18\x05 \x01(\tR\x06artist\x12\x1a\n" +
-	"\bduration\x18\x06 \x01(\x03R\bduration2\xd7\x04\n" +
+	"\bduration\x18\x06 \x01(\x03R\bduration\x12\"\n" +
+	"\ralbum_art_url\x18\a \x01(\tR\valbumArtUrl\"b\n" +
+	"\x12SessionArchiveInfo\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1d\n" +
+	"\n" +
+	"session_id\x18\x02 \x01(\tR\tsessionId\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\x03 \x01(\x03R\tcreatedAt\"\x1c\n" +
+	"\x1aListSessionArchivesRequest\"N\n" +
+	"\x1bListSessionArchivesResponse\x12/\n" +
+	"\barchives\x18\x01 \x03(\v2\x13.SessionArchiveInfoR\barchives\"*\n" +
+	"\x18GetSessionArchiveRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\"\x89\x01\n" +
+	"\x19GetSessionArchiveResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1d\n" +
+	"\n" +
+	"session_id\x18\x02 \x01(\tR\tsessionId\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\x03 \x01(\x03R\tcreatedAt\x12\x1e\n" +
+	"\x06tracks\x18\x04 \x03(\v2\x06.TrackR\x06tracks\"-\n" +
+	"\x1bDeleteSessionArchiveRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\"\x1e\n" +
+	"\x1cDeleteSessionArchiveResponse2\x8f\a\n" +
 	"\fRadioService\x12%\n" +
 	"\x04Ping\x12\f.PingRequest\x1a\r.PingResponse\"\x00\x12=\n" +
 	"\fRequestNonce\x12\x14.RequestNonceRequest\x1a\x15.RequestNonceResponse\"\x00\x12=\n" +
@@ -1031,7 +1542,11 @@ const file_radio_jockey_proto_rawDesc = "" +
 	"\bAddTrack\x12\x10.AddTrackRequest\x1a\x11.AddTrackResponse\"\x00\x12:\n" +
 	"\vRemoveTrack\x12\x13.RemoveTrackRequest\x1a\x14.RemoveTrackResponse\"\x00\x124\n" +
 	"\tSkipTrack\x12\x11.SkipTrackRequest\x1a\x12.SkipTrackResponse\"\x00\x124\n" +
-	"\tListQueue\x12\x11.ListQueueRequest\x1a\x12.ListQueueResponse\"\x00B\x12Z\x10server/src/protob\x06proto3"
+	"\tListQueue\x12\x11.ListQueueRequest\x1a\x12.ListQueueResponse\"\x00\x12=\n" +
+	"\fListSessions\x12\x14.ListSessionsRequest\x1a\x15.ListSessionsResponse\"\x00\x12R\n" +
+	"\x13ListSessionArchives\x12\x1b.ListSessionArchivesRequest\x1a\x1c.ListSessionArchivesResponse\"\x00\x12L\n" +
+	"\x11GetSessionArchive\x12\x19.GetSessionArchiveRequest\x1a\x1a.GetSessionArchiveResponse\"\x00\x12U\n" +
+	"\x14DeleteSessionArchive\x12\x1c.DeleteSessionArchiveRequest\x1a\x1d.DeleteSessionArchiveResponse\"\x00B\x12Z\x10server/src/protob\x06proto3"
 
 var (
 	file_radio_jockey_proto_rawDescOnce sync.Once
@@ -1045,58 +1560,79 @@ func file_radio_jockey_proto_rawDescGZIP() []byte {
 	return file_radio_jockey_proto_rawDescData
 }
 
-var file_radio_jockey_proto_msgTypes = make([]protoimpl.MessageInfo, 21)
+var file_radio_jockey_proto_msgTypes = make([]protoimpl.MessageInfo, 31)
 var file_radio_jockey_proto_goTypes = []any{
-	(*PingRequest)(nil),               // 0: PingRequest
-	(*PingResponse)(nil),              // 1: PingResponse
-	(*CreateSessionRequest)(nil),      // 2: CreateSessionRequest
-	(*CreateSessionResponse)(nil),     // 3: CreateSessionResponse
-	(*GetSessionRequest)(nil),         // 4: GetSessionRequest
-	(*GetSessionResponse)(nil),        // 5: GetSessionResponse
-	(*RequestNonceRequest)(nil),       // 6: RequestNonceRequest
-	(*RequestNonceResponse)(nil),      // 7: RequestNonceResponse
-	(*RespondNonceRequest)(nil),       // 8: RespondNonceRequest
-	(*RespondNonceResponse)(nil),      // 9: RespondNonceResponse
-	(*DeleteSessionAuthRequest)(nil),  // 10: DeleteSessionAuthRequest
-	(*DeleteSessionAuthResponse)(nil), // 11: DeleteSessionAuthResponse
-	(*AddTrackRequest)(nil),           // 12: AddTrackRequest
-	(*AddTrackResponse)(nil),          // 13: AddTrackResponse
-	(*RemoveTrackRequest)(nil),        // 14: RemoveTrackRequest
-	(*RemoveTrackResponse)(nil),       // 15: RemoveTrackResponse
-	(*SkipTrackRequest)(nil),          // 16: SkipTrackRequest
-	(*SkipTrackResponse)(nil),         // 17: SkipTrackResponse
-	(*ListQueueRequest)(nil),          // 18: ListQueueRequest
-	(*ListQueueResponse)(nil),         // 19: ListQueueResponse
-	(*Track)(nil),                     // 20: Track
+	(*PingRequest)(nil),                  // 0: PingRequest
+	(*PingResponse)(nil),                 // 1: PingResponse
+	(*CreateSessionRequest)(nil),         // 2: CreateSessionRequest
+	(*CreateSessionResponse)(nil),        // 3: CreateSessionResponse
+	(*GetSessionRequest)(nil),            // 4: GetSessionRequest
+	(*GetSessionResponse)(nil),           // 5: GetSessionResponse
+	(*RequestNonceRequest)(nil),          // 6: RequestNonceRequest
+	(*RequestNonceResponse)(nil),         // 7: RequestNonceResponse
+	(*RespondNonceRequest)(nil),          // 8: RespondNonceRequest
+	(*RespondNonceResponse)(nil),         // 9: RespondNonceResponse
+	(*DeleteSessionAuthRequest)(nil),     // 10: DeleteSessionAuthRequest
+	(*DeleteSessionAuthResponse)(nil),    // 11: DeleteSessionAuthResponse
+	(*AddTrackRequest)(nil),              // 12: AddTrackRequest
+	(*AddTrackResponse)(nil),             // 13: AddTrackResponse
+	(*RemoveTrackRequest)(nil),           // 14: RemoveTrackRequest
+	(*RemoveTrackResponse)(nil),          // 15: RemoveTrackResponse
+	(*SkipTrackRequest)(nil),             // 16: SkipTrackRequest
+	(*SkipTrackResponse)(nil),            // 17: SkipTrackResponse
+	(*ListQueueRequest)(nil),             // 18: ListQueueRequest
+	(*ListQueueResponse)(nil),            // 19: ListQueueResponse
+	(*ListSessionsRequest)(nil),          // 20: ListSessionsRequest
+	(*ListSessionsResponse)(nil),         // 21: ListSessionsResponse
+	(*SessionInfo)(nil),                  // 22: SessionInfo
+	(*Track)(nil),                        // 23: Track
+	(*SessionArchiveInfo)(nil),           // 24: SessionArchiveInfo
+	(*ListSessionArchivesRequest)(nil),   // 25: ListSessionArchivesRequest
+	(*ListSessionArchivesResponse)(nil),  // 26: ListSessionArchivesResponse
+	(*GetSessionArchiveRequest)(nil),     // 27: GetSessionArchiveRequest
+	(*GetSessionArchiveResponse)(nil),    // 28: GetSessionArchiveResponse
+	(*DeleteSessionArchiveRequest)(nil),  // 29: DeleteSessionArchiveRequest
+	(*DeleteSessionArchiveResponse)(nil), // 30: DeleteSessionArchiveResponse
 }
 var file_radio_jockey_proto_depIdxs = []int32{
-	20, // 0: AddTrackResponse.track:type_name -> Track
-	20, // 1: ListQueueResponse.tracks:type_name -> Track
-	0,  // 2: RadioService.Ping:input_type -> PingRequest
-	6,  // 3: RadioService.RequestNonce:input_type -> RequestNonceRequest
-	8,  // 4: RadioService.RespondNonce:input_type -> RespondNonceRequest
-	2,  // 5: RadioService.CreateSession:input_type -> CreateSessionRequest
-	4,  // 6: RadioService.GetSession:input_type -> GetSessionRequest
-	10, // 7: RadioService.DeleteSessionAuth:input_type -> DeleteSessionAuthRequest
-	12, // 8: RadioService.AddTrack:input_type -> AddTrackRequest
-	14, // 9: RadioService.RemoveTrack:input_type -> RemoveTrackRequest
-	16, // 10: RadioService.SkipTrack:input_type -> SkipTrackRequest
-	18, // 11: RadioService.ListQueue:input_type -> ListQueueRequest
-	1,  // 12: RadioService.Ping:output_type -> PingResponse
-	7,  // 13: RadioService.RequestNonce:output_type -> RequestNonceResponse
-	9,  // 14: RadioService.RespondNonce:output_type -> RespondNonceResponse
-	3,  // 15: RadioService.CreateSession:output_type -> CreateSessionResponse
-	5,  // 16: RadioService.GetSession:output_type -> GetSessionResponse
-	11, // 17: RadioService.DeleteSessionAuth:output_type -> DeleteSessionAuthResponse
-	13, // 18: RadioService.AddTrack:output_type -> AddTrackResponse
-	15, // 19: RadioService.RemoveTrack:output_type -> RemoveTrackResponse
-	17, // 20: RadioService.SkipTrack:output_type -> SkipTrackResponse
-	19, // 21: RadioService.ListQueue:output_type -> ListQueueResponse
-	12, // [12:22] is the sub-list for method output_type
-	2,  // [2:12] is the sub-list for method input_type
-	2,  // [2:2] is the sub-list for extension type_name
-	2,  // [2:2] is the sub-list for extension extendee
-	0,  // [0:2] is the sub-list for field type_name
+	23, // 0: AddTrackResponse.track:type_name -> Track
+	23, // 1: ListQueueResponse.tracks:type_name -> Track
+	22, // 2: ListSessionsResponse.sessions:type_name -> SessionInfo
+	24, // 3: ListSessionArchivesResponse.archives:type_name -> SessionArchiveInfo
+	23, // 4: GetSessionArchiveResponse.tracks:type_name -> Track
+	0,  // 5: RadioService.Ping:input_type -> PingRequest
+	6,  // 6: RadioService.RequestNonce:input_type -> RequestNonceRequest
+	8,  // 7: RadioService.RespondNonce:input_type -> RespondNonceRequest
+	2,  // 8: RadioService.CreateSession:input_type -> CreateSessionRequest
+	4,  // 9: RadioService.GetSession:input_type -> GetSessionRequest
+	10, // 10: RadioService.DeleteSessionAuth:input_type -> DeleteSessionAuthRequest
+	12, // 11: RadioService.AddTrack:input_type -> AddTrackRequest
+	14, // 12: RadioService.RemoveTrack:input_type -> RemoveTrackRequest
+	16, // 13: RadioService.SkipTrack:input_type -> SkipTrackRequest
+	18, // 14: RadioService.ListQueue:input_type -> ListQueueRequest
+	20, // 15: RadioService.ListSessions:input_type -> ListSessionsRequest
+	25, // 16: RadioService.ListSessionArchives:input_type -> ListSessionArchivesRequest
+	27, // 17: RadioService.GetSessionArchive:input_type -> GetSessionArchiveRequest
+	29, // 18: RadioService.DeleteSessionArchive:input_type -> DeleteSessionArchiveRequest
+	1,  // 19: RadioService.Ping:output_type -> PingResponse
+	7,  // 20: RadioService.RequestNonce:output_type -> RequestNonceResponse
+	9,  // 21: RadioService.RespondNonce:output_type -> RespondNonceResponse
+	3,  // 22: RadioService.CreateSession:output_type -> CreateSessionResponse
+	5,  // 23: RadioService.GetSession:output_type -> GetSessionResponse
+	11, // 24: RadioService.DeleteSessionAuth:output_type -> DeleteSessionAuthResponse
+	13, // 25: RadioService.AddTrack:output_type -> AddTrackResponse
+	15, // 26: RadioService.RemoveTrack:output_type -> RemoveTrackResponse
+	17, // 27: RadioService.SkipTrack:output_type -> SkipTrackResponse
+	19, // 28: RadioService.ListQueue:output_type -> ListQueueResponse
+	21, // 29: RadioService.ListSessions:output_type -> ListSessionsResponse
+	26, // 30: RadioService.ListSessionArchives:output_type -> ListSessionArchivesResponse
+	28, // 31: RadioService.GetSessionArchive:output_type -> GetSessionArchiveResponse
+	30, // 32: RadioService.DeleteSessionArchive:output_type -> DeleteSessionArchiveResponse
+	19, // [19:33] is the sub-list for method output_type
+	5,  // [5:19] is the sub-list for method input_type
+	5,  // [5:5] is the sub-list for extension type_name
+	5,  // [5:5] is the sub-list for extension extendee
+	0,  // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_radio_jockey_proto_init() }
@@ -1110,7 +1646,7 @@ func file_radio_jockey_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_radio_jockey_proto_rawDesc), len(file_radio_jockey_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   21,
+			NumMessages:   31,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

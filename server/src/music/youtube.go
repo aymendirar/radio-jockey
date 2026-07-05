@@ -72,8 +72,14 @@ func (y *YouTube) DownloadTrackFromURL(ctx context.Context, url string) (*db.Tra
 
 	slog.Info("download complete", "url", url, "title", metadata.Title(), "path", result.filePath)
 
+	albumArtUrl := fmt.Sprintf("https://i.ytimg.com/vi/%s/hqdefault.jpg", result.sourceId)
+
 	if track, err := y.db.GetTrack(ctx, result.sourceId); err == nil {
 		slog.Info("found track in database, not creating record...", "title", track.Title, "artist", track.Artist)
+		if err := y.db.UpdateTrackAlbumArtUrl(ctx, track.Id, albumArtUrl); err != nil {
+			return nil, err
+		}
+		track.AlbumArtUrl = albumArtUrl
 		return track, nil
 	}
 
@@ -84,7 +90,8 @@ func (y *YouTube) DownloadTrackFromURL(ctx context.Context, url string) (*db.Tra
 		metadata.Title(),
 		metadata.Artist(),
 		result.filePath,
-		result.duration)
+		result.duration,
+		albumArtUrl)
 
 	slog.Info("created new track record", "title", track.Title, "artist", track.Artist)
 
