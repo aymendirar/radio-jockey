@@ -42,7 +42,7 @@
 {/if}
 
 <style>
-	:global(.arrow-list > li::before) {
-		content: '>';
+	:global(.arrow-list > li > a::before) {
+		content: '> ';
 	}
 </style>
