@@ -9,19 +9,6 @@
 	<body data-sveltekit-preload-data="hover">
 		<div class="bg-grid" aria-hidden="true"></div>
 		<div class="content">
-			<a href="/"
-				><h1>
-					<span class="wave-group">
-						<span class="wave-1">(</span> <span class="wave-2">(</span>
-						<span class="wave-3">(</span>
-					</span>
-					<span class="title-text">radio jockey</span>
-					<span class="wave-group">
-						<span class="wave-3">)</span> <span class="wave-2">)</span>
-						<span class="wave-1">)</span>
-					</span>
-				</h1></a
-			>
 			%sveltekit.body%
 		</div>
 	</body>
@@ -35,11 +22,11 @@
 
 	h1 {
 		display: flex;
+		flex-wrap: wrap;
 		align-items: center;
 		justify-content: center;
-		gap: 8px;
+		gap: 6px 8px;
 		font-size: 40px;
-		padding-bottom: 20px;
 	}
 
 	.wave-1 {
@@ -113,6 +100,8 @@
 		box-sizing: border-box;
 		border: 1px solid white;
 		padding: 16px 32px;
+		display: flex;
+		flex-direction: column;
 	}
 
 	a,

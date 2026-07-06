@@ -8,11 +8,12 @@ DEPLOY_PATH="/root/radio-jockey"
 REPO_URL="$(git config --get remote.origin.url)"
 BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 
+# local:remote pairs — server ships its prod-specific env file, others copy as-is
 ENV_FILES=(
-  "server/.env"
-  "web/.env"
-  "discord-jockey/.env"
-  "icecast/.env"
+  "server/.env.production:server/.env"
+  "web/.env:web/.env"
+  "discord-jockey/.env:discord-jockey/.env"
+  "icecast/.env:icecast/.env"
 )
 
 ssh_cmd() {
@@ -20,8 +21,12 @@ ssh_cmd() {
 }
 
 echo "==> cloning/updating $REPO_URL ($BRANCH) at $VPS_HOST:$DEPLOY_PATH"
-ssh_cmd bash -s <<EOF
+ssh_cmd zsh -ls <<EOF
+[ -f "\$HOME/.zshrc" ] && source "\$HOME/.zshrc"
 set -euo pipefail
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+ssh-keyscan -H github.com >> ~/.ssh/known_hosts 2>/dev/null
 if [ -d "$DEPLOY_PATH/.git" ]; then
   cd "$DEPLOY_PATH" && git fetch origin && git checkout "$BRANCH" && git pull origin "$BRANCH"
 else
@@ -30,22 +35,21 @@ fi
 EOF
 
 echo "==> copying local .env files"
-for f in "${ENV_FILES[@]}"; do
-  if [ -f "$f" ]; then
-    ssh_cmd mkdir -p "$DEPLOY_PATH/$(dirname "$f")"
-    scp -P "$VPS_PORT" "$f" "$VPS_HOST:$DEPLOY_PATH/$f"
+for pair in "${ENV_FILES[@]}"; do
+  src="${pair%%:*}"
+  dest="${pair#*:}"
+  if [ -f "$src" ]; then
+    ssh_cmd mkdir -p "$DEPLOY_PATH/$(dirname "$dest")"
+    scp -P "$VPS_PORT" "$src" "$VPS_HOST:$DEPLOY_PATH/$dest"
   else
-    echo "    skipping $f (not found locally)"
+    echo "    skipping $src (not found locally)"
   fi
 done
 
-echo "==> installing just (if missing) and running just prod"
-ssh_cmd bash -s <<EOF
+echo "==> running just prod"
+ssh_cmd zsh -ls <<EOF
+[ -f "\$HOME/.zshrc" ] && source "\$HOME/.zshrc"
 set -euo pipefail
-if ! command -v just >/dev/null 2>&1; then
-  curl --proto '=https' --tls-v1.2 -sSf https://just.systems/install.sh | bash -s -- --to "\$HOME/.local/bin"
-  export PATH="\$HOME/.local/bin:\$PATH"
-fi
 cd "$DEPLOY_PATH"
 just prod
 EOF

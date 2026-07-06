@@ -45,6 +45,6 @@ declare module "$app/types" {
 		};
 		Pathname(): "/" | "/admin" | "/archive" | `/archive/${string}` & {} | "/stations" | "/stations/create" | `/stations/${string}` & {};
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
-		Asset(): "/radio2.png" | "/robots.txt" | string & {};
+		Asset(): "/radio.png" | "/robots.txt" | string & {};
 	}
 }

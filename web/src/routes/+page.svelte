@@ -10,8 +10,29 @@
 	</ul>
 </div>
 
+<footer>
+	press <kbd>/</kbd> to chat with other listeners — cursors powered by <a
+		href="https://playhtml.fun"
+		target="_blank"
+		rel="noopener noreferrer">playhtml</a
+	>
+</footer>
+
 <style>
 	ul {
 		list-style-type: '>  ';
+	}
+
+	footer {
+		margin-top: auto;
+		font-size: 0.8rem;
+		opacity: 0.6;
+		text-align: center;
+	}
+
+	kbd {
+		border: 1px solid currentColor;
+		border-radius: 3px;
+		padding: 0 0.3em;
 	}
 </style>
