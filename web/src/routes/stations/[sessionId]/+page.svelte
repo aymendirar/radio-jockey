@@ -11,12 +11,12 @@
 
 	const sessionId = page.params.sessionId!;
 
-	let audioEl: HTMLAudioElement;
+	let audioEl: HTMLAudioElement | undefined = $state();
 	let playing = $state(false);
 	let volume = $state(1);
 
 	function play() {
-		if (!streamUrl) return;
+		if (!streamUrl || !audioEl) return;
 		audioEl.src = streamUrl;
 		audioEl.load();
 		audioEl.play();
@@ -24,6 +24,7 @@
 	}
 
 	function stop() {
+		if (!audioEl) return;
 		audioEl.pause();
 		audioEl.removeAttribute('src');
 		audioEl.load();
