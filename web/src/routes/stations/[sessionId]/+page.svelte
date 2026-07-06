@@ -191,7 +191,7 @@
 
 	<div class="panel">
 		{#if streamUrl}
-			<audio bind:this={audioEl}></audio>
+			<audio bind:this={audioEl} crossorigin="anonymous"></audio>
 			<div class="player-controls">
 				{#if playing}
 					<button class="btn-stop" onclick={stop} aria-label="stop">[ ]</button>

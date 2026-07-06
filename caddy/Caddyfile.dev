@@ -11,6 +11,10 @@ localhost:3000 {
 
 localhost:9999 {
 	tls internal
+	# CORS: different port = different origin from localhost:3000, and the web player
+	# routes audio through the Web Audio API (volume control), which silently
+	# outputs zeroes for cross-origin media without this header
+	header Access-Control-Allow-Origin *
 	reverse_proxy icecast:9999 {
 		flush_interval -1
 	}

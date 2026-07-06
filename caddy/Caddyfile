@@ -9,6 +9,10 @@ radiojockey.live {
 }
 
 stream.radiojockey.live {
+	# CORS: stream is a separate origin from radiojockey.live, and the web player
+	# routes audio through the Web Audio API (volume control), which silently
+	# outputs zeroes for cross-origin media without this header
+	header Access-Control-Allow-Origin *
 	reverse_proxy icecast:9999 {
 		flush_interval -1
 	}

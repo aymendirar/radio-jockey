@@ -11,7 +11,7 @@
 </div>
 
 <footer>
-	<span class="chat-hint">press <kbd>/</kbd> to chat with other listeners — </span>cursors powered
+	<span class="chat-hint">press <kbd>/</kbd> to chat with other listeners —{' '}</span>cursors powered
 	by
 	<a href="https://playhtml.fun" target="_blank" rel="noopener noreferrer">playhtml</a>
 </footer>
