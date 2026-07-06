@@ -15,10 +15,25 @@
 	let playing = $state(false);
 	let volume = $state(1);
 
+	// iOS Safari silently ignores audioEl.volume (hardware-buttons-only policy), so
+	// volume is controlled via a Web Audio GainNode instead, which iOS does respect.
+	let audioCtx: AudioContext | undefined;
+	let gainNode: GainNode | undefined;
+
+	function ensureAudioGraph() {
+		if (!audioEl || gainNode) return;
+		audioCtx = new AudioContext();
+		const source = audioCtx.createMediaElementSource(audioEl);
+		gainNode = audioCtx.createGain();
+		source.connect(gainNode).connect(audioCtx.destination);
+	}
+
 	function play() {
 		if (!streamUrl || !audioEl) return;
 		audioEl.src = streamUrl;
 		audioEl.load();
+		ensureAudioGraph();
+		audioCtx?.resume();
 		audioEl.play();
 		playing = true;
 	}
@@ -33,7 +48,7 @@
 
 	$effect(() => {
 		const v = volume;
-		if (audioEl) audioEl.volume = v;
+		if (gainNode) gainNode.gain.value = v;
 	});
 
 	// keeps the iOS/Android lock-screen "now playing" artwork in sync with the current track
