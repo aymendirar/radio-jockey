@@ -42,10 +42,16 @@ func run() error {
 	defer db.Close()
 	slog.Info("database opened", "path", env.DB_PATH)
 
-	youtube := music.NewYouTube(env.MUSIC_PATH, db)
+	cache, err := music.NewCache(db)
+	if err != nil {
+		return fmt.Errorf("failed to create cache: %v", err)
+	}
+	slog.Info("track cache created", "cache_window", music.CacheWindow)
+
+	youtube := music.NewYouTube(env.MUSIC_PATH, db, cache)
 	slog.Info("youtube client created", "music_path", env.MUSIC_PATH)
 
-	sessionManager := session.CreateSessionManager()
+	sessionManager := session.CreateSessionManager(env.MAX_SESSIONS)
 	slog.Info("session manager created")
 
 	icecast := icecast.CreateIcecastClient(
@@ -62,7 +68,7 @@ func run() error {
 	if err != nil {
 		return fmt.Errorf("failed to create auth: %v", err)
 	}
-	server, err := connect.CreateServer(env.HOST, env.PORT, sessionManager, youtube, icecast, a, db)
+	server, err := connect.CreateServer(env.HOST, env.PORT, sessionManager, youtube, icecast, a, db, cache, env.RATE_LIMIT_RPS, env.RATE_LIMIT_BURST)
 	if err != nil {
 		return fmt.Errorf("failed to create server: %v", err)
 	}

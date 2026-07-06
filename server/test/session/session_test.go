@@ -115,7 +115,7 @@ func TestSessionQueueFull(t *testing.T) {
 
 func TestSessionManagerCreateDuplicate(t *testing.T) {
 	ctx := context.Background()
-	m := session.CreateSessionManager()
+	m := session.CreateSessionManager(1000)
 
 	if _, err := m.CreateSession(ctx, "s1", nil); err != nil {
 		t.Fatalf("create session: %v", err)
@@ -125,9 +125,24 @@ func TestSessionManagerCreateDuplicate(t *testing.T) {
 	}
 }
 
+func TestSessionManagerTooManySessions(t *testing.T) {
+	ctx := context.Background()
+	m := session.CreateSessionManager(2)
+
+	if _, err := m.CreateSession(ctx, "s1", nil); err != nil {
+		t.Fatalf("create session: %v", err)
+	}
+	if _, err := m.CreateSession(ctx, "s2", nil); err != nil {
+		t.Fatalf("create session: %v", err)
+	}
+	if _, err := m.CreateSession(ctx, "s3", nil); err != session.TooManySessionsError {
+		t.Fatalf("expected TooManySessionsError, got %v", err)
+	}
+}
+
 func TestSessionManagerGetQueue(t *testing.T) {
 	ctx := context.Background()
-	m := session.CreateSessionManager()
+	m := session.CreateSessionManager(1000)
 
 	archiveID := int64(7)
 	if _, err := m.CreateSession(ctx, "s1", &archiveID); err != nil {
@@ -149,7 +164,7 @@ func TestSessionManagerGetQueue(t *testing.T) {
 
 func TestSessionManagerListSessions(t *testing.T) {
 	ctx := context.Background()
-	m := session.CreateSessionManager()
+	m := session.CreateSessionManager(1000)
 
 	if len(m.ListSessions()) != 0 {
 		t.Fatalf("expected no sessions initially, got %v", m.ListSessions())
@@ -164,9 +179,44 @@ func TestSessionManagerListSessions(t *testing.T) {
 	}
 }
 
+func TestSessionManagerInUseTrackIDs(t *testing.T) {
+	ctx := context.Background()
+	m := session.CreateSessionManager(1000)
+
+	if ids := m.InUseTrackIDs(); len(ids) != 0 {
+		t.Fatalf("expected no in-use tracks initially, got %v", ids)
+	}
+
+	m.CreateSession(ctx, "s1", nil)
+	m.CreateSession(ctx, "s2", nil)
+
+	q1, err := m.GetQueue("s1")
+	if err != nil {
+		t.Fatalf("get queue: %v", err)
+	}
+	q1.Enqueue(&db.Track{Id: 1})
+	q1.Enqueue(&db.Track{Id: 2})
+
+	q2, err := m.GetQueue("s2")
+	if err != nil {
+		t.Fatalf("get queue: %v", err)
+	}
+	q2.Enqueue(&db.Track{Id: 3})
+
+	ids := m.InUseTrackIDs()
+	if len(ids) != 3 {
+		t.Fatalf("expected 3 in-use tracks, got %v", ids)
+	}
+	for _, id := range []int64{1, 2, 3} {
+		if _, ok := ids[id]; !ok {
+			t.Fatalf("expected track %d to be in use, got %v", id, ids)
+		}
+	}
+}
+
 func TestSessionManagerDeleteSession(t *testing.T) {
 	ctx := context.Background()
-	m := session.CreateSessionManager()
+	m := session.CreateSessionManager(1000)
 	m.CreateSession(ctx, "s1", nil)
 
 	if err := m.DeleteSession(ctx, "s1"); err != nil {

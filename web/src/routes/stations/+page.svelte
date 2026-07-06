@@ -41,7 +41,7 @@
 {/if}
 
 <style>
-	:global(.arrow-list) {
-		list-style-type: '>  ';
+	:global(.arrow-list > li::before) {
+		content: '>';
 	}
 </style>

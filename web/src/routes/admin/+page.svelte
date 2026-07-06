@@ -150,12 +150,12 @@
 	</form>
 {:else}
 	<div class="panel">
-		<h2>sessions</h2>
+		<h2>live stations</h2>
 		<button onclick={logout}>log out</button>
 		{#if !loaded}
 			<p>loading...</p>
 		{:else}
-			<EntryList items={sessions} emptyMessage="No active sessions." key={(s) => s.sessionId}>
+			<EntryList items={sessions} emptyMessage="No active stations." key={(s) => s.sessionId}>
 				{#snippet item(session)}
 					<li>
 						{session.sessionId}
@@ -171,11 +171,11 @@
 	</div>
 
 	<div class="panel">
-		<h2>archived sessions</h2>
+		<h2>archived stations</h2>
 		{#if !loaded}
 			<p>loading...</p>
 		{:else}
-			<EntryList items={archives} emptyMessage="No archived sessions." key={(a) => a.id}>
+			<EntryList items={archives} emptyMessage="No archived stations." key={(a) => a.id}>
 				{#snippet item(archive)}
 					<li>
 						<a href="/archive/{archive.id}">{archive.sessionId} — {formatTimestamp(archive.createdAt)}</a>

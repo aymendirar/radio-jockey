@@ -175,15 +175,15 @@
 	</div>
 
 	<div class="panel">
-		<h3>
-			queue
+		<h3 class="queue-heading">
+			<span class="queue-title">queue</span>
 			<LoadingButton onclick={handleRefresh} loading={refreshing} label="refresh" />
 		</h3>
 		{#if !queueLoaded}
 			<p>loading...</p>
 		{:else}
 			<ol>
-				{#each tracks as track, i (track.id)}
+				{#each tracks as track, i (i)}
 					<TrackListItem {track}>
 						{#if i > 0}
 							<LoadingButton
@@ -237,7 +237,6 @@
 		align-items: center;
 		justify-content: center;
 		font-family: 'Courier New', monospace;
-		font-size: 1.1em;
 		background: transparent;
 		border-radius: 0;
 	}
@@ -263,5 +262,17 @@
 		height: 90px;
 		object-fit: cover;
 		border: 1px solid white;
+	}
+
+	.queue-heading {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 8px;
+	}
+
+	.queue-title {
+		flex: 1 1 auto;
+		min-width: 0;
 	}
 </style>

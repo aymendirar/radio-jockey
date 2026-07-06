@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"log/slog"
 	"server/src/music"
 	"server/src/proto"
 	"server/src/session"
@@ -59,6 +60,9 @@ func (s *Server) CreateSession(ctx context.Context, req *connect.Request[proto.C
 	if err != nil {
 		if errors.Is(err, session.AlreadyExistsError) {
 			return nil, connect.NewError(connect.CodeAlreadyExists, err)
+		}
+		if errors.Is(err, session.TooManySessionsError) {
+			return nil, connect.NewError(connect.CodeResourceExhausted, err)
 		}
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
@@ -128,6 +132,10 @@ func (s *Server) AddTrack(ctx context.Context, req *connect.Request[proto.AddTra
 			return nil, connect.NewError(connect.CodeResourceExhausted, err)
 		}
 		return nil, connect.NewError(connect.CodeInternal, err)
+	}
+
+	if err := s.cache.Touch(ctx, track, s.sessionManager.InUseTrackIDs()); err != nil {
+		slog.Error("cache touch failed", "err", err)
 	}
 
 	return connect.NewResponse(&proto.AddTrackResponse{

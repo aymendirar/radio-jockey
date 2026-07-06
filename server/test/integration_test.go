@@ -40,13 +40,20 @@ type testServer struct {
 // real time via real ffmpeg processes — use this only for the test that specifically
 // exercises that pipeline. Otherwise a lightweight stand-in just acks session readiness
 // without touching the queue, so other tests can inspect queue state deterministically.
-func setupTestServer(t *testing.T, realAudio bool) *testServer {
+// maxSessions, rateLimitRPS and rateLimitBurst are threaded straight through to the real
+// SessionManager/server config; tests that don't care about those limits pass generous
+// values so the caps never trip incidentally.
+func setupTestServer(t *testing.T, realAudio bool, maxSessions int, rateLimitRPS float64, rateLimitBurst int) *testServer {
 	t.Helper()
 
 	d := util.OpenTestDB(t)
 	fakeIcecast := util.StartFakeIcecastServer(t)
-	sessionManager := session.CreateSessionManager()
-	youtube := music.NewYouTube(t.TempDir(), d)
+	sessionManager := session.CreateSessionManager(maxSessions)
+	cache, err := music.NewCache(d)
+	if err != nil {
+		t.Fatalf("create cache: %v", err)
+	}
+	youtube := music.NewYouTube(t.TempDir(), d, cache)
 	testAuth := util.NewTestAuth(t)
 
 	icecastClient := icecast.CreateIcecastClient(
@@ -68,7 +75,7 @@ func setupTestServer(t *testing.T, realAudio bool) *testServer {
 	port, _ := strconv.Atoi(portStr)
 	ln.Close()
 
-	httpServer, err := serverconnect.CreateServer("127.0.0.1", port, sessionManager, youtube, icecastClient, testAuth.Auth, d)
+	httpServer, err := serverconnect.CreateServer("127.0.0.1", port, sessionManager, youtube, icecastClient, testAuth.Auth, d, cache, rateLimitRPS, rateLimitBurst)
 	if err != nil {
 		t.Fatalf("create server: %v", err)
 	}
@@ -141,7 +148,7 @@ func seedTrack(t *testing.T, ts *testServer, sessionID session.SessionID, source
 }
 
 func TestCreateSessionStreamsRealAudio(t *testing.T) {
-	ts := setupTestServer(t, true)
+	ts := setupTestServer(t, true, 1000, 1000, 1000)
 	ctx := context.Background()
 
 	resp, err := ts.client.CreateSession(ctx, connect.NewRequest(&proto.CreateSessionRequest{
@@ -179,7 +186,7 @@ func TestCreateSessionStreamsRealAudio(t *testing.T) {
 }
 
 func TestQueueOperations(t *testing.T) {
-	ts := setupTestServer(t, false)
+	ts := setupTestServer(t, false, 1000, 1000, 1000)
 	ctx := context.Background()
 
 	if _, err := ts.client.CreateSession(ctx, connect.NewRequest(&proto.CreateSessionRequest{SessionId: "queue-session"})); err != nil {
@@ -213,7 +220,7 @@ func TestQueueOperations(t *testing.T) {
 }
 
 func TestSessionNotFound(t *testing.T) {
-	ts := setupTestServer(t, false)
+	ts := setupTestServer(t, false, 1000, 1000, 1000)
 	ctx := context.Background()
 
 	cases := []struct {
@@ -243,7 +250,7 @@ func TestSessionNotFound(t *testing.T) {
 }
 
 func TestAuthFlow(t *testing.T) {
-	ts := setupTestServer(t, false)
+	ts := setupTestServer(t, false, 1000, 1000, 1000)
 	ctx := context.Background()
 
 	if _, err := ts.client.CreateSession(ctx, connect.NewRequest(&proto.CreateSessionRequest{SessionId: "auth-session"})); err != nil {
@@ -277,8 +284,51 @@ func TestAuthFlow(t *testing.T) {
 	}
 }
 
+func TestSessionCap(t *testing.T) {
+	ts := setupTestServer(t, false, 2, 1000, 1000)
+	ctx := context.Background()
+
+	if _, err := ts.client.CreateSession(ctx, connect.NewRequest(&proto.CreateSessionRequest{SessionId: "cap-session-1"})); err != nil {
+		t.Fatalf("create session 1: %v", err)
+	}
+	if _, err := ts.client.CreateSession(ctx, connect.NewRequest(&proto.CreateSessionRequest{SessionId: "cap-session-2"})); err != nil {
+		t.Fatalf("create session 2: %v", err)
+	}
+	if _, err := ts.client.CreateSession(ctx, connect.NewRequest(&proto.CreateSessionRequest{SessionId: "cap-session-3"})); connect.CodeOf(err) != connect.CodeResourceExhausted {
+		t.Fatalf("expected ResourceExhausted once session cap is hit, got %v", err)
+	}
+}
+
+func TestRateLimiting(t *testing.T) {
+	ts := setupTestServer(t, false, 1000, 1, 2)
+	ctx := context.Background()
+
+	newReq := func(ip string) *connect.Request[proto.CreateSessionRequest] {
+		req := connect.NewRequest(&proto.CreateSessionRequest{SessionId: fmt.Sprintf("rl-session-%s-%d", ip, time.Now().UnixNano())})
+		req.Header().Set("X-Forwarded-For", ip)
+		return req
+	}
+
+	// Burst of 2 should succeed immediately for a single client IP.
+	if _, err := ts.client.CreateSession(ctx, newReq("1.2.3.4")); err != nil {
+		t.Fatalf("create session 1: %v", err)
+	}
+	if _, err := ts.client.CreateSession(ctx, newReq("1.2.3.4")); err != nil {
+		t.Fatalf("create session 2: %v", err)
+	}
+	// Third immediate request from the same IP exceeds the burst.
+	if _, err := ts.client.CreateSession(ctx, newReq("1.2.3.4")); connect.CodeOf(err) != connect.CodeResourceExhausted {
+		t.Fatalf("expected ResourceExhausted once rate limit is hit, got %v", err)
+	}
+
+	// A different client IP has its own independent budget.
+	if _, err := ts.client.CreateSession(ctx, newReq("5.6.7.8")); err != nil {
+		t.Fatalf("expected a different IP to have its own budget, got %v", err)
+	}
+}
+
 func TestSessionArchiveLifecycle(t *testing.T) {
-	ts := setupTestServer(t, false)
+	ts := setupTestServer(t, false, 1000, 1000, 1000)
 	ctx := context.Background()
 
 	if _, err := ts.client.CreateSession(ctx, connect.NewRequest(&proto.CreateSessionRequest{SessionId: "archive-session", Archive: true})); err != nil {

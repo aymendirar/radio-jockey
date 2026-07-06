@@ -20,14 +20,14 @@
 	});
 </script>
 
-<h2>session archive</h2>
+<h2>station archive</h2>
 
 {#if !loaded}
 	<p>loading...</p>
 {:else}
 	<EntryList
 		items={archives}
-		emptyMessage="No archived sessions."
+		emptyMessage="No archived stations."
 		key={(a) => a.id}
 		class="arrow-list"
 	>
@@ -44,7 +44,7 @@
 {/if}
 
 <style>
-	:global(.arrow-list) {
-		list-style-type: '>  ';
+	:global(.arrow-list > li::before) {
+		content: '>';
 	}
 </style>

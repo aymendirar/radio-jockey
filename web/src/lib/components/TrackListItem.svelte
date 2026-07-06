@@ -13,11 +13,13 @@
 	{#if track.albumArtUrl}
 		<img class="album-art-small" src={track.albumArtUrl} alt="" />
 	{/if}
-	{#if href}
-		<a {href} target="_blank">{track.title} — {track.artist}</a>
-	{:else}
-		{track.title} — {track.artist}
-	{/if}
+	<span class="track-title">
+		{#if href}
+			<a {href} target="_blank">{track.title} — {track.artist}</a>
+		{:else}
+			{track.title} — {track.artist}
+		{/if}
+	</span>
 	{#if children}
 		{@render children()}
 	{/if}
@@ -29,7 +31,12 @@
 		height: 30px;
 		object-fit: cover;
 		border: 1px solid white;
-		vertical-align: middle;
-		margin-right: 6px;
+		flex-shrink: 0;
+	}
+
+	.track-title {
+		flex: 1 1 auto;
+		min-width: 0;
+		overflow-wrap: break-word;
 	}
 </style>

@@ -11,9 +11,15 @@
 		<div class="content">
 			<a href="/"
 				><h1>
-					<span class="wave-1">(</span> <span class="wave-2">(</span>
-					<span class="wave-3">(</span> radio jockey <span class="wave-3">)</span>
-					<span class="wave-2">)</span> <span class="wave-1">)</span>
+					<span class="wave-group">
+						<span class="wave-1">(</span> <span class="wave-2">(</span>
+						<span class="wave-3">(</span>
+					</span>
+					<span class="title-text">radio jockey</span>
+					<span class="wave-group">
+						<span class="wave-3">)</span> <span class="wave-2">)</span>
+						<span class="wave-1">)</span>
+					</span>
 				</h1></a
 			>
 			%sveltekit.body%
@@ -28,7 +34,11 @@
 	}
 
 	h1 {
-		font-size: 32px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		font-size: 40px;
 		padding-bottom: 20px;
 	}
 
@@ -46,8 +56,7 @@
 
 	@media (max-width: 600px) {
 		h1 {
-			font-size: 20px;
-			text-align: center;
+			font-size: 24px;
 		}
 
 		.wave-1 {
@@ -61,29 +70,35 @@
 		.wave-3 {
 			font-size: 8px;
 		}
+
+		h2 {
+			font-size: 20px;
+		}
+
+		h3 {
+			font-size: 18px;
+		}
 	}
 
 	p,
 	ul,
-	ol {
+	ol,
+	label {
 		font-size: 16px;
 	}
 
 	body {
 		margin: 16px;
-		min-height: calc(100vh - 32px);
 		background-color: #01026f;
 		color: white;
 		position: relative;
 		line-height: 24px;
-		border: 1px solid white;
-		box-sizing: border-box;
 	}
 
 	.bg-grid {
 		position: fixed;
 		inset: 0;
-		background-image: url('/radio2.png');
+		background-image: url('/radio.png');
 		background-size: 80px 80px;
 		background-repeat: space;
 		opacity: 0.3;
@@ -94,6 +109,9 @@
 	.content {
 		position: relative;
 		z-index: 1;
+		min-height: calc(100vh - 32px);
+		box-sizing: border-box;
+		border: 1px solid white;
 		padding: 16px 32px;
 	}
 
@@ -135,13 +153,34 @@
 
 	ul,
 	ol {
+		list-style: none;
 		border: 1px solid white;
-		padding: 16px 16px 16px 44px;
+		padding: 0;
 		margin: 0 0 24px 0;
 	}
 
 	li {
-		padding: 4px 0;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 8px;
+		padding: 16px;
+	}
+
+	li:not(:last-child) {
+		box-shadow: 0 1px 0 white;
+	}
+
+	ol {
+		counter-reset: list-counter;
+	}
+
+	ol > li {
+		counter-increment: list-counter;
+	}
+
+	ol > li::before {
+		content: counter(list-counter) '.';
 	}
 
 	button,

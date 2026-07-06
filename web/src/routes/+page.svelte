@@ -6,7 +6,7 @@
 		<a href="/stations"><li>listen to live stations</li></a>
 	</ul>
 	<ul>
-		<a href="/archive"><li>view session archive</li></a>
+		<a href="/archive"><li>view station archive</li></a>
 	</ul>
 </div>
 

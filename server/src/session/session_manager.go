@@ -10,34 +10,39 @@ import (
 type SessionID string
 
 type SessionManager struct {
-	mu       sync.RWMutex
-	sessions map[SessionID]*SessionQueue
-	Events   chan SessionManagerEvent
+	mu          sync.RWMutex
+	sessions    map[SessionID]*SessionQueue
+	Events      chan SessionManagerEvent
+	maxSessions int
 }
 
 var (
-	AlreadyExistsError       = errors.New("session with provided id already exists")
+	AlreadyExistsError   = errors.New("session with provided id already exists")
 	SessionNotFoundError = errors.New("session with given ID does not exist")
+	TooManySessionsError = errors.New("too many concurrent sessions")
 )
 
-func CreateSessionManager() *SessionManager {
+func CreateSessionManager(maxSessions int) *SessionManager {
 	return &SessionManager{
-		mu:       sync.RWMutex{},
-		sessions: map[SessionID]*SessionQueue{},
-		Events:   make(chan SessionManagerEvent, 16),
+		mu:          sync.RWMutex{},
+		sessions:    map[SessionID]*SessionQueue{},
+		Events:      make(chan SessionManagerEvent, 16),
+		maxSessions: maxSessions,
 	}
 }
 
 func (m *SessionManager) CreateSession(ctx context.Context, sessionId SessionID, archiveID *int64) (<-chan error, error) {
 	m.mu.Lock()
-	_, ok := m.sessions[sessionId]
-	if !ok {
-		m.sessions[sessionId] = NewQueue(sessionId, archiveID)
-		m.mu.Unlock()
-	} else {
+	if _, ok := m.sessions[sessionId]; ok {
 		m.mu.Unlock()
 		return nil, AlreadyExistsError
 	}
+	if len(m.sessions) >= m.maxSessions {
+		m.mu.Unlock()
+		return nil, TooManySessionsError
+	}
+	m.sessions[sessionId] = NewQueue(sessionId, archiveID)
+	m.mu.Unlock()
 
 	slog.Info("session created", "session", sessionId)
 	ready := make(chan error, 1)
@@ -66,6 +71,19 @@ func (m *SessionManager) ListSessions() []SessionID {
 	ids := make([]SessionID, 0, len(m.sessions))
 	for id := range m.sessions {
 		ids = append(ids, id)
+	}
+	return ids
+}
+
+func (m *SessionManager) InUseTrackIDs() map[int64]struct{} {
+	m.mu.RLock()
+	defer m.mu.RUnlock()
+	ids := make(map[int64]struct{})
+	for _, q := range m.sessions {
+		tracks, _ := q.ListQueue()
+		for _, t := range tracks {
+			ids[t.Id] = struct{}{}
+		}
 	}
 	return ids
 }

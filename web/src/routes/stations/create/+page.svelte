@@ -45,7 +45,7 @@
 	<input id="name" type="text" bind:value={name} disabled={submitting} />
 	<label for="archive">
 		<input id="archive" type="checkbox" bind:checked={archive} disabled={submitting} />
-		archive this session
+		archive this station
 	</label>
 	<LoadingButton type="submit" loading={submitting} label="create" />
 </form>

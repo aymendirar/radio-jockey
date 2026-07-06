@@ -19,6 +19,30 @@ var AuthenticatedProcedures = []string{
 	protoconnect.RadioServiceDeleteSessionArchiveProcedure,
 }
 
+var RateLimitedProcedures = []string{
+	protoconnect.RadioServiceCreateSessionProcedure,
+	protoconnect.RadioServiceAddTrackProcedure,
+	protoconnect.RadioServiceRemoveTrackProcedure,
+	protoconnect.RadioServiceSkipTrackProcedure,
+}
+
+func rateLimitInterceptor(limiter *ipRateLimiter) connect.Interceptor {
+	set := make(map[string]struct{}, len(RateLimitedProcedures))
+	for _, p := range RateLimitedProcedures {
+		set[p] = struct{}{}
+	}
+	return connect.UnaryInterceptorFunc(func(next connect.UnaryFunc) connect.UnaryFunc {
+		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
+			if _, ok := set[req.Spec().Procedure]; ok {
+				if !limiter.allow(clientKey(req)) {
+					return nil, connect.NewError(connect.CodeResourceExhausted, errors.New("rate limit exceeded"))
+				}
+			}
+			return next(ctx, req)
+		}
+	})
+}
+
 func authInterceptor(a *auth.Auth) connect.Interceptor {
 	set := make(map[string]struct{}, len(AuthenticatedProcedures))
 	for _, p := range AuthenticatedProcedures {

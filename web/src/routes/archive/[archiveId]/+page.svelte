@@ -39,7 +39,7 @@
 	<p>{formatTimestamp(createdAt)}</p>
 
 	<ol>
-		{#each tracks as track (track.id)}
+		{#each tracks as track, i (i)}
 			<TrackListItem
 				{track}
 				href={track.source === 'youtube'

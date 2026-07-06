@@ -45,6 +45,6 @@ declare module "$app/types" {
 		};
 		Pathname(): "/" | "/admin" | "/archive" | `/archive/${string}` & {} | "/stations" | "/stations/create" | `/stations/${string}` & {};
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
-		Asset(): "/.DS_Store" | "/04B_30.TTF" | "/04b_30/.DS_Store" | "/04b_30/about.gif" | "/04b_30.zip" | "/Pixeled.ttf" | "/dogica/Ascii GB Studio/01.png" | "/dogica/Ascii GB Studio/02.png" | "/dogica/Ascii GB Studio/03.png" | "/dogica/Ascii GB Studio/04.png" | "/dogica/OTF/dogica.otf" | "/dogica/OTF/dogicabold.otf" | "/dogica/OTF/dogicapixel.otf" | "/dogica/OTF/dogicapixelbold.otf" | "/dogica/Specimen/dogica.png" | "/dogica/Specimen/dogicabold.png" | "/dogica/TTF/.DS_Store" | "/dogica/TTF/dogicabold.ttf" | "/dogica/TTF/dogicapixel.ttf" | "/dogica/TTF/dogicapixelbold.ttf" | "/dogica/dogica_license.txt" | "/dogica/dogica_pixel_license.txt" | "/dogica/info.txt" | "/dogica.ttf" | "/dogica.zip" | "/pixel.ttf" | "/pixel_3/.DS_Store" | "/pixel_3/license.txt" | "/pixel_3/readme.txt" | "/pixel_3.zip" | "/radio.png" | "/radio2.png" | "/robots.txt" | "/windows-xp-tahoma.otf.zip" | string & {};
+		Asset(): "/radio2.png" | "/robots.txt" | string & {};
 	}
 }

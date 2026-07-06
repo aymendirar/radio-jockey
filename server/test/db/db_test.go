@@ -6,6 +6,7 @@ import (
 	"errors"
 	"server/test/util"
 	"testing"
+	"time"
 )
 
 func TestCreateTrack(t *testing.T) {
@@ -42,6 +43,70 @@ func TestUpdateTrackAlbumArtUrl(t *testing.T) {
 	}
 	if got.AlbumArtUrl != "https://i.ytimg.com/vi/abc123/maxresdefault.jpg" {
 		t.Fatalf("expected updated album art url, got %q", got.AlbumArtUrl)
+	}
+}
+
+func TestTouchTrackLastUsed(t *testing.T) {
+	ctx := context.Background()
+	d := util.OpenTestDB(t)
+
+	track, err := d.CreateTrack(ctx, "youtube", "abc123", "Title", "Artist", "/music/abc123.opus", 180, "https://i.ytimg.com/vi/abc123/hqdefault.jpg")
+	if err != nil {
+		t.Fatalf("create track: %v", err)
+	}
+	if track.LastUsedAt == 0 {
+		t.Fatalf("expected last_used_at to be set on create, got %v", track.LastUsedAt)
+	}
+
+	if err := d.TouchTrackLastUsed(ctx, track.Id); err != nil {
+		t.Fatalf("touch last used: %v", err)
+	}
+
+	got, err := d.GetTrack(ctx, "abc123")
+	if err != nil {
+		t.Fatalf("get track: %v", err)
+	}
+	if got.LastUsedAt < track.LastUsedAt {
+		t.Fatalf("expected last_used_at to not decrease after touch, got %v before %v", got.LastUsedAt, track.LastUsedAt)
+	}
+}
+
+func TestListTracksByLastUsed(t *testing.T) {
+	ctx := context.Background()
+	d := util.OpenTestDB(t)
+
+	older, err := d.CreateTrack(ctx, "youtube", "older", "Older", "Artist", "/music/older.opus", 180, "")
+	if err != nil {
+		t.Fatalf("create track: %v", err)
+	}
+	// unixepoch() has 1-second resolution, so sleep past a tick to guarantee a strictly
+	// later last_used_at than "older".
+	time.Sleep(1100 * time.Millisecond)
+	newer, err := d.CreateTrack(ctx, "youtube", "newer", "Newer", "Artist", "/music/newer.opus", 180, "")
+	if err != nil {
+		t.Fatalf("create track: %v", err)
+	}
+
+	tracks, err := d.ListTracksByLastUsed(ctx)
+	if err != nil {
+		t.Fatalf("list tracks: %v", err)
+	}
+	if len(tracks) != 2 || tracks[0].Id != newer.Id || tracks[1].Id != older.Id {
+		t.Fatalf("expected [newer, older] order, got %v", tracks)
+	}
+
+	// touching "older" should now make it the most recently used.
+	time.Sleep(1100 * time.Millisecond)
+	if err := d.TouchTrackLastUsed(ctx, older.Id); err != nil {
+		t.Fatalf("touch last used: %v", err)
+	}
+
+	tracks, err = d.ListTracksByLastUsed(ctx)
+	if err != nil {
+		t.Fatalf("list tracks: %v", err)
+	}
+	if len(tracks) != 2 || tracks[0].Id != older.Id || tracks[1].Id != newer.Id {
+		t.Fatalf("expected touch to reorder to [older, newer], got %v", tracks)
 	}
 }
 

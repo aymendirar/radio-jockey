@@ -1,5 +1,8 @@
+default:
+    @just --list
+
 prod:
-    docker compose up --build
+    docker compose up --build -d
 
 dev:
     docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
@@ -7,7 +10,7 @@ dev:
     docker compose -f docker-compose.yml -f docker-compose.dev.yml logs -f
 
 logs service:
-    docker compose logs -f {{service}}
+    docker compose logs -f {{ service }}
 
 clean:
     docker compose down --rmi local --volumes --remove-orphans
@@ -25,4 +28,4 @@ genkeys:
     cd server && go run ./cmd/genkeys
 
 signnonce nonce:
-    cd server && go run ./cmd/signnonce {{nonce}}
+    cd server && go run ./cmd/signnonce {{ nonce }}

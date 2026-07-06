@@ -40,6 +40,7 @@
     "@bufbuild/protoc-gen-es": "^2.12.0",
     "@connectrpc/connect": "^2.1.1",
     "@connectrpc/connect-web": "^2.1.1",
-    "paseto-ts": "^2.0.6"
+    "paseto-ts": "^2.0.6",
+    "playhtml": "^2.12.0"
   }
 }

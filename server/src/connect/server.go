@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"time"
 
 	"server/src/connect/auth"
 	"server/src/db"
@@ -23,6 +24,7 @@ type Server struct {
 	icecast        *icecast.IcecastClient
 	auth           *auth.Auth
 	db             *db.DB
+	cache          *music.Cache
 }
 
 func CreateServer(
@@ -32,18 +34,24 @@ func CreateServer(
 	youtube *music.YouTube,
 	icecast *icecast.IcecastClient,
 	a *auth.Auth,
-	d *db.DB) (*http.Server, error) {
+	d *db.DB,
+	cache *music.Cache,
+	rateLimitRPS float64,
+	rateLimitBurst int) (*http.Server, error) {
 	server := &Server{
 		sessionManager: sessionManager,
 		youtube:        youtube,
 		icecast:        icecast,
 		auth:           a,
 		db:             d,
+		cache:          cache,
 	}
+	limiter := newIPRateLimiter(rateLimitRPS, rateLimitBurst)
+	limiter.startCleanup(5*time.Minute, 30*time.Minute)
 	mux := http.NewServeMux()
 	servicePath, handler := protoconnect.NewRadioServiceHandler(
 		server,
-		connect.WithInterceptors(stripInterceptor(), loggingInterceptor(), validate.NewInterceptor(), authInterceptor(a)),
+		connect.WithInterceptors(rateLimitInterceptor(limiter), stripInterceptor(), loggingInterceptor(), validate.NewInterceptor(), authInterceptor(a)),
 	)
 	mux.Handle(servicePath, handler)
 	p := new(http.Protocols)
