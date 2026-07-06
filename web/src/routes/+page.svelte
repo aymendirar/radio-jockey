@@ -11,7 +11,8 @@
 </div>
 
 <footer>
-	press <kbd>/</kbd> to chat with other listeners — cursors powered by
+	<span class="chat-hint">press <kbd>/</kbd> to chat with other listeners — </span>cursors powered
+	by
 	<a href="https://playhtml.fun" target="_blank" rel="noopener noreferrer">playhtml</a>
 </footer>
 
@@ -31,5 +32,11 @@
 		border: 1px solid currentColor;
 		border-radius: 3px;
 		padding: 0 0.3em;
+	}
+
+	@media (max-width: 600px) {
+		.chat-hint {
+			display: none;
+		}
 	}
 </style>
