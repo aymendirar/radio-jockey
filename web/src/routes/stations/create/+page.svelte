@@ -3,6 +3,7 @@
 	import { Code, ConnectError } from '@connectrpc/connect';
 	import { radioClient } from '$lib/connect/client';
 	import LoadingButton from '$lib/components/LoadingButton.svelte';
+	import { friendlyError } from '$lib/errors';
 
 	let name = $state('');
 	let archive = $state(false);
@@ -33,7 +34,7 @@
 			if (err instanceof ConnectError && err.code === Code.AlreadyExists) {
 				error = 'That name is taken, pick another.';
 			} else {
-				error = err instanceof Error ? err.message : String(err);
+				error = friendlyError(err);
 			}
 		}
 		submitting = false;

@@ -7,6 +7,7 @@
 	import TrackListItem from '$lib/components/TrackListItem.svelte';
 	import NotFound from '$lib/components/NotFound.svelte';
 	import { formatTimestamp } from '$lib/format';
+	import { friendlyError } from '$lib/errors';
 
 	const archiveId = BigInt(page.params.archiveId!);
 
@@ -27,7 +28,7 @@
 				notFound = true;
 				return;
 			}
-			error = err instanceof Error ? err.message : String(err);
+			error = friendlyError(err);
 		}
 	});
 </script>

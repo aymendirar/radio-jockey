@@ -18,7 +18,8 @@
 </script>
 
 <span class="visitor-count" class:invisible={count === null}>
-	{count ?? 0} {count === 1 ? 'person' : 'people'} online
+	{count ?? 0}
+	{count === 1 ? 'person' : 'people'} online
 </span>
 
 <style>

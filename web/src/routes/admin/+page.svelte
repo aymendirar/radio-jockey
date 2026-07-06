@@ -6,6 +6,7 @@
 	import LoadingButton from '$lib/components/LoadingButton.svelte';
 	import EntryList from '$lib/components/EntryList.svelte';
 	import { formatTimestamp } from '$lib/format';
+	import { friendlyError } from '$lib/errors';
 
 	const TOKEN_KEY = 'adminAuthToken';
 
@@ -38,7 +39,7 @@
 			const res = await radioClient.listSessions({});
 			sessions = res.sessions;
 		} catch (err) {
-			error = err instanceof Error ? err.message : String(err);
+			error = friendlyError(err);
 		}
 	}
 
@@ -47,7 +48,7 @@
 			const res = await radioClient.listSessionArchives({});
 			archives = res.archives;
 		} catch (err) {
-			error = err instanceof Error ? err.message : String(err);
+			error = friendlyError(err);
 		}
 	}
 
@@ -58,7 +59,7 @@
 			const res = await radioClient.requestNonce({});
 			nonce = res.nonce;
 		} catch (err) {
-			error = err instanceof Error ? err.message : String(err);
+			error = friendlyError(err);
 		}
 		requestingNonce = false;
 	}
@@ -75,7 +76,7 @@
 			passKey = '';
 			await loadAll();
 		} catch (err) {
-			error = err instanceof Error ? err.message : String(err);
+			error = friendlyError(err);
 		}
 		submittingPassKey = false;
 	}
@@ -100,7 +101,7 @@
 			if (err instanceof ConnectError && err.code === Code.Unauthenticated) {
 				logout();
 			} else {
-				error = err instanceof Error ? err.message : String(err);
+				error = friendlyError(err);
 			}
 		}
 		stoppingIds = new Set(stoppingIds);
@@ -120,7 +121,7 @@
 			if (err instanceof ConnectError && err.code === Code.Unauthenticated) {
 				logout();
 			} else {
-				error = err instanceof Error ? err.message : String(err);
+				error = friendlyError(err);
 			}
 		}
 		deletingArchiveIds = new Set(deletingArchiveIds);
@@ -133,8 +134,8 @@
 		<h2>admin login</h2>
 		<p>
 			Run <code>go run ./cmd/signnonce &lt;nonce&gt;</code> from <code>server/</code> (or
-			<code>just signnonce &lt;nonce&gt;</code>) with <code>PRIVATE_PASETO_KEY</code> set, then
-			paste the output below.
+			<code>just signnonce &lt;nonce&gt;</code>) with <code>PRIVATE_PASETO_KEY</code> set, then paste
+			the output below.
 		</p>
 
 		<LoadingButton onclick={handleRequestNonce} loading={requestingNonce} label="request nonce" />
@@ -178,7 +179,9 @@
 			<EntryList items={archives} emptyMessage="No archived stations." key={(a) => a.id}>
 				{#snippet item(archive)}
 					<li>
-						<a href="/archive/{archive.id}">{archive.sessionId} — {formatTimestamp(archive.createdAt)}</a>
+						<a href="/archive/{archive.id}"
+							>{archive.sessionId} — {formatTimestamp(archive.createdAt)}</a
+						>
 						<LoadingButton
 							onclick={() => handleDeleteArchive(archive.id)}
 							loading={deletingArchiveIds.has(archive.id)}

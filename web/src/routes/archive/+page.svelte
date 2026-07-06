@@ -4,6 +4,7 @@
 	import type { SessionArchiveInfo } from '$lib/proto/radio-jockey_pb';
 	import EntryList from '$lib/components/EntryList.svelte';
 	import { formatTimestamp } from '$lib/format';
+	import { friendlyError } from '$lib/errors';
 
 	let archives = $state<SessionArchiveInfo[]>([]);
 	let error = $state('');
@@ -14,7 +15,7 @@
 			const res = await radioClient.listSessionArchives({});
 			archives = res.archives;
 		} catch (err) {
-			error = err instanceof Error ? err.message : String(err);
+			error = friendlyError(err);
 		}
 		loaded = true;
 	});
@@ -33,7 +34,9 @@
 	>
 		{#snippet item(archive)}
 			<li>
-				<a href="/archive/{archive.id}">{archive.sessionId} — {formatTimestamp(archive.createdAt)}</a>
+				<a href="/archive/{archive.id}"
+					>{archive.sessionId} — {formatTimestamp(archive.createdAt)}</a
+				>
 			</li>
 		{/snippet}
 	</EntryList>

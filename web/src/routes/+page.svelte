@@ -11,11 +11,8 @@
 </div>
 
 <footer>
-	press <kbd>/</kbd> to chat with other listeners — cursors powered by <a
-		href="https://playhtml.fun"
-		target="_blank"
-		rel="noopener noreferrer">playhtml</a
-	>
+	press <kbd>/</kbd> to chat with other listeners — cursors powered by
+	<a href="https://playhtml.fun" target="_blank" rel="noopener noreferrer">playhtml</a>
 </footer>
 
 <style>

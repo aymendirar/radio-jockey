@@ -3,6 +3,7 @@
 	import { radioClient } from '$lib/connect/client';
 	import type { SessionInfo } from '$lib/proto/radio-jockey_pb';
 	import EntryList from '$lib/components/EntryList.svelte';
+	import { friendlyError } from '$lib/errors';
 
 	let sessions = $state<SessionInfo[]>([]);
 	let error = $state('');
@@ -13,7 +14,7 @@
 			const res = await radioClient.listSessions({});
 			sessions = res.sessions;
 		} catch (err) {
-			error = err instanceof Error ? err.message : String(err);
+			error = friendlyError(err);
 		}
 		loaded = true;
 	});

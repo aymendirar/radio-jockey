@@ -7,6 +7,7 @@
 	import TrackListItem from '$lib/components/TrackListItem.svelte';
 	import LoadingButton from '$lib/components/LoadingButton.svelte';
 	import NotFound from '$lib/components/NotFound.svelte';
+	import { friendlyError } from '$lib/errors';
 
 	const sessionId = page.params.sessionId!;
 
@@ -34,6 +35,23 @@
 		if (audioEl) audioEl.volume = v;
 	});
 
+	// keeps the iOS/Android lock-screen "now playing" artwork in sync with the current track
+	$effect(() => {
+		if (!('mediaSession' in navigator)) return;
+		const current = tracks[0];
+		if (!current) {
+			navigator.mediaSession.metadata = null;
+			return;
+		}
+		navigator.mediaSession.metadata = new MediaMetadata({
+			title: current.title,
+			artist: current.artist,
+			artwork: current.albumArtUrl
+				? [{ src: current.albumArtUrl, sizes: '480x360', type: 'image/jpeg' }]
+				: []
+		});
+	});
+
 	let notFound = $state(false);
 	let streamUrl = $state('');
 	let tracks = $state<Track[]>([]);
@@ -48,12 +66,19 @@
 
 	let pollHandle: ReturnType<typeof setInterval> | undefined;
 
-	async function fetchQueue() {
+	// silent: swallow transient failures instead of surfacing them — used for background
+	// refreshes (poll, post-add) where a blip is expected to self-heal on the next call,
+	// e.g. iOS Safari killing an in-flight fetch when the screen locks mid-download.
+	async function fetchQueue(opts: { silent?: boolean } = {}) {
 		try {
 			const res = await radioClient.listQueue({ sessionId });
 			tracks = res.tracks;
 		} catch (err) {
-			generalError = err instanceof Error ? err.message : String(err);
+			if (opts.silent) {
+				console.error('failed to refresh queue', err);
+				return;
+			}
+			generalError = friendlyError(err);
 		}
 	}
 
@@ -66,13 +91,13 @@
 				notFound = true;
 				return;
 			}
-			generalError = err instanceof Error ? err.message : String(err);
+			generalError = friendlyError(err);
 			return;
 		}
 
 		await fetchQueue();
 		queueLoaded = true;
-		pollHandle = setInterval(fetchQueue, 5000);
+		pollHandle = setInterval(() => fetchQueue({ silent: true }), 5000);
 	});
 
 	onDestroy(() => {
@@ -86,7 +111,7 @@
 		try {
 			await radioClient.addTrack({ sessionId, trackUrl });
 			trackUrl = '';
-			await fetchQueue();
+			await fetchQueue({ silent: true });
 		} catch (err) {
 			if (err instanceof ConnectError) {
 				switch (err.code) {
@@ -103,7 +128,7 @@
 						addError = 'Something went wrong adding that track.';
 				}
 			} else {
-				addError = err instanceof Error ? err.message : String(err);
+				addError = friendlyError(err);
 			}
 		}
 		adding = false;
@@ -119,9 +144,9 @@
 		skipping = true;
 		try {
 			await radioClient.skipTrack({ sessionId });
-			await fetchQueue();
+			await fetchQueue({ silent: true });
 		} catch (err) {
-			generalError = err instanceof Error ? err.message : String(err);
+			generalError = friendlyError(err);
 		}
 		skipping = false;
 	}
@@ -130,9 +155,9 @@
 		removingIndices = new Set(removingIndices).add(index);
 		try {
 			await radioClient.removeTrack({ sessionId, index });
-			await fetchQueue();
+			await fetchQueue({ silent: true });
 		} catch (err) {
-			generalError = err instanceof Error ? err.message : String(err);
+			generalError = friendlyError(err);
 		}
 		removingIndices = new Set(removingIndices);
 		removingIndices.delete(index);
@@ -140,7 +165,11 @@
 </script>
 
 {#if notFound}
-	<NotFound message="This station doesn't exist." backHref="/stations" backLabel="back to stations" />
+	<NotFound
+		message="This station doesn't exist."
+		backHref="/stations"
+		backLabel="back to stations"
+	/>
 {:else}
 	<h2>{sessionId}</h2>
 
@@ -202,7 +231,13 @@
 
 	<form onsubmit={handleAddTrack}>
 		<label for="trackUrl">add a track</label>
-		<input id="trackUrl" type="text" bind:value={trackUrl} disabled={adding} placeholder="YouTube URL" />
+		<input
+			id="trackUrl"
+			type="text"
+			bind:value={trackUrl}
+			disabled={adding}
+			placeholder="YouTube URL"
+		/>
 		<LoadingButton type="submit" loading={adding} label="add" />
 	</form>
 
