@@ -37,6 +37,7 @@
 		audioCtx?.resume();
 		audioEl.play();
 		playing = true;
+		if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing';
 	}
 
 	function stop() {
@@ -45,6 +46,15 @@
 		audioEl.removeAttribute('src');
 		audioEl.load();
 		playing = false;
+		if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
+	}
+
+	// Android's media notification goes inert without action handlers — Chrome shows the
+	// initial metadata but won't keep the notification live/updatable without these
+	if (typeof navigator !== 'undefined' && 'mediaSession' in navigator) {
+		navigator.mediaSession.setActionHandler('play', play);
+		navigator.mediaSession.setActionHandler('pause', stop);
+		navigator.mediaSession.setActionHandler('stop', stop);
 	}
 
 	$effect(() => {

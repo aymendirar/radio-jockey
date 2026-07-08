@@ -44,6 +44,29 @@ function setCache(key: string, entry: CacheEntry) {
 	cache.set(key, entry);
 }
 
+const NAMED_ENTITIES: Record<string, string> = {
+	amp: '&',
+	lt: '<',
+	gt: '>',
+	quot: '"',
+	apos: "'",
+	'#39': "'"
+};
+
+// YouTube's API returns snippet text HTML-escaped (e.g. "&#39;" for an apostrophe)
+function decodeHtmlEntities(text: string): string {
+	return text.replace(/&(#\d+|#x[0-9a-fA-F]+|[a-zA-Z0-9]+);/g, (match, entity) => {
+		if (entity[0] === '#') {
+			const code =
+				entity[1] === 'x' || entity[1] === 'X'
+					? parseInt(entity.slice(2), 16)
+					: parseInt(entity.slice(1), 10);
+			return Number.isNaN(code) ? match : String.fromCodePoint(code);
+		}
+		return NAMED_ENTITIES[entity] ?? match;
+	});
+}
+
 // reads YouTube's structured error reason (e.g. "quotaExceeded") rather than
 // substring-matching the raw body, so unrelated wording changes can't break detection
 function parseErrorReason(errorText: string): string | undefined {
@@ -112,8 +135,8 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
 			if (!videoId) return null;
 			return {
 				videoId,
-				title: item.snippet.title,
-				channelTitle: item.snippet.channelTitle,
+				title: decodeHtmlEntities(item.snippet.title),
+				channelTitle: decodeHtmlEntities(item.snippet.channelTitle),
 				thumbnailUrl: item.snippet.thumbnails?.default?.url ?? ''
 			};
 		})
