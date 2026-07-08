@@ -10,14 +10,16 @@
 	let currentQuery = $state('');
 	let results = $state<SearchResult[]>([]);
 	let nextPageToken = $state<string | undefined>(undefined);
-	let prevPageToken = $state<string | undefined>(undefined);
+	// tokens actually used to fetch each page so far (index 0 = undefined, page 1's token)
+	let pageTokens = $state<(string | undefined)[]>([undefined]);
+	let pageIndex = $state(0);
 	let searching = $state(false);
 	let pageLoadingDirection = $state<'next' | 'prev' | null>(null);
 	let searchError = $state('');
 	let addingIds = $state<Set<string>>(new Set());
 	let addError = $state('');
 
-	async function runSearch(query: string, page?: { token: string; direction: 'next' | 'prev' }) {
+	async function runSearch(query: string, page?: { token?: string; direction: 'next' | 'prev' }) {
 		if (page) {
 			pageLoadingDirection = page.direction;
 		} else {
@@ -27,7 +29,7 @@
 
 		try {
 			const params = new URLSearchParams({ q: query });
-			if (page) params.set('pageToken', page.token);
+			if (page?.token) params.set('pageToken', page.token);
 			const res = await fetch(`/api/youtube-search?${params}`);
 
 			if (!res.ok) {
@@ -44,7 +46,8 @@
 				if (!page) {
 					results = [];
 					nextPageToken = undefined;
-					prevPageToken = undefined;
+					pageTokens = [undefined];
+					pageIndex = 0;
 				}
 			} else {
 				const data = await res.json();
@@ -53,14 +56,14 @@
 				}
 				results = data.results;
 				nextPageToken = data.nextPageToken;
-				prevPageToken = data.prevPageToken;
 			}
 		} catch (err) {
 			searchError = friendlyError(err);
 			if (!page) {
 				results = [];
 				nextPageToken = undefined;
-				prevPageToken = undefined;
+				pageTokens = [undefined];
+				pageIndex = 0;
 			}
 		}
 
@@ -77,18 +80,23 @@
 		// mid-flight with tokens that belong to the previous query
 		results = [];
 		nextPageToken = undefined;
-		prevPageToken = undefined;
+		pageTokens = [undefined];
+		pageIndex = 0;
 		runSearch(query);
 	}
 
 	function handleNext() {
 		if (!nextPageToken) return;
-		runSearch(currentQuery, { token: nextPageToken, direction: 'next' });
+		const token = nextPageToken;
+		pageTokens = [...pageTokens.slice(0, pageIndex + 1), token];
+		pageIndex += 1;
+		runSearch(currentQuery, { token, direction: 'next' });
 	}
 
 	function handlePrev() {
-		if (!prevPageToken) return;
-		runSearch(currentQuery, { token: prevPageToken, direction: 'prev' });
+		if (pageIndex === 0) return;
+		pageIndex -= 1;
+		runSearch(currentQuery, { token: pageTokens[pageIndex], direction: 'prev' });
 	}
 
 	async function handleAdd(videoId: string) {
@@ -125,7 +133,7 @@
 			onNext={handleNext}
 			onPrev={handlePrev}
 			hasNext={!!nextPageToken}
-			hasPrev={!!prevPageToken}
+			hasPrev={pageIndex > 0}
 			{pageLoadingDirection}
 		/>
 	{/if}

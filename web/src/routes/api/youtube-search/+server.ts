@@ -29,6 +29,8 @@ type CacheEntry = {
 // search within the same day never costs quota twice
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 const CACHE_MAX_ENTRIES = 1000;
+// YouTube's video category taxonomy — biases search results toward music uploads
+const MUSIC_CATEGORY_ID = '10';
 
 const cache = new Map<string, CacheEntry>();
 
@@ -109,6 +111,7 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
 	const ytUrl = new URL('https://www.googleapis.com/youtube/v3/search');
 	ytUrl.searchParams.set('part', 'snippet');
 	ytUrl.searchParams.set('type', 'video');
+	ytUrl.searchParams.set('videoCategoryId', MUSIC_CATEGORY_ID);
 	ytUrl.searchParams.set('maxResults', '3');
 	ytUrl.searchParams.set('q', q);
 	ytUrl.searchParams.set('key', apiKey);
