@@ -86,7 +86,7 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
 	const ytUrl = new URL('https://www.googleapis.com/youtube/v3/search');
 	ytUrl.searchParams.set('part', 'snippet');
 	ytUrl.searchParams.set('type', 'video');
-	ytUrl.searchParams.set('maxResults', '5');
+	ytUrl.searchParams.set('maxResults', '3');
 	ytUrl.searchParams.set('q', q);
 	ytUrl.searchParams.set('key', apiKey);
 	if (pageToken) ytUrl.searchParams.set('pageToken', pageToken);
