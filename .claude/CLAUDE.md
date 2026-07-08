@@ -32,7 +32,7 @@ Caddy sits in front and routes traffic. Sessions are in-memory only — server r
 
 ## Build tooling
 
-Commands are run via `just` (see `justfile` at repo root), not `make`: `just dev`, `just codegen`, `just logs <service>`, `just clean`, `just prune`, `just genkeys`, `just signnonce <nonce>`, `just server-test`. Bare `just` lists all recipes (`default: @just --list`).
+Commands are run via `just` (see `justfile` at repo root): `just dev`, `just codegen`, `just logs <service>`, `just clean`, `just prune`, `just genkeys`, `just signnonce <nonce>`, `just server-test`. Bare `just` lists all recipes (`default: @just --list`).
 
 - **`just dev`** — `docker compose` (base + `docker-compose.dev.yml`) up with `--watch`, tailing all logs. This is the normal dev loop; requires Docker running.
 - **`just prod`** — `docker compose up --build -d` against the base compose file only (no dev overrides).
@@ -106,7 +106,7 @@ Mirrors `server/src/`'s package layout, using external test packages (`db_test`,
 - **`discord/sessions.ts`** — in-memory map of `guildId → { connection, buffer, authToken }`. One session per guild.
 - **`discord/command/play.ts`** — main command. Creates or joins session, connects to voice channel, streams Icecast HTTP into `PassThrough` buffer (20 MB), feeds to discord.js audio player. On player idle/error, reconnects stream. Builds its own stream URL locally from `ICECAST_INTERNAL_URL` (`http://icecast:9999`, docker-network-internal) rather than trusting the server's `streamUrl` response, which is meant for external/browser consumption (see Networking gotcha above). Always passes `archive: true` to `createSession` — bot-created stations are archived by default.
 - **`util/helpers.ts`** — `getSessionId(interaction)` builds `<server-name-slug>-<guildId>` as the RPC session ID; used by every command instead of the bare guild ID.
-- **Commands:** `play` (+ optional URL), `queue`, `skip`, `remove <index>`, `stop`
+- **Commands:** `play` (+ optional URL), `queue`, `skip`, `remove <index>`, `stop`, `ping`
 
 **Auth note:** The Discord bot holds `PRIVATE_PASETO_KEY`. It's the only caller that can sign nonces automatically and thus the only caller that can call `DeleteSessionAuth`/`DeleteSessionArchive` without manual steps. The web admin page (see below) can still get a token, but requires the operator to manually run the `signnonce` CLI.
 
@@ -122,6 +122,9 @@ Mirrors `server/src/`'s package layout, using external test packages (`db_test`,
   - `EntryList.svelte` — generic `{items, emptyMessage, key, item}` snippet-based list; renders `emptyMessage` when empty, otherwise a `<ul>` of `item(entry)` snippets. Takes an optional `class` for callers that want the `>`-bullet style (`:global(.arrow-list)`, defined per-page since not every list uses it)
   - `NotFound.svelte` — `{message, backHref, backLabel}`, used by both `[sessionId]` and `[archiveId]` not-found states
   - `VisitorCount.svelte` — joins the same sitewide `playhtml` presence room as the cursor effects (`+layout.svelte`) via `playhtml.presence.setMyPresence('online', true)`, counts live presences via `onPresenceChange`. No server involvement — presence is peer-to-peer through playhtml's own backend, not the RPC server.
+  - `YouTubeSearchBar.svelte` / `YouTubeSearchResults.svelte` / `YouTubeSearch.svelte` — YouTube search for queueing tracks on `/stations/[sessionId]`, alongside (not replacing) the manual paste-a-URL form. `YouTubeSearch.svelte` owns all state (query, paginated results, in-flight add IDs) and composes the other two: `YouTubeSearchBar` is just the submit-triggered (not live-as-you-type, to conserve quota) input, `YouTubeSearchResults` renders results via the existing `EntryList`/`TrackListItem` pair (so it looks identical to every other list in the app) with a `< prev`/`next >` pager backed by the YouTube API's `pageToken` cursor. Each result's "add" button calls the *existing* `AddTrack` RPC with a synthesized `https://www.youtube.com/watch?v=<id>` URL — no proto/server changes were needed. `TrackListItem`'s `track` prop was loosened to `Pick<Track, 'title' | 'artist' | 'albumArtUrl'>` so search results (no DB `id`/`duration` yet) can reuse it.
+- **`routes/api/youtube-search/+server.ts`** — SvelteKit server route (not a Go RPC) that proxies YouTube Data API v3 `search.list`. Exists so the `YOUTUBE_API_KEY` never reaches the browser: it's a private env var (`web/.env`, `$env/dynamic/private`, no `PUBLIC_` prefix), read at request time rather than baked in at build — required because `web/Dockerfile`'s build stage receives no env vars at all (`env_file` in `docker-compose.yml`/`docker-compose.dev.yml` only injects into the running container). Trims YouTube's response down to `{videoId, title, channelTitle, thumbnailUrl}` per result plus `nextPageToken`/`prevPageToken`; returns `503` if the key is unset so the UI can show "not configured" instead of failing silently. No rate limiting on this route (matches the project's no-auth-for-DJ-actions posture) — get a key via Google Cloud Console (enable "YouTube Data API v3", create an API key).
+- **`lib/errors.ts`** — `friendlyError(err)` (generic fallback message) and `addTrackErrorMessage(err)` (maps `AddTrack`'s `ConnectError` codes to user-facing text), shared by the manual URL form and YouTube search's "add" buttons since both call the same RPC.
 
 **Loading convention:** every button that triggers an RPC shows `"loading..."` while in flight (via `LoadingButton`), and every page's initial list/data fetch shows a `"loading..."` message until that first fetch resolves (via a `loaded` boolean gating the real content) — never silently render an empty/default state while a request is still in flight. Per-row actions in a list (stop a session, delete an archive, remove a queue index) track a `Set` of in-flight keys so only the clicked row's button reflects that specific request.
 
@@ -132,7 +135,7 @@ Mirrors `server/src/`'s package layout, using external test packages (`db_test`,
 | `/` | `routes/+page.svelte` | Links to `/stations`, `/stations/create`, `/archive` |
 | `/stations` | `routes/stations/+page.svelte` | Lists active sessions via `ListSessions`, links to each |
 | `/stations/create` | `routes/stations/create/+page.svelte` | Form to name + create a session (with an opt-in "archive this session" checkbox, default off), redirects to it |
-| `/stations/[sessionId]` | `routes/stations/[sessionId]/+page.svelte` | Custom play/stop + volume player, now-playing (with album art), queue (polled, with per-track thumbnails), add/skip/remove |
+| `/stations/[sessionId]` | `routes/stations/[sessionId]/+page.svelte` | Custom play/stop + volume player, now-playing (with album art), queue (polled, with per-track thumbnails), add via YouTube search (paginated) or manual URL paste, skip/remove |
 | `/admin` | `routes/admin/+page.svelte` | Nonce/passkey login (token cached in `localStorage`), lists + force-stops active sessions, lists + deletes archived sessions |
 | `/archive` | `routes/archive/+page.svelte` | Lists all session archives via `ListSessionArchives`, links to each |
 | `/archive/[archiveId]` | `routes/archive/[archiveId]/+page.svelte` | Shows an archive's header + played tracks (with album art); YouTube-sourced tracks link straight to the source video |

@@ -2,7 +2,15 @@
 	import type { Track } from '$lib/proto/radio-jockey_pb';
 	import type { Snippet } from 'svelte';
 
-	let { track, href, children }: { track: Track; href?: string; children?: Snippet } = $props();
+	let {
+		track,
+		href,
+		children
+	}: {
+		track: Pick<Track, 'title' | 'artist' | 'albumArtUrl'>;
+		href?: string;
+		children?: Snippet;
+	} = $props();
 </script>
 
 <li>

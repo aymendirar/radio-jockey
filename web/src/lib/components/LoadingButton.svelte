@@ -3,13 +3,15 @@
 		loading,
 		label,
 		onclick,
-		type = 'button'
+		type = 'button',
+		disabled = false
 	}: {
 		loading: boolean;
 		label: string;
 		onclick?: () => void;
 		type?: 'button' | 'submit';
+		disabled?: boolean;
 	} = $props();
 </script>
 
-<button {type} {onclick} disabled={loading}>{loading ? 'loading...' : label}</button>
+<button {type} {onclick} disabled={loading || disabled}>{loading ? 'loading...' : label}</button>

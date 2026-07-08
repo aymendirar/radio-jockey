@@ -7,7 +7,8 @@
 	import TrackListItem from '$lib/components/TrackListItem.svelte';
 	import LoadingButton from '$lib/components/LoadingButton.svelte';
 	import NotFound from '$lib/components/NotFound.svelte';
-	import { friendlyError } from '$lib/errors';
+	import { friendlyError, addTrackErrorMessage } from '$lib/errors';
+	import YouTubeSearch from '$lib/components/YouTubeSearch.svelte';
 
 	const sessionId = page.params.sessionId!;
 
@@ -129,23 +130,7 @@
 			trackUrl = '';
 			await fetchQueue({ silent: true });
 		} catch (err) {
-			if (err instanceof ConnectError) {
-				switch (err.code) {
-					case Code.InvalidArgument:
-						addError = 'Invalid URL. Please try again with a YouTube link!';
-						break;
-					case Code.NotFound:
-						addError = 'That video is unavailable or the station has ended.';
-						break;
-					case Code.ResourceExhausted:
-						addError = 'The queue is full!';
-						break;
-					default:
-						addError = 'Something went wrong adding that track.';
-				}
-			} else {
-				addError = friendlyError(err);
-			}
+			addError = addTrackErrorMessage(err);
 		}
 		adding = false;
 	}
@@ -244,6 +229,8 @@
 
 		<LoadingButton onclick={handleSkip} loading={skipping} label="skip" />
 	</div>
+
+	<YouTubeSearch {sessionId} onAdded={() => fetchQueue({ silent: true })} />
 
 	<form onsubmit={handleAddTrack}>
 		<label for="trackUrl">add a track</label>

@@ -6,6 +6,9 @@
 	"/admin": [
 		"src/routes/+layout.server.ts"
 	],
+	"/api/youtube-search": [
+		"src/routes/api/youtube-search/+server.ts"
+	],
 	"/archive": [
 		"src/routes/+layout.server.ts"
 	],

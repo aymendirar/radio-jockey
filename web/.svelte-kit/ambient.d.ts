@@ -38,6 +38,7 @@
  * The above values will be the same _even if_ different values for `ENVIRONMENT` or `PUBLIC_BASE_URL` are set at runtime, as they are statically replaced in your code with their build time values.
  */
 declare module '$env/static/private' {
+	export const YOUTUBE_API_KEY: string;
 	export const NoDefaultCurrentDirectoryInExePath: string;
 	export const CLAUDE_EFFORT: string;
 	export const CLAUDE_CODE_ENTRYPOINT: string;
@@ -199,6 +200,7 @@ declare module '$env/static/public' {
  */
 declare module '$env/dynamic/private' {
 	export const env: {
+		YOUTUBE_API_KEY: string;
 		NoDefaultCurrentDirectoryInExePath: string;
 		CLAUDE_EFFORT: string;
 		CLAUDE_CODE_ENTRYPOINT: string;

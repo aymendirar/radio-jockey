@@ -29,7 +29,7 @@ declare module "$app/types" {
 	type MatcherParam<M> = M extends (param : string) => param is (infer U extends string) ? U : string;
 
 	export interface AppTypes {
-		RouteId(): "/" | "/admin" | "/archive" | "/archive/[archiveId]" | "/stations" | "/stations/create" | "/stations/[sessionId]";
+		RouteId(): "/" | "/admin" | "/api" | "/api/youtube-search" | "/archive" | "/archive/[archiveId]" | "/stations" | "/stations/create" | "/stations/[sessionId]";
 		RouteParams(): {
 			"/archive/[archiveId]": { archiveId: string };
 			"/stations/[sessionId]": { sessionId: string }
@@ -37,13 +37,15 @@ declare module "$app/types" {
 		LayoutParams(): {
 			"/": { archiveId?: string; sessionId?: string };
 			"/admin": Record<string, never>;
+			"/api": Record<string, never>;
+			"/api/youtube-search": Record<string, never>;
 			"/archive": { archiveId?: string };
 			"/archive/[archiveId]": { archiveId: string };
 			"/stations": { sessionId?: string };
 			"/stations/create": Record<string, never>;
 			"/stations/[sessionId]": { sessionId: string }
 		};
-		Pathname(): "/" | "/admin" | "/archive" | `/archive/${string}` & {} | "/stations" | "/stations/create" | `/stations/${string}` & {};
+		Pathname(): "/" | "/admin" | "/api/youtube-search" | "/archive" | `/archive/${string}` & {} | "/stations" | "/stations/create" | `/stations/${string}` & {};
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
 		Asset(): "/radio.png" | "/robots.txt" | string & {};
 	}
