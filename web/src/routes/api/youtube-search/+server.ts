@@ -4,7 +4,7 @@ import type { RequestHandler } from './$types';
 import type { SearchResult } from '$lib/youtube';
 
 type YouTubeSearchItem = {
-	id: { videoId: string };
+	id?: { videoId?: string };
 	snippet: {
 		title: string;
 		channelTitle: string;
@@ -44,6 +44,17 @@ function setCache(key: string, entry: CacheEntry) {
 	cache.set(key, entry);
 }
 
+// reads YouTube's structured error reason (e.g. "quotaExceeded") rather than
+// substring-matching the raw body, so unrelated wording changes can't break detection
+function parseErrorReason(errorText: string): string | undefined {
+	try {
+		const parsed = JSON.parse(errorText);
+		return parsed?.error?.errors?.[0]?.reason;
+	} catch {
+		return undefined;
+	}
+}
+
 export const GET: RequestHandler = async ({ url, fetch }) => {
 	const q = url.searchParams.get('q')?.trim();
 	if (!q) {
@@ -54,14 +65,17 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
 	const key = cacheKey(q, pageToken);
 
 	const cached = cache.get(key);
-	if (cached && cached.expiresAt > Date.now()) {
-		console.log('youtube search cache hit', key);
-		return json({
-			results: cached.results,
-			nextPageToken: cached.nextPageToken,
-			prevPageToken: cached.prevPageToken,
-			cached: true
-		});
+	if (cached) {
+		if (cached.expiresAt > Date.now()) {
+			console.log('youtube search cache hit', key);
+			return json({
+				results: cached.results,
+				nextPageToken: cached.nextPageToken,
+				prevPageToken: cached.prevPageToken,
+				cached: true
+			});
+		}
+		cache.delete(key);
 	}
 
 	const apiKey = env.YOUTUBE_API_KEY;
@@ -81,8 +95,11 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
 	if (!res.ok) {
 		const errorText = await res.text();
 		console.error('youtube search failed', res.status, errorText);
-		if (res.status === 403 && errorText.includes('quotaExceeded')) {
-			return json({ error: 'quota exceeded' }, { status: 429 });
+		if (res.status === 403) {
+			const reason = parseErrorReason(errorText);
+			if (reason === 'quotaExceeded' || reason === 'dailyLimitExceeded') {
+				return json({ error: 'quota exceeded' }, { status: 429 });
+			}
 		}
 		return json({ error: 'search failed' }, { status: 502 });
 	}
@@ -90,13 +107,17 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
 	const data: YouTubeSearchResponse = await res.json();
 
 	const results = (data.items ?? [])
-		.filter((item) => item.id.videoId)
-		.map((item) => ({
-			videoId: item.id.videoId,
-			title: item.snippet.title,
-			channelTitle: item.snippet.channelTitle,
-			thumbnailUrl: item.snippet.thumbnails?.default?.url ?? ''
-		}));
+		.map((item): SearchResult | null => {
+			const videoId = item.id?.videoId;
+			if (!videoId) return null;
+			return {
+				videoId,
+				title: item.snippet.title,
+				channelTitle: item.snippet.channelTitle,
+				thumbnailUrl: item.snippet.thumbnails?.default?.url ?? ''
+			};
+		})
+		.filter((r): r is SearchResult => r !== null);
 
 	setCache(key, {
 		results,

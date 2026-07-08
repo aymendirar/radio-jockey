@@ -12,7 +12,7 @@
 		onPrev,
 		hasNext,
 		hasPrev,
-		pageLoading
+		pageLoadingDirection
 	}: {
 		results: SearchResult[];
 		addingIds: Set<string>;
@@ -21,7 +21,7 @@
 		onPrev: () => void;
 		hasNext: boolean;
 		hasPrev: boolean;
-		pageLoading: boolean;
+		pageLoadingDirection: 'next' | 'prev' | null;
 	} = $props();
 </script>
 
@@ -40,10 +40,20 @@
 	{/snippet}
 </EntryList>
 
-{#if results.length > 0}
+{#if hasNext || hasPrev}
 	<div class="pagination">
-		<LoadingButton onclick={onPrev} loading={pageLoading} disabled={!hasPrev} label="< prev" />
-		<LoadingButton onclick={onNext} loading={pageLoading} disabled={!hasNext} label="next >" />
+		<LoadingButton
+			onclick={onPrev}
+			loading={pageLoadingDirection === 'prev'}
+			disabled={!hasPrev || pageLoadingDirection === 'next'}
+			label="< prev"
+		/>
+		<LoadingButton
+			onclick={onNext}
+			loading={pageLoadingDirection === 'next'}
+			disabled={!hasNext || pageLoadingDirection === 'prev'}
+			label="next >"
+		/>
 	</div>
 {/if}
 

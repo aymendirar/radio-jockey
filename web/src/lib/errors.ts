@@ -19,7 +19,11 @@ export function addTrackErrorMessage(err: unknown): string {
 			case Code.NotFound:
 				return 'That video is unavailable or the station has ended.';
 			case Code.ResourceExhausted:
-				return 'The queue is full!';
+				// server reuses this code for both a full queue and a rate-limit hit
+				// (see server/src/connect/interceptor.go); rawMessage disambiguates
+				return err.rawMessage === 'rate limit exceeded'
+					? "You're adding tracks too fast. Wait a moment and try again."
+					: 'The queue is full!';
 			default:
 				return 'Something went wrong adding that track.';
 		}
