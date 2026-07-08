@@ -21,7 +21,7 @@ import (
 )
 
 const (
-	SESSION_TIMEOUT_MINUTES = 10
+	SESSION_TIMEOUT_MINUTES = 60
 	OPUS_BITRATE            = "128k"
 	STREAM_PATH_PREFIX      = "stream"
 	PCM_SAMPLE_RATE         = "48000"
