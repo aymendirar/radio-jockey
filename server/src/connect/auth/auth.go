@@ -14,6 +14,8 @@ import (
 
 const tokenTTL = 24 * time.Hour
 
+const nonceSizeBytes = 16
+
 type Auth struct {
 	mu        sync.Mutex
 	nonces    map[string]time.Time
@@ -55,7 +57,7 @@ func NewAuth(privatePASERK, publicPASERK string, nonceTTL time.Duration) (*Auth,
 }
 
 func (a *Auth) IssueNonce() (string, error) {
-	b := make([]byte, 16)
+	b := make([]byte, nonceSizeBytes)
 	if _, err := rand.Read(b); err != nil {
 		return "", err
 	}

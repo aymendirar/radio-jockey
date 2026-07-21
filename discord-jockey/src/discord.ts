@@ -1,11 +1,11 @@
-import { Client, Events, IntentsBitField, REST, Routes } from "discord.js";
+import { ApplicationCommandOptionType, Client, Events, IntentsBitField, REST, Routes } from "discord.js";
 import { logger } from "./util/logger.js";
-import { registerPingCommand } from "./discord/command/ping.js";
-import { registerPlayCommand } from "./discord/command/play.js";
-import { registerSkipCommand } from "./discord/command/skip.js";
-import { registerQueueCommand } from "./discord/command/queue.js";
-import { registerRemoveCommand } from "./discord/command/remove.js";
-import { registerStopCommand } from "./discord/command/stop.js";
+import { handlePingCommand } from "./discord/command/ping.js";
+import { handlePlayCommand } from "./discord/command/play.js";
+import { handleSkipCommand } from "./discord/command/skip.js";
+import { handleQueueCommand } from "./discord/command/queue.js";
+import { handleRemoveCommand } from "./discord/command/remove.js";
+import { handleStopCommand } from "./discord/command/stop.js";
 
 export async function startDiscordBot(apiKey: string) {
   const bot = new Client({
@@ -14,38 +14,31 @@ export async function startDiscordBot(apiKey: string) {
       IntentsBitField.Flags.GuildVoiceStates,
     ],
   });
-  setupEventHandlers(bot);
-  await bot.login(apiKey);
-  return bot;
-}
 
-function setupEventHandlers(bot: Client) {
-  handleLogin(bot);
-  handleSlashCommands(bot);
-}
-
-function handleLogin(bot: Client) {
   bot.on(Events.ClientReady, (readyClient) => {
     logger.info("discord jockey spinning...", { ready: bot.isReady(), userTag: readyClient.user.tag });
   });
-}
 
-async function handleSlashCommands(bot: Client) {
   bot.on(Events.InteractionCreate, async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
 
-    console.log("received interaction:", interaction.commandName);
+    logger.info("received interaction", { command: interaction.commandName });
     try {
-      await registerPingCommand(interaction);
-      await registerPlayCommand(interaction);
-      await registerSkipCommand(interaction);
-      await registerQueueCommand(interaction);
-      await registerRemoveCommand(interaction);
-      await registerStopCommand(interaction);
+      switch (interaction.commandName) {
+        case "ping": await handlePingCommand(interaction); break;
+        case "play": await handlePlayCommand(interaction); break;
+        case "skip": await handleSkipCommand(interaction); break;
+        case "queue": await handleQueueCommand(interaction); break;
+        case "remove": await handleRemoveCommand(interaction); break;
+        case "stop": await handleStopCommand(interaction); break;
+      }
     } catch (err) {
       logger.error("unhandled error in interaction handler", { command: interaction.commandName, err });
     }
   });
+
+  await bot.login(apiKey);
+  return bot;
 }
 
 export async function registerCommands(apiKey: string, botId: string) {
@@ -62,7 +55,7 @@ export async function registerCommands(apiKey: string, botId: string) {
         {
           name: "url",
           description: "YouTube URL of the track to add",
-          type: 3, // STRING
+          type: ApplicationCommandOptionType.String,
           required: false,
         },
       ],
@@ -82,7 +75,7 @@ export async function registerCommands(apiKey: string, botId: string) {
         {
           name: "position",
           description: "Position in the queue (1-based)",
-          type: 4, // INTEGER
+          type: ApplicationCommandOptionType.Integer,
           required: true,
         },
       ],

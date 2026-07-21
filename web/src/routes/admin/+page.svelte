@@ -88,6 +88,14 @@
 		localStorage.removeItem(TOKEN_KEY);
 	}
 
+	function handleAuthError(err: unknown) {
+		if (err instanceof ConnectError && err.code === Code.Unauthenticated) {
+			logout();
+		} else {
+			error = friendlyError(err);
+		}
+	}
+
 	async function handleStop(sessionId: string) {
 		error = '';
 		stoppingIds = new Set(stoppingIds).add(sessionId);
@@ -98,11 +106,7 @@
 			);
 			sessions = sessions.filter((s) => s.sessionId !== sessionId);
 		} catch (err) {
-			if (err instanceof ConnectError && err.code === Code.Unauthenticated) {
-				logout();
-			} else {
-				error = friendlyError(err);
-			}
+			handleAuthError(err);
 		}
 		stoppingIds = new Set(stoppingIds);
 		stoppingIds.delete(sessionId);
@@ -118,11 +122,7 @@
 			);
 			archives = archives.filter((a) => a.id !== id);
 		} catch (err) {
-			if (err instanceof ConnectError && err.code === Code.Unauthenticated) {
-				logout();
-			} else {
-				error = friendlyError(err);
-			}
+			handleAuthError(err);
 		}
 		deletingArchiveIds = new Set(deletingArchiveIds);
 		deletingArchiveIds.delete(id);

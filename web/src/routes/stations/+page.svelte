@@ -40,9 +40,3 @@
 {#if error}
 	<p>{error}</p>
 {/if}
-
-<style>
-	:global(.arrow-list > li > a::before) {
-		content: '> ';
-	}
-</style>

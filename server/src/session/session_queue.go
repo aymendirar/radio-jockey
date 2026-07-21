@@ -25,7 +25,6 @@ var (
 
 func NewQueue(sessionId SessionID, archiveID *int64) *SessionQueue {
 	return &SessionQueue{
-		mu:        sync.RWMutex{},
 		tracks:    make([]*db.Track, 0, MaxQueueSize),
 		sessionId: sessionId,
 		notify:    make(chan struct{}, 1),

@@ -25,7 +25,7 @@ type YouTube struct {
 }
 
 const (
-	SOURCE = "youtube"
+	Source = "youtube"
 )
 
 var (
@@ -42,7 +42,7 @@ func NewYouTube(musicDirectoryPath string, db *db.DB, cache *Cache) *YouTube {
 }
 
 type ytdlpResult struct {
-	sourceId string
+	sourceID string
 	duration int64
 	filePath string
 }
@@ -68,18 +68,18 @@ func (y *YouTube) DownloadTrackFromURL(ctx context.Context, url string) (*db.Tra
 		return nil, fmt.Errorf("%w: %s", ErrInvalidURL, url)
 	}
 
-	var sourceId string
+	var sourceID string
 	if err := y.withRetry(ctx, "failed to resolve youtube video id", url, func() error {
 		var err error
-		sourceId, err = y.peekSourceID(url)
+		sourceID, err = y.peekSourceID(url)
 		return err
 	}); err != nil {
 		return nil, fmt.Errorf("resolving video id failed for %s: %w", url, err)
 	}
 
-	if track, ok := y.cache.Get(sourceId); ok {
+	if track, ok := y.cache.Get(sourceID); ok {
 		if _, err := os.Stat(track.FilePath); err == nil {
-			slog.Info("cache hit, skipping download", "url", url, "source_id", sourceId, "title", track.Title, "artist", track.Artist)
+			slog.Info("cache hit, skipping download", "url", url, "source_id", sourceID, "title", track.Title, "artist", track.Artist)
 			return track, nil
 		}
 	}
@@ -100,26 +100,26 @@ func (y *YouTube) DownloadTrackFromURL(ctx context.Context, url string) (*db.Tra
 
 	slog.Info("download complete", "url", url, "title", metadata.Title(), "path", result.filePath)
 
-	albumArtUrl := fmt.Sprintf("https://i.ytimg.com/vi/%s/hqdefault.jpg", result.sourceId)
+	albumArtURL := fmt.Sprintf("https://i.ytimg.com/vi/%s/hqdefault.jpg", result.sourceID)
 
-	if track, err := y.db.GetTrack(ctx, result.sourceId); err == nil {
+	if track, err := y.db.GetTrack(ctx, result.sourceID); err == nil {
 		slog.Info("found track in database, not creating record...", "title", track.Title, "artist", track.Artist)
-		if err := y.db.UpdateTrackAlbumArtUrl(ctx, track.Id, albumArtUrl); err != nil {
+		if err := y.db.UpdateTrackAlbumArtURL(ctx, track.ID, albumArtURL); err != nil {
 			return nil, err
 		}
-		track.AlbumArtUrl = albumArtUrl
+		track.AlbumArtURL = albumArtURL
 		return track, nil
 	}
 
 	track, err := y.db.CreateTrack(
 		ctx,
-		SOURCE,
-		result.sourceId,
+		Source,
+		result.sourceID,
 		metadata.Title(),
 		metadata.Artist(),
 		result.filePath,
 		result.duration,
-		albumArtUrl)
+		albumArtURL)
 
 	slog.Info("created new track record", "title", track.Title, "artist", track.Artist)
 
@@ -192,7 +192,7 @@ func (y *YouTube) ytdlp(url string) (ytdlpResult, error) {
 	duration := int64(d)
 
 	return ytdlpResult{
-		sourceId: strings.TrimSpace(lines[0]),
+		sourceID: strings.TrimSpace(lines[0]),
 		duration: duration,
 		filePath: strings.TrimSpace(lines[2]),
 	}, nil

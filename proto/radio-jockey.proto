@@ -6,7 +6,7 @@ service RadioService {
   rpc Ping (PingRequest) returns (PingResponse) {}
 
   rpc RequestNonce(RequestNonceRequest) returns (RequestNonceResponse) {}
-  rpc RespondNonce(RespondNonceRequest) returns (RespondNonceResponse){}
+  rpc RespondNonce(RespondNonceRequest) returns (RespondNonceResponse) {}
 
   rpc CreateSession (CreateSessionRequest) returns (CreateSessionResponse) {}
   rpc GetSession (GetSessionRequest) returns (GetSessionResponse) {}

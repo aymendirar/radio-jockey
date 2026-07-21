@@ -4,11 +4,9 @@ import { radioClient } from "../../connect/client.js";
 import { getSessionId, withConnectError } from "../../util/helpers.js";
 import { logger } from "../../util/logger.js";
 
-export async function registerQueueCommand(
+export async function handleQueueCommand(
   interaction: ChatInputCommandInteraction<CacheType>,
 ) {
-  if (interaction.commandName !== "queue") return;
-
   const sessionId = getSessionId(interaction);
   logger.info("queue command received", { sessionId });
 

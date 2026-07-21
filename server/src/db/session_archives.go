@@ -5,14 +5,14 @@ import (
 )
 
 type SessionArchive struct {
-	Id        int64  `db:"id"`
-	SessionId string `db:"session_id"`
+	ID        int64  `db:"id"`
+	SessionID string `db:"session_id"`
 	CreatedAt int64  `db:"created_at"`
 }
 
-func (d *DB) CreateSessionArchive(ctx context.Context, sessionId string) (*SessionArchive, error) {
+func (d *DB) CreateSessionArchive(ctx context.Context, sessionID string) (*SessionArchive, error) {
 	res, err := d.conn.ExecContext(ctx, `
-	INSERT INTO session_archives (session_id) VALUES ($1)`, sessionId)
+	INSERT INTO session_archives (session_id) VALUES ($1)`, sessionID)
 	if err != nil {
 		return nil, err
 	}
@@ -41,19 +41,19 @@ func (d *DB) ListSessionArchives(ctx context.Context) ([]*SessionArchive, error)
 	return archives, nil
 }
 
-func (d *DB) AddSessionArchiveTrack(ctx context.Context, archiveId, trackId int64) error {
+func (d *DB) AddSessionArchiveTrack(ctx context.Context, archiveID, trackID int64) error {
 	_, err := d.conn.ExecContext(ctx, `
-	INSERT INTO session_archive_tracks (session_archive_id, track_id) VALUES ($1, $2)`, archiveId, trackId)
+	INSERT INTO session_archive_tracks (session_archive_id, track_id) VALUES ($1, $2)`, archiveID, trackID)
 	return err
 }
 
-func (d *DB) ListSessionArchiveTracks(ctx context.Context, archiveId int64) ([]*Track, error) {
+func (d *DB) ListSessionArchiveTracks(ctx context.Context, archiveID int64) ([]*Track, error) {
 	tracks := []*Track{}
 	err := d.conn.SelectContext(ctx, &tracks, `
 	SELECT tracks.* FROM tracks
 	JOIN session_archive_tracks ON session_archive_tracks.track_id = tracks.id
 	WHERE session_archive_tracks.session_archive_id = $1
-	ORDER BY session_archive_tracks.played_at ASC`, archiveId)
+	ORDER BY session_archive_tracks.played_at ASC`, archiveID)
 	if err != nil {
 		return nil, err
 	}

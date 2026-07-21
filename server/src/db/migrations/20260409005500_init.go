@@ -10,10 +10,6 @@ func init() {
 	goose.AddMigrationContext(upInit, downInit)
 }
 
-/*
-INSERT INTO tracks (source, source_id, title, artist, duration, file_path)
-	VALUES ('spotify', '4uLU6hMCjMI75M1A2tKUQC', 'Never Gonna Give You Up', 'Rick Astley', 213, '/server/music/4uLU6hMCjMI75M1A2tKUQC.mp3');
-*/
 func upInit(ctx context.Context, tx *sql.Tx) error {
 	_, err := tx.Exec(`
 CREATE TABLE tracks (

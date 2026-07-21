@@ -4,11 +4,9 @@ import { radioClient } from "../../connect/client.js";
 import { getSessionId, withConnectError } from "../../util/helpers.js";
 import { logger } from "../../util/logger.js";
 
-export async function registerSkipCommand(
+export async function handleSkipCommand(
   interaction: ChatInputCommandInteraction<CacheType>,
 ) {
-  if (interaction.commandName !== "skip") return;
-
   const sessionId = getSessionId(interaction);
   logger.info("skip command received", { sessionId });
 

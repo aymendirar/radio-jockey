@@ -54,9 +54,3 @@
 {#if error}
 	<p>{error}</p>
 {/if}
-
-<style>
-	:global(button) {
-		padding: 12px 24px;
-	}
-</style>

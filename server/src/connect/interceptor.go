@@ -70,6 +70,8 @@ func stripInterceptor() connect.Interceptor {
 	})
 }
 
+// stripStrings recursively walks a protobuf message value and trims whitespace from
+// every string field, providing automatic input sanitization for all RPC requests.
 func stripStrings(v reflect.Value) {
 	if !v.IsValid() {
 		return

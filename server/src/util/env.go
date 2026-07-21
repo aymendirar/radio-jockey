@@ -1,7 +1,7 @@
 package util
 
 import (
-	e "github.com/caarlos0/env/v11"
+	"github.com/caarlos0/env/v11"
 	_ "github.com/joho/godotenv/autoload" // autoload environment variables from .env
 )
 
@@ -22,5 +22,5 @@ type Environment struct {
 }
 
 func LoadEnv() (Environment, error) {
-	return e.ParseAs[Environment]()
+	return env.ParseAs[Environment]()
 }

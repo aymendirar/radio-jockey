@@ -22,11 +22,12 @@ var (
 	TooManySessionsError = errors.New("too many concurrent sessions")
 )
 
+const eventChannelBuffer = 16
+
 func CreateSessionManager(maxSessions int) *SessionManager {
 	return &SessionManager{
-		mu:          sync.RWMutex{},
 		sessions:    map[SessionID]*SessionQueue{},
-		Events:      make(chan SessionManagerEvent, 16),
+		Events:      make(chan SessionManagerEvent, eventChannelBuffer),
 		maxSessions: maxSessions,
 	}
 }
@@ -82,7 +83,7 @@ func (m *SessionManager) InUseTrackIDs() map[int64]struct{} {
 	for _, q := range m.sessions {
 		tracks, _ := q.ListQueue()
 		for _, t := range tracks {
-			ids[t.Id] = struct{}{}
+			ids[t.ID] = struct{}{}
 		}
 	}
 	return ids

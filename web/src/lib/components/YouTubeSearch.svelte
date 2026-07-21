@@ -19,6 +19,13 @@
 	let addingIds = $state<Set<string>>(new Set());
 	let addError = $state('');
 
+	function resetPagination() {
+		results = [];
+		nextPageToken = undefined;
+		pageTokens = [undefined];
+		pageIndex = 0;
+	}
+
 	async function runSearch(query: string, page?: { token?: string; direction: 'next' | 'prev' }) {
 		if (page) {
 			pageLoadingDirection = page.direction;
@@ -44,10 +51,7 @@
 				// a fresh search failing has nothing worth keeping; a failed page
 				// turn should leave the current (still valid) page in place
 				if (!page) {
-					results = [];
-					nextPageToken = undefined;
-					pageTokens = [undefined];
-					pageIndex = 0;
+					resetPagination();
 				}
 			} else {
 				const data = await res.json();
@@ -60,10 +64,7 @@
 		} catch (err) {
 			searchError = friendlyError(err);
 			if (!page) {
-				results = [];
-				nextPageToken = undefined;
-				pageTokens = [undefined];
-				pageIndex = 0;
+				resetPagination();
 			}
 		}
 
@@ -76,12 +77,7 @@
 
 	function handleSearch(query: string) {
 		currentQuery = query;
-		// clear stale pagination immediately so a next/prev click can't fire
-		// mid-flight with tokens that belong to the previous query
-		results = [];
-		nextPageToken = undefined;
-		pageTokens = [undefined];
-		pageIndex = 0;
+		resetPagination();
 		runSearch(query);
 	}
 

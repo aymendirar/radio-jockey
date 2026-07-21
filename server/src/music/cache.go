@@ -39,8 +39,8 @@ func NewCache(d *db.DB) (*Cache, error) {
 	}
 	for _, t := range tracks {
 		el := c.window.PushBack(t)
-		c.windowNodes[t.Id] = el
-		c.bySourceID[t.SourceId] = el
+		c.windowNodes[t.ID] = el
+		c.bySourceID[t.SourceID] = el
 	}
 	return c, nil
 }
@@ -48,11 +48,11 @@ func NewCache(d *db.DB) (*Cache, error) {
 // Get looks up a track by its source id without mutating recency state on disk or in the
 // database; a hit moves the track to the front of the window so a concurrent Touch/Evict
 // can't evict it out from under the caller before it's actually enqueued and re-touched.
-func (c *Cache) Get(sourceId string) (*db.Track, bool) {
+func (c *Cache) Get(sourceID string) (*db.Track, bool) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	el, ok := c.bySourceID[sourceId]
+	el, ok := c.bySourceID[sourceID]
 	if !ok {
 		return nil, false
 	}
@@ -60,28 +60,32 @@ func (c *Cache) Get(sourceId string) (*db.Track, bool) {
 	return el.Value.(*db.Track), true
 }
 
+// Touch marks a track as recently used and evicts the oldest unused tracks when the
+// cache exceeds CacheWindow. Evicted tracks have their files deleted from disk; tracks
+// currently in a session queue are never evicted. The caller must pass the set of
+// in-use track IDs across all active sessions.
 func (c *Cache) Touch(ctx context.Context, track *db.Track, inUse map[int64]struct{}) error {
-	if err := c.db.TouchTrackLastUsed(ctx, track.Id); err != nil {
+	if err := c.db.TouchTrackLastUsed(ctx, track.ID); err != nil {
 		return err
 	}
 
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	if el, ok := c.windowNodes[track.Id]; ok {
+	if el, ok := c.windowNodes[track.ID]; ok {
 		el.Value = track
 		c.window.MoveToFront(el)
 	} else {
 		el := c.window.PushFront(track)
-		c.windowNodes[track.Id] = el
-		c.bySourceID[track.SourceId] = el
+		c.windowNodes[track.ID] = el
+		c.bySourceID[track.SourceID] = el
 	}
 
 	for c.window.Len() > CacheWindow {
 		victim := c.window.Back()
 		// find oldest track that is not in use (currently playing or in queue)
 		for victim != nil {
-			if _, used := inUse[victim.Value.(*db.Track).Id]; !used {
+			if _, used := inUse[victim.Value.(*db.Track).ID]; !used {
 				break
 			}
 			victim = victim.Prev()
@@ -92,8 +96,8 @@ func (c *Cache) Touch(ctx context.Context, track *db.Track, inUse map[int64]stru
 
 		evicted := victim.Value.(*db.Track)
 		c.window.Remove(victim)
-		delete(c.windowNodes, evicted.Id)
-		delete(c.bySourceID, evicted.SourceId)
+		delete(c.windowNodes, evicted.ID)
+		delete(c.bySourceID, evicted.SourceID)
 		if err := os.Remove(evicted.FilePath); err != nil && !os.IsNotExist(err) {
 			slog.Warn("failed to evict cached track file", "err", err, "path", evicted.FilePath)
 		}

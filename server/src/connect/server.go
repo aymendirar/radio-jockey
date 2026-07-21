@@ -33,8 +33,8 @@ func CreateServer(
 	sessionManager *session.SessionManager,
 	youtube *music.YouTube,
 	icecast *icecast.IcecastClient,
-	a *auth.Auth,
-	d *db.DB,
+	authSvc *auth.Auth,
+	database *db.DB,
 	cache *music.Cache,
 	rateLimitRPS float64,
 	rateLimitBurst int) (*http.Server, error) {
@@ -42,16 +42,20 @@ func CreateServer(
 		sessionManager: sessionManager,
 		youtube:        youtube,
 		icecast:        icecast,
-		auth:           a,
-		db:             d,
+		auth:           authSvc,
+		db:             database,
 		cache:          cache,
 	}
 	limiter := newIPRateLimiter(rateLimitRPS, rateLimitBurst)
-	limiter.startCleanup(5*time.Minute, 30*time.Minute)
+	const (
+		rateLimitCleanupInterval = 5 * time.Minute
+		rateLimitMaxIdle         = 30 * time.Minute
+	)
+	limiter.startCleanup(rateLimitCleanupInterval, rateLimitMaxIdle)
 	mux := http.NewServeMux()
 	servicePath, handler := protoconnect.NewRadioServiceHandler(
 		server,
-		connect.WithInterceptors(rateLimitInterceptor(limiter), stripInterceptor(), loggingInterceptor(), validate.NewInterceptor(), authInterceptor(a)),
+		connect.WithInterceptors(rateLimitInterceptor(limiter), stripInterceptor(), loggingInterceptor(), validate.NewInterceptor(), authInterceptor(authSvc)),
 	)
 	mux.Handle(servicePath, handler)
 	p := new(http.Protocols)

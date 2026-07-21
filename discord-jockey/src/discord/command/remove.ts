@@ -4,11 +4,9 @@ import { radioClient } from "../../connect/client.js";
 import { getSessionId, withConnectError } from "../../util/helpers.js";
 import { logger } from "../../util/logger.js";
 
-export async function registerRemoveCommand(
+export async function handleRemoveCommand(
   interaction: ChatInputCommandInteraction<CacheType>,
 ) {
-  if (interaction.commandName !== "remove") return;
-
   const sessionId = getSessionId(interaction);
   const index = interaction.options.getInteger("position", true) - 1;
   logger.info("remove command received", { sessionId, position: index + 1 });

@@ -64,11 +64,16 @@ func run() error {
 	)
 	slog.Info("icecast client created", "host", env.ICECAST_SERVER_HOST, "port", env.ICECAST_SERVER_PORT, "stream_base_url", env.STREAM_BASE_URL)
 
-	a, err := auth.NewAuth(env.PRIVATE_PASETO_KEY, env.PUBLIC_PASETO_KEY, 2*time.Minute)
+	const (
+		nonceTTL        = 2 * time.Minute
+		shutdownTimeout = 5 * time.Second
+	)
+
+	authSvc, err := auth.NewAuth(env.PRIVATE_PASETO_KEY, env.PUBLIC_PASETO_KEY, nonceTTL)
 	if err != nil {
 		return fmt.Errorf("failed to create auth: %v", err)
 	}
-	server, err := connect.CreateServer(env.HOST, env.PORT, sessionManager, youtube, icecast, a, db, cache, env.RATE_LIMIT_RPS, env.RATE_LIMIT_BURST)
+	server, err := connect.CreateServer(env.HOST, env.PORT, sessionManager, youtube, icecast, authSvc, db, cache, env.RATE_LIMIT_RPS, env.RATE_LIMIT_BURST)
 	if err != nil {
 		return fmt.Errorf("failed to create server: %v", err)
 	}
@@ -79,7 +84,7 @@ func run() error {
 
 	<-ctx.Done()
 	slog.Info("shutting down")
-	shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
 	defer cancel()
 	server.Shutdown(shutdownCtx)
 	slog.Info("shutdown complete")

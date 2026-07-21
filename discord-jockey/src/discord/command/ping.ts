@@ -3,11 +3,9 @@ import { radioClient } from "../../connect/client.js";
 import { withConnectError } from "../../util/helpers.js";
 import { logger } from "../../util/logger.js";
 
-export async function registerPingCommand(
+export async function handlePingCommand(
   interaction: ChatInputCommandInteraction<CacheType>,
 ) {
-  if (interaction.commandName !== "ping") return;
-
   logger.info("ping command received");
   await withConnectError(
     async () => {

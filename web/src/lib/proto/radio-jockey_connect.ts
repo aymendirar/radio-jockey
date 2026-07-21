@@ -3,169 +3,141 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import {
-	AddTrackRequest,
-	AddTrackResponse,
-	CreateSessionRequest,
-	CreateSessionResponse,
-	DeleteSessionArchiveRequest,
-	DeleteSessionArchiveResponse,
-	DeleteSessionAuthRequest,
-	DeleteSessionAuthResponse,
-	GetSessionArchiveRequest,
-	GetSessionArchiveResponse,
-	GetSessionRequest,
-	GetSessionResponse,
-	ListQueueRequest,
-	ListQueueResponse,
-	ListSessionArchivesRequest,
-	ListSessionArchivesResponse,
-	ListSessionsRequest,
-	ListSessionsResponse,
-	PingRequest,
-	PingResponse,
-	RemoveTrackRequest,
-	RemoveTrackResponse,
-	RequestNonceRequest,
-	RequestNonceResponse,
-	RespondNonceRequest,
-	RespondNonceResponse,
-	SkipTrackRequest,
-	SkipTrackResponse
-} from './radio-jockey_pb.js';
-import { MethodKind } from '@bufbuild/protobuf';
+import { AddTrackRequest, AddTrackResponse, CreateSessionRequest, CreateSessionResponse, DeleteSessionArchiveRequest, DeleteSessionArchiveResponse, DeleteSessionAuthRequest, DeleteSessionAuthResponse, GetSessionArchiveRequest, GetSessionArchiveResponse, GetSessionRequest, GetSessionResponse, ListQueueRequest, ListQueueResponse, ListSessionArchivesRequest, ListSessionArchivesResponse, ListSessionsRequest, ListSessionsResponse, PingRequest, PingResponse, RemoveTrackRequest, RemoveTrackResponse, RequestNonceRequest, RequestNonceResponse, RespondNonceRequest, RespondNonceResponse, SkipTrackRequest, SkipTrackResponse } from "./radio-jockey_pb.js";
+import { MethodKind } from "@bufbuild/protobuf";
 
 /**
  * @generated from service RadioService
  */
 export const RadioService = {
-	typeName: 'RadioService',
-	methods: {
-		/**
-		 * @generated from rpc RadioService.Ping
-		 */
-		ping: {
-			name: 'Ping',
-			I: PingRequest,
-			O: PingResponse,
-			kind: MethodKind.Unary
-		},
-		/**
-		 * @generated from rpc RadioService.RequestNonce
-		 */
-		requestNonce: {
-			name: 'RequestNonce',
-			I: RequestNonceRequest,
-			O: RequestNonceResponse,
-			kind: MethodKind.Unary
-		},
-		/**
-		 * @generated from rpc RadioService.RespondNonce
-		 */
-		respondNonce: {
-			name: 'RespondNonce',
-			I: RespondNonceRequest,
-			O: RespondNonceResponse,
-			kind: MethodKind.Unary
-		},
-		/**
-		 * @generated from rpc RadioService.CreateSession
-		 */
-		createSession: {
-			name: 'CreateSession',
-			I: CreateSessionRequest,
-			O: CreateSessionResponse,
-			kind: MethodKind.Unary
-		},
-		/**
-		 * @generated from rpc RadioService.GetSession
-		 */
-		getSession: {
-			name: 'GetSession',
-			I: GetSessionRequest,
-			O: GetSessionResponse,
-			kind: MethodKind.Unary
-		},
-		/**
-		 * @generated from rpc RadioService.DeleteSessionAuth
-		 */
-		deleteSessionAuth: {
-			name: 'DeleteSessionAuth',
-			I: DeleteSessionAuthRequest,
-			O: DeleteSessionAuthResponse,
-			kind: MethodKind.Unary
-		},
-		/**
-		 * @generated from rpc RadioService.AddTrack
-		 */
-		addTrack: {
-			name: 'AddTrack',
-			I: AddTrackRequest,
-			O: AddTrackResponse,
-			kind: MethodKind.Unary
-		},
-		/**
-		 * @generated from rpc RadioService.RemoveTrack
-		 */
-		removeTrack: {
-			name: 'RemoveTrack',
-			I: RemoveTrackRequest,
-			O: RemoveTrackResponse,
-			kind: MethodKind.Unary
-		},
-		/**
-		 * @generated from rpc RadioService.SkipTrack
-		 */
-		skipTrack: {
-			name: 'SkipTrack',
-			I: SkipTrackRequest,
-			O: SkipTrackResponse,
-			kind: MethodKind.Unary
-		},
-		/**
-		 * @generated from rpc RadioService.ListQueue
-		 */
-		listQueue: {
-			name: 'ListQueue',
-			I: ListQueueRequest,
-			O: ListQueueResponse,
-			kind: MethodKind.Unary
-		},
-		/**
-		 * @generated from rpc RadioService.ListSessions
-		 */
-		listSessions: {
-			name: 'ListSessions',
-			I: ListSessionsRequest,
-			O: ListSessionsResponse,
-			kind: MethodKind.Unary
-		},
-		/**
-		 * @generated from rpc RadioService.ListSessionArchives
-		 */
-		listSessionArchives: {
-			name: 'ListSessionArchives',
-			I: ListSessionArchivesRequest,
-			O: ListSessionArchivesResponse,
-			kind: MethodKind.Unary
-		},
-		/**
-		 * @generated from rpc RadioService.GetSessionArchive
-		 */
-		getSessionArchive: {
-			name: 'GetSessionArchive',
-			I: GetSessionArchiveRequest,
-			O: GetSessionArchiveResponse,
-			kind: MethodKind.Unary
-		},
-		/**
-		 * @generated from rpc RadioService.DeleteSessionArchive
-		 */
-		deleteSessionArchive: {
-			name: 'DeleteSessionArchive',
-			I: DeleteSessionArchiveRequest,
-			O: DeleteSessionArchiveResponse,
-			kind: MethodKind.Unary
-		}
-	}
+  typeName: "RadioService",
+  methods: {
+    /**
+     * @generated from rpc RadioService.Ping
+     */
+    ping: {
+      name: "Ping",
+      I: PingRequest,
+      O: PingResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc RadioService.RequestNonce
+     */
+    requestNonce: {
+      name: "RequestNonce",
+      I: RequestNonceRequest,
+      O: RequestNonceResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc RadioService.RespondNonce
+     */
+    respondNonce: {
+      name: "RespondNonce",
+      I: RespondNonceRequest,
+      O: RespondNonceResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc RadioService.CreateSession
+     */
+    createSession: {
+      name: "CreateSession",
+      I: CreateSessionRequest,
+      O: CreateSessionResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc RadioService.GetSession
+     */
+    getSession: {
+      name: "GetSession",
+      I: GetSessionRequest,
+      O: GetSessionResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc RadioService.DeleteSessionAuth
+     */
+    deleteSessionAuth: {
+      name: "DeleteSessionAuth",
+      I: DeleteSessionAuthRequest,
+      O: DeleteSessionAuthResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc RadioService.AddTrack
+     */
+    addTrack: {
+      name: "AddTrack",
+      I: AddTrackRequest,
+      O: AddTrackResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc RadioService.RemoveTrack
+     */
+    removeTrack: {
+      name: "RemoveTrack",
+      I: RemoveTrackRequest,
+      O: RemoveTrackResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc RadioService.SkipTrack
+     */
+    skipTrack: {
+      name: "SkipTrack",
+      I: SkipTrackRequest,
+      O: SkipTrackResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc RadioService.ListQueue
+     */
+    listQueue: {
+      name: "ListQueue",
+      I: ListQueueRequest,
+      O: ListQueueResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc RadioService.ListSessions
+     */
+    listSessions: {
+      name: "ListSessions",
+      I: ListSessionsRequest,
+      O: ListSessionsResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc RadioService.ListSessionArchives
+     */
+    listSessionArchives: {
+      name: "ListSessionArchives",
+      I: ListSessionArchivesRequest,
+      O: ListSessionArchivesResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc RadioService.GetSessionArchive
+     */
+    getSessionArchive: {
+      name: "GetSessionArchive",
+      I: GetSessionArchiveRequest,
+      O: GetSessionArchiveResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc RadioService.DeleteSessionArchive
+     */
+    deleteSessionArchive: {
+      name: "DeleteSessionArchive",
+      I: DeleteSessionArchiveRequest,
+      O: DeleteSessionArchiveResponse,
+      kind: MethodKind.Unary,
+    },
+  }
 } as const;
+

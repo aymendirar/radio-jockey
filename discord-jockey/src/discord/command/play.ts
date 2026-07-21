@@ -1,5 +1,6 @@
 import {
   createAudioPlayer,
+  AudioPlayer,
   AudioPlayerStatus,
   createAudioResource,
   entersState,
@@ -22,19 +23,9 @@ import { PassThrough } from "node:stream";
 import http from "node:http";
 import { hasSession, createSession, setBuffer, destroySession } from "../sessions.js";
 
-const KILOBYTE = 1024;
-const MEGABYTE = KILOBYTE * KILOBYTE;
-const BUFFER_SIZE = 20 * MEGABYTE;
+const BUFFER_SIZE = 20 * 1024 * 1024;
 
 const ICECAST_INTERNAL_URL = process.env.ICECAST_INTERNAL_URL!;
-
-function internalStreamUrl(sessionId: string): string {
-  return `${ICECAST_INTERNAL_URL}/stream/${sessionId}`;
-}
-
-export function stopSession(sessionId: string) {
-  destroySession(sessionId);
-}
 
 async function connectToChannel(channel: VoiceBasedChannel): Promise<VoiceConnection> {
   const connection = joinVoiceChannel({
@@ -55,7 +46,7 @@ async function getOrCreateSession(sessionId: string): Promise<string> {
   return withConnectError(
     async () => {
       await radioClient.createSession({ sessionId, archive: true });
-      const streamUrl = internalStreamUrl(sessionId);
+      const streamUrl = `${ICECAST_INTERNAL_URL}/stream/${sessionId}`;
       logger.info("session created", { sessionId, streamUrl });
       return streamUrl;
     },
@@ -63,7 +54,7 @@ async function getOrCreateSession(sessionId: string): Promise<string> {
       switch (err.code) {
         case Code.AlreadyExists: {
           await radioClient.getSession({ sessionId });
-          const streamUrl = internalStreamUrl(sessionId);
+          const streamUrl = `${ICECAST_INTERNAL_URL}/stream/${sessionId}`;
           logger.info("session already exists", { sessionId, streamUrl });
           return streamUrl;
         }
@@ -107,11 +98,73 @@ async function addTrack(
   );
 }
 
-export async function registerPlayCommand(
+async function startPlayback(
+  channel: VoiceBasedChannel,
+  sessionId: string,
+  streamUrl: string,
+  interaction: ChatInputCommandInteraction<CacheType>,
+  player: AudioPlayer,
+): Promise<void> {
+  let currentRequest: ReturnType<typeof http.get> | null = null;
+  let stopped = false;
+
+  const stop = () => {
+    if (stopped) return;
+    stopped = true;
+    destroySession(sessionId);
+    player.removeAllListeners();
+    player.stop(true);
+    currentRequest?.removeAllListeners();
+    currentRequest?.destroy();
+  };
+
+  const leave = async (message: string) => {
+    stop();
+    await interaction.followUp(message).catch(() => {});
+  };
+
+  const startStream = (conn: VoiceConnection) => {
+    currentRequest?.removeAllListeners();
+    currentRequest?.destroy();
+    const buffer = new PassThrough({ highWaterMark: BUFFER_SIZE });
+    setBuffer(sessionId, buffer);
+    currentRequest = http.get(streamUrl, (res) => {
+      res.on("end", () => {
+        logger.info("stream ended, leaving voice channel", { sessionId });
+        leave("Stream ended. Use /play to start a new session.");
+      });
+      res.pipe(buffer);
+    });
+    currentRequest.on("error", (err) => {
+      logger.error("stream connection error", { sessionId, err });
+      leave("Lost connection to the stream. Use /play to reconnect.");
+    });
+    buffer.once("readable", () => {
+      if (stopped) return;
+      player.play(createAudioResource(buffer, { inputType: StreamType.OggOpus }));
+    });
+  };
+
+  const connection = await connectToChannel(channel);
+  connection.subscribe(player);
+  player.on("error", (err: Error) => {
+    if (stopped) return;
+    logger.warn("player error, reconnecting stream", { sessionId, err });
+    startStream(connection);
+  });
+  player.on(AudioPlayerStatus.Idle, () => {
+    if (stopped) return;
+    logger.info("player idle, reconnecting stream", { sessionId });
+    startStream(connection);
+  });
+  createSession(sessionId, connection);
+  startStream(connection);
+  logger.info("stream started", { sessionId, streamUrl });
+}
+
+export async function handlePlayCommand(
   interaction: ChatInputCommandInteraction<CacheType>,
 ) {
-  if (interaction.commandName !== "play") return;
-
   if (!interaction.inGuild()) {
     await interaction.reply("This command can only be used in a server!");
     return;
@@ -153,67 +206,13 @@ export async function registerPlayCommand(
     await interaction.reply("Starting playback!");
   }
 
-  logger.info("connecting to voice channel", { sessionId, streamUrl });
-
   const player = createAudioPlayer();
-  let currentRequest: ReturnType<typeof http.get> | null = null;
-  let stopped = false;
-
-  const stop = () => {
-    if (stopped) return;
-    stopped = true;
-    stopSession(sessionId);
-    player.removeAllListeners();
-    player.stop(true);
-    currentRequest?.removeAllListeners();
-    currentRequest?.destroy();
-  };
-
-  const leave = async (message: string) => {
-    stop();
-    await interaction.followUp(message).catch(() => {});
-  };
-
-  const startStream = (conn: VoiceConnection) => {
-    currentRequest?.removeAllListeners();
-    currentRequest?.destroy();
-    const buffer = new PassThrough({ highWaterMark: BUFFER_SIZE });
-    setBuffer(sessionId, buffer);
-    currentRequest = http.get(streamUrl, (res) => {
-      res.on("end", () => {
-        logger.info("stream ended, leaving voice channel", { sessionId });
-        leave("Stream ended. Use /play to start a new session.");
-      });
-      res.pipe(buffer);
-    });
-    currentRequest.on("error", (err) => {
-      logger.error("stream connection error", { sessionId, err });
-      leave("Lost connection to the stream. Use /play to reconnect.");
-    });
-    buffer.once("readable", () => {
-      if (stopped) return;
-      player.play(createAudioResource(buffer, { inputType: StreamType.OggOpus }));
-    });
-  };
-
   try {
-    const connection = await connectToChannel(member.voice.channel);
-    connection.subscribe(player);
-    player.on("error", (err) => {
-      if (stopped) return;
-      logger.warn("player error, reconnecting stream", { sessionId, err });
-      startStream(connection);
-    });
-    player.on(AudioPlayerStatus.Idle, () => {
-      if (stopped) return;
-      logger.info("player idle, reconnecting stream", { sessionId });
-      startStream(connection);
-    });
-    createSession(sessionId, connection);
-    startStream(connection);
-    logger.info("stream started", { sessionId, streamUrl });
+    await startPlayback(member.voice.channel, sessionId, streamUrl, interaction, player);
   } catch (err) {
     logger.error("failed to connect or play", { sessionId, err });
-    await leave("Failed to start playback. Please try again.");
+    destroySession(sessionId);
+    player.removeAllListeners();
+    await interaction.followUp("Failed to start playback. Please try again.").catch(() => {});
   }
 }
